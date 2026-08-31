@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LocalSight — Local-first AI video intelligence</title>
+  <meta name="description" content="LocalSight is a self-hosted, privacy-by-design video intelligence platform: on-prem AI detection, ANPR, behavior analytics, live view, and semantic search. No cloud, no monthly fees." />
+  <meta name="theme-color" content="#0b1020" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="LocalSight — Local-first AI video intelligence" />
+  <meta property="og:description" content="Self-hosted smart surveillance with on-device AI. Detection, ANPR, behavior rules, live view, analytics and VLM search — fully offline." />
+  <meta property="og:image" content="assets/img/og.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="#top" aria-label="LocalSight home">
+        <img src="assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="#features">Capabilities</a>
+        <a href="#how">How it works</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#start">Quick start</a>
+        <a href="#cameras">Cameras</a>
+        <a class="nav__cta" href="https://github.com/jatinkray/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <span id="top"></span>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero__glow" aria-hidden="true"></div>
+      <div class="container hero__inner">
+        <div class="hero__copy">
+          <span class="pill"><span class="dot"></span> Self-hosted · On-prem · Open</span>
+          <h1>Local-first AI<br><span class="grad">video intelligence</span></h1>
+          <p class="lede">
+            LocalSight turns your existing IP cameras and NVRs into a private, intelligent
+            surveillance system. On-device detection, ANPR, behavior analytics, live view and
+            semantic search — <strong>all running on your hardware, with no video leaving the site.</strong>
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="#start">Get started</a>
+            <a class="btn btn--ghost" href="https://github.com/jatinkray/localsight" target="_blank" rel="noopener">View source on GitHub</a>
+          </div>
+          <ul class="hero__badges">
+            <li>✓ No cloud dependency</li>
+            <li>✓ Encrypted at rest</li>
+            <li>✓ 49 automated tests</li>
+            <li>✓ Docker &amp; bare-metal</li>
+          </ul>
+        </div>
+
+        <!-- Dashboard mock -->
+        <div class="hero__visual" aria-hidden="true">
+          <div class="mock">
+            <div class="mock__bar">
+              <span class="mock__dot"></span><span class="mock__dot"></span><span class="mock__dot"></span>
+              <span class="mock__title">localsight · live</span>
+            </div>
+            <div class="mock__body">
+              <div class="mock__feed">
+                <div class="bbox bbox--person" style="top:18%;left:14%;width:18%;height:42%"><span>person 0.92</span></div>
+                <div class="bbox bbox--vehicle" style="top:55%;left:55%;width:30%;height:26%"><span>vehicle 0.88</span></div>
+                <div class="bbox bbox--alert" style="top:30%;left:60%;width:24%;height:30%"><span>intrusion</span></div>
+                <div class="mock__scan"></div>
+              </div>
+              <div class="mock__side">
+                <div class="mock__stat"><b>8</b><span>cameras</span></div>
+                <div class="mock__stat"><b>142</b><span>events / 24h</span></div>
+                <div class="mock__row"><span class="tag tag--ok">ANPR</span> HR-29F-1182</div>
+                <div class="mock__row"><span class="tag tag--warn">rule</span> line-cross · gate</div>
+                <div class="mock__row"><span class="tag tag--ok">search</span> "red truck near dock"</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST STRIP -->
+    <section class="strip">
+      <div class="container strip__inner">
+        <div><b>Local-first</b><span>Cloud is opt-in only</span></div>
+        <div><b>Privacy by design</b><span>Recognition off by default</span></div>
+        <div><b>Fail-safe</b><span>One camera never takes down the platform</span></div>
+        <div><b>Security-first</b><span>Argon2id · RBAC · SSRF guard · audit log</span></div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+      <div class="container">
+        <header class="section__head">
+          <span class="eyebrow">Capabilities</span>
+          <h2>Everything runs on your hardware</h2>
+          <p>Reference implementations work out of the box; drop in a staged ONNX / TensorRT / OpenVINO / TFLite model via the ModelRegistry for production accuracy. There are no insecure defaults and no third-party calls.</p>
+        </header>
+
+        <div class="grid grid--3">
+          <article class="card">
+            <div class="card__icon">🎯</div>
+            <h3>Object &amp; person detection</h3>
+            <p>A SORT-style tracker produces stable IDs. The <code>reference</code> backend is a CPU motion proxy (person-only); staged models add vehicle / animal / bag multi-class. GPU is used automatically when present.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">🔢</div>
+            <h3>ANPR / LPR</h3>
+            <p>Cropped, throttled and de-duplicated plate pipeline. Plate values are <strong>encrypted at rest</strong> with an anonymized hash. Real OCR activates when you stage a plate detector + OCR model.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">🪪</div>
+            <h3>Face identification <span class="opt">opt-in</span></h3>
+            <p>Biometric matching is <strong>off by default</strong>. Enable only with a documented lawful basis; enrollment embeddings are encrypted and retention-bounded.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">⚡</div>
+            <h3>Behavior analytics</h3>
+            <p>Per-camera JSON rules: line-cross, intrusion, loitering, object-left / removed and crowd. Matched events become typed alerts fanned out to your channels.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">📡</div>
+            <h3>Live view (LL-HLS)</h3>
+            <p>Ticketed, authorized low-latency HLS gateway transcodes the substream with FFmpeg. RTSP URLs and credentials are never exposed to the browser.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">📊</div>
+            <h3>Analytics &amp; BI</h3>
+            <p>People counting, occupancy trends, dwell time, event breakdown and heatmaps — all behind <code>analytics:view</code> and ready for your dashboards.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">🔎</div>
+            <h3>VLM semantic search</h3>
+            <p>Ask in natural language — “find the red truck near the gate” — and rank archived events by similarity. A CLIP / VLM backend drops in behind the same interface.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">🔔</div>
+            <h3>Alerts &amp; routing</h3>
+            <p>Per event-type and per-camera routes for webhook / email / push. Webhook URLs are SSRF-validated; a test endpoint verifies delivery with no camera needed.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">🛡️</div>
+            <h3>Hardened by default</h3>
+            <p>Argon2id passwords, JWT rotation, TOTP MFA, RBAC, envelope encryption, signed media URLs and an immutable audit log of every sensitive action.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section section--alt" id="how">
+      <div class="container">
+        <header class="section__head">
+          <span class="eyebrow">How it works</span>
+          <h2>From RTSP stream to actionable alert</h2>
+          <p>LocalSight is a focused pipeline: AI runs on the low-res substream while the main stream is recorded, keeping bandwidth and compute minimal.</p>
+        </header>
+
+        <ol class="flow">
+          <li class="flow__step">
+            <div class="flow__num">1</div>
+            <h3>Ingest</h3>
+            <p>Pull RTSP / RTSPS / ONVIF streams from cameras and NVRs. TP-Link VIGI/Tapo NVRs provision in one call; ONVIF discovery and multi-vendor presets cover the rest.</p>
+          </li>
+          <li class="flow__step">
+            <div class="flow__num">2</div>
+            <h3>Analyze</h3>
+            <p>The worker runs local detection, tracking, behavior rules, ANPR and (optional) face matching on the substream — no frames leave the server.</p>
+          </li>
+          <li class="flow__step">
+            <div class="flow__num">3</div>
+            <h3>Record &amp; store</h3>
+            <p>Main-stream segments are written to local or S3 storage; snapshots, embeddings and plates are encrypted at rest.</p>
+          </li>
+          <li class="flow__step">
+            <div class="flow__num">4</div>
+            <h3>Act &amp; review</h3>
+            <p>Matched events trigger routed alerts, populate analytics, and become searchable via timeline and VLM semantic search in the dashboard.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- PRIVACY -->
+    <section class="section" id="privacy">
+      <div class="container privacy">
+        <div class="privacy__copy">
+          <span class="eyebrow">Privacy &amp; compliance</span>
+          <h2>Built so video stays yours</h2>
+          <ul class="checklist">
+            <li><b>No cloud by default.</b> All inference is local; the platform makes no outbound calls to third parties.</li>
+            <li><b>Recognition is opt-in.</b> Face identification is disabled unless you explicitly enable it with a lawful basis.</li>
+            <li><b>Encrypted at rest.</b> Stream URLs, embeddings, snapshots, plate data and alert config use envelope encryption.</li>
+            <li><b>SSRF guard.</b> Camera, webhook and ONVIF egress are blocked to private / loopback / metadata destinations unless allow-listed.</li>
+            <li><b>Immutable audit log.</b> Every sensitive action — camera changes, alert routes, live-ticket issuance — is recorded.</li>
+            <li><b>Bounded retention.</b> A worker sweeper auto-expires recordings, events, snapshots and embeddings on schedules you control.</li>
+          </ul>
+        </div>
+        <aside class="privacy__panel">
+          <div class="kv"><span>Video egress</span><b class="ok">None</b></div>
+          <div class="kv"><span>Face ID default</span><b class="ok">Off</b></div>
+          <div class="kv"><span>Encryption</span><b class="ok">Envelope / AES</b></div>
+          <div class="kv"><span>Auth</span><b class="ok">Argon2id + MFA</b></div>
+          <div class="kv"><span>Network</span><b class="ok">SSRF-guarded</b></div>
+          <div class="kv"><span>Deployment</span><b class="ok">Self-hosted</b></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- QUICK START -->
+    <section class="section section--alt" id="start">
+      <div class="container">
+        <header class="section__head">
+          <span class="eyebrow">Quick start</span>
+          <h2>Running in minutes</h2>
+          <p>LocalSight refuses to start if secrets are missing — there are no insecure defaults.</p>
+        </header>
+
+        <div class="tabs" id="tabs">
+          <div class="tabs__bar" role="tablist">
+            <button class="tabs__btn is-active" data-tab="py" role="tab">Python</button>
+            <button class="tabs__btn" data-tab="docker" role="tab">Docker Compose</button>
+          </div>
+
+          <div class="tabs__panel is-active" data-panel="py">
+            <button class="copy" data-copy>Copy</button>
+<pre><code>python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python scripts/gen_env.py        # writes .env with fresh random secrets
+
+uvicorn apps.api.main:app --host 0.0.0.0 --port 8000 --reload
+# dashboard served at http://localhost:8000
+
+# in another shell — runs cameras, recording, retention + alerts
+python -m apps.worker</code></pre>
+          </div>
+
+          <div class="tabs__panel" data-panel="docker">
+            <button class="copy" data-copy>Copy</button>
+<pre><code>python scripts/gen_env.py
+docker compose -f infrastructure/compose/docker-compose.yml --env-file .env up --build
+# brings up PostgreSQL+pgvector, the API, the AI worker and an nginx TLS proxy</code></pre>
+          </div>
+        </div>
+
+        <p class="note">Recording and live view require <b>FFmpeg</b> on <code>PATH</code> (bundled in the Docker image). The default DB is SQLite; set <code>DATABASE_URL</code> for PostgreSQL.</p>
+      </div>
+    </section>
+
+    <!-- CAMERAS -->
+    <section class="section" id="cameras">
+      <div class="container">
+        <header class="section__head">
+          <span class="eyebrow">Compatibility</span>
+          <h2>Works with the cameras you already have</h2>
+          <p>LocalSight is RTSP / ONVIF-native and speaks to a wide range of vendors.</p>
+        </header>
+        <div class="chips">
+          <span class="chip">TP-Link VIGI / Tapo</span>
+          <span class="chip">ONVIF discovery</span>
+          <span class="chip">Axis</span>
+          <span class="chip">Hanwha</span>
+          <span class="chip">Hikvision (ISAPI)</span>
+          <span class="chip">Dahua (CGI)</span>
+          <span class="chip">Reolink</span>
+          <span class="chip">Bosch</span>
+          <span class="chip">GB/T 28181</span>
+        </div>
+        <p class="note">Provision a whole VIGI NVR in one call, discover ONVIF devices on the LAN, or build vendor URL templates — all SSRF-validated and audited. See <a href="https://github.com/jatinkray/localsight/tree/main/docs/integrations" target="_blank" rel="noopener">docs/integrations</a>.</p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <div class="container cta__inner">
+        <h2>Take back your surveillance stack</h2>
+        <p>Self-host LocalSight and keep every frame, plate and face on your premises.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="https://github.com/jatinkray/localsight" target="_blank" rel="noopener">Star on GitHub</a>
+          <a class="btn btn--ghost" href="https://github.com/jatinkray/localsight/tree/main/docs" target="_blank" rel="noopener">Read the docs</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h4>Project</h4>
+          <a href="https://github.com/jatinkray/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/jatinkray/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/jatinkray/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h4>Docs</h4>
+          <a href="https://github.com/jatinkray/localsight/tree/main/docs/architecture" target="_blank" rel="noopener">Architecture</a>
+          <a href="https://github.com/jatinkray/localsight/tree/main/docs/security" target="_blank" rel="noopener">Security</a>
+          <a href="https://github.com/jatinkray/localsight/tree/main/docs/operations" target="_blank" rel="noopener">Operations</a>
+        </div>
+        <div>
+          <h4>Integrations</h4>
+          <a href="https://github.com/jatinkray/localsight/blob/main/docs/integrations/tplink-vigi.md" target="_blank" rel="noopener">TP-Link VIGI</a>
+          <a href="https://github.com/jatinkray/localsight/blob/main/docs/api/openapi-summary.md" target="_blank" rel="noopener">API</a>
+        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
