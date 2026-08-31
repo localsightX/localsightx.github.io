@@ -186,6 +186,20 @@ code { font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace; 
 .chip { border: 1px solid var(--border); border-radius: 999px; padding: 9px 18px; background: var(--surface); font-size: .95rem; transition: .2s; }
 .chip:hover { border-color: var(--accent); color: var(--text); }
 
+/* CI/CD PIPELINE GRID */
+.pipe { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 980px; margin: 0 auto; }
+.pipe__item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); transition: .2s; }
+.pipe__item:hover { border-color: rgba(34,211,238,.45); background: var(--surface-2); transform: translateY(-2px); }
+.pipe__icon { font-size: 1.1rem; flex-shrink: 0; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 8px; background: rgba(34,211,238,.10); border: 1px solid var(--border); }
+.pipe__copy h4 { font-size: .98rem; font-family: "Space Grotesk", sans-serif; margin: 0 0 2px; color: var(--text); }
+.pipe__copy p { font-size: .82rem; color: var(--muted); margin: 0; }
+.pipe__copy code { font-size: .72rem; }
+
+.cve { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; max-width: 720px; margin: 26px auto 0; padding: 18px 22px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.cve div { display: flex; align-items: center; gap: 10px; font-size: .88rem; color: var(--muted); }
+.cve b { color: var(--text); font-weight: 600; }
+.cve__ok { color: var(--ok); }
+
 /* CTA */
 .cta { padding: 80px 0; text-align: center; background:
   radial-gradient(60% 120% at 50% 0%, rgba(34,211,238,.12), transparent 70%), var(--bg-2);
@@ -222,6 +236,8 @@ code { font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace; 
   .flow__step:not(:last-child)::after { display: none; }
   .privacy { grid-template-columns: 1fr; }
   .footer__inner { grid-template-columns: 1fr; }
+  .pipe { grid-template-columns: repeat(2, 1fr); }
+  .cve { grid-template-columns: 1fr; }
 }
 @media (max-width: 720px) {
   .nav__links { position: fixed; inset: 64px 0 auto 0; flex-direction: column; align-items: flex-start; gap: 4px; padding: 18px 22px; background: rgba(10,14,23,.97); border-bottom: 1px solid var(--border); transform: translateY(-130%); transition: transform .28s; }

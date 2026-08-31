@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LocalSight — Local-first AI video intelligence</title>
-  <meta name="description" content="LocalSight is a self-hosted, privacy-by-design video intelligence platform: on-prem AI detection, ANPR, behavior analytics, live view, and semantic search. No cloud, no monthly fees." />
+  <meta name="description" content="LocalSight is a self-hosted, privacy-by-design video intelligence platform: on-prem multi-class AI detection, ANPR, behavior analytics, MQTT/push alerts, live view, VLM search, event clip export, and a 9-job CI/CD pipeline. No cloud, no monthly fees." />
   <meta name="theme-color" content="#0b1020" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="LocalSight — Local-first AI video intelligence" />
-  <meta property="og:description" content="Self-hosted smart surveillance with on-device AI. Detection, ANPR, behavior rules, live view, analytics and VLM search — fully offline." />
+  <meta property="og:description" content="Self-hosted smart surveillance with on-device AI. Multi-class detection (ONNX), ANPR, behavior rules, MQTT/push alerts, live view, analytics, VLM search, and event clip export — fully offline. 9-job free CI/CD pipeline." />
   <meta property="og:image" content="assets/img/og.svg" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
@@ -30,6 +30,7 @@
         <a href="#features">Capabilities</a>
         <a href="#how">How it works</a>
         <a href="#privacy">Privacy</a>
+        <a href="#cicd">CI/CD</a>
         <a href="#start">Quick start</a>
         <a href="#cameras">Cameras</a>
         <a class="nav__cta" href="https://github.com/jatinkray/localsight" target="_blank" rel="noopener">GitHub ↗</a>
@@ -61,8 +62,9 @@
           </div>
           <ul class="hero__badges">
             <li>✓ No cloud dependency</li>
-            <li>✓ Encrypted at rest</li>
-            <li>✓ 49 automated tests</li>
+            <li>✓ Multi-class ONNX detection</li>
+            <li>✓ MQTT / push / webhook alerts</li>
+            <li>✓ 66 automated tests · 9-job CI/CD</li>
             <li>✓ Docker &amp; bare-metal</li>
           </ul>
         </div>
@@ -86,6 +88,8 @@
                 <div class="mock__stat"><b>142</b><span>events / 24h</span></div>
                 <div class="mock__row"><span class="tag tag--ok">ANPR</span> HR-29F-1182</div>
                 <div class="mock__row"><span class="tag tag--warn">rule</span> line-cross · gate</div>
+                <div class="mock__row"><span class="tag tag--ok">MQTT</span> broker.alerts</div>
+                <div class="mock__row"><span class="tag tag--ok">push</span> ntfy · phone</div>
                 <div class="mock__row"><span class="tag tag--ok">search</span> "red truck near dock"</div>
               </div>
             </div>
@@ -116,8 +120,8 @@
         <div class="grid grid--3">
           <article class="card">
             <div class="card__icon">🎯</div>
-            <h3>Object &amp; person detection</h3>
-            <p>A SORT-style tracker produces stable IDs. The <code>reference</code> backend is a CPU motion proxy (person-only); staged models add vehicle / animal / bag multi-class. GPU is used automatically when present.</p>
+            <h3>Multi-class object detection</h3>
+            <p>A SORT-style tracker produces stable IDs. The <code>onnx</code> backend detects person / vehicle / bicycle / motorcycle / bus / truck / animal / bag / package with GPU auto-detection; the <code>reference</code> CPU fallback handles demos without a model.</p>
           </article>
           <article class="card">
             <div class="card__icon">🔢</div>
@@ -132,27 +136,32 @@
           <article class="card">
             <div class="card__icon">⚡</div>
             <h3>Behavior analytics</h3>
-            <p>Per-camera JSON rules: line-cross, intrusion, loitering, object-left / removed and crowd. Matched events become typed alerts fanned out to your channels.</p>
+            <p>Per-camera JSON rules: <code>line_cross</code> (directional), <code>intrusion</code>, <code>loitering</code>, <code>object_left</code>, <code>crowd</code>. Matched events become typed alerts fanned out to your channels.</p>
           </article>
           <article class="card">
             <div class="card__icon">📡</div>
             <h3>Live view (LL-HLS)</h3>
-            <p>Ticketed, authorized low-latency HLS gateway transcodes the substream with FFmpeg. RTSP URLs and credentials are never exposed to the browser.</p>
+            <p>Ticketed, authorized low-latency HLS gateway transcodes the substream with FFmpeg. RTSP URLs and credentials are never exposed. Health endpoint shows active transcodes and PIDs.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">📤</div>
+            <h3>Event clip export</h3>
+            <p>Pull a signed, time-stamped manifest of every <code>VideoSegment</code> overlapping an event — for evidence handoff, insurance claims, or incident review. All downloads are audit-logged.</p>
           </article>
           <article class="card">
             <div class="card__icon">📊</div>
             <h3>Analytics &amp; BI</h3>
-            <p>People counting, occupancy trends, dwell time, event breakdown and heatmaps — all behind <code>analytics:view</code> and ready for your dashboards.</p>
+            <p>People counting, occupancy trends, dwell time, event-type breakdown, heatmaps and a unified timeline — all behind <code>analytics:view</code> and ready for your dashboards.</p>
           </article>
           <article class="card">
             <div class="card__icon">🔎</div>
             <h3>VLM semantic search</h3>
-            <p>Ask in natural language — “find the red truck near the gate” — and rank archived events by similarity. A CLIP / VLM backend drops in behind the same interface.</p>
+            <p>Ask in natural language — "find the red truck near the gate" — and rank archived events by similarity. A CLIP / VLM backend drops in behind the same interface.</p>
           </article>
           <article class="card">
-            <div class="card__icon">🔔</div>
-            <h3>Alerts &amp; routing</h3>
-            <p>Per event-type and per-camera routes for webhook / email / push. Webhook URLs are SSRF-validated; a test endpoint verifies delivery with no camera needed.</p>
+            <div class="card__icon">📨</div>
+            <h3>Multi-channel alerts</h3>
+            <p>Route events to <strong>webhook</strong>, <strong>email</strong>, <strong>MQTT</strong>, or <strong>push</strong> (ntfy.sh). Per-route <code>cooldown_sec</code> suppresses storms; SSRF-validated webhooks; a test endpoint verifies delivery.</p>
           </article>
           <article class="card">
             <div class="card__icon">🛡️</div>
@@ -169,31 +178,119 @@
         <header class="section__head">
           <span class="eyebrow">How it works</span>
           <h2>From RTSP stream to actionable alert</h2>
-          <p>LocalSight is a focused pipeline: AI runs on the low-res substream while the main stream is recorded, keeping bandwidth and compute minimal.</p>
+          <p>LocalSight is a focused pipeline: AI runs on the low-res substream while the main stream is recorded, keeping bandwidth and compute minimal. Every step is local, encrypted, and auditable.</p>
         </header>
 
         <ol class="flow">
           <li class="flow__step">
             <div class="flow__num">1</div>
             <h3>Ingest</h3>
-            <p>Pull RTSP / RTSPS / ONVIF streams from cameras and NVRs. TP-Link VIGI/Tapo NVRs provision in one call; ONVIF discovery and multi-vendor presets cover the rest.</p>
+            <p>Pull RTSP / RTSPS / ONVIF streams from cameras and NVRs. TP-Link VIGI/Tapo NVRs provision in one call; ONVIF discovery and multi-vendor presets (Axis, Hanwha, Hikvision, Dahua, Reolink, Bosch, GB/T 28181) cover the rest.</p>
           </li>
           <li class="flow__step">
             <div class="flow__num">2</div>
             <h3>Analyze</h3>
-            <p>The worker runs local detection, tracking, behavior rules, ANPR and (optional) face matching on the substream — no frames leave the server.</p>
+            <p>The worker runs local multi-class detection, tracking, behavior rules, ANPR and (optional) face matching on the substream — no frames leave the server. GPU acceleration is automatic when an ONNX model is staged.</p>
           </li>
           <li class="flow__step">
             <div class="flow__num">3</div>
             <h3>Record &amp; store</h3>
-            <p>Main-stream segments are written to local or S3 storage; snapshots, embeddings and plates are encrypted at rest.</p>
+            <p>Main-stream segments are written to local or S3 storage; snapshots, embeddings and plates are encrypted at rest. The unified timeline merges events and recording for fast review.</p>
           </li>
           <li class="flow__step">
             <div class="flow__num">4</div>
             <h3>Act &amp; review</h3>
-            <p>Matched events trigger routed alerts, populate analytics, and become searchable via timeline and VLM semantic search in the dashboard.</p>
+            <p>Matched events trigger routed alerts (webhook / email / MQTT / push), populate analytics, and become searchable via timeline + VLM semantic search. Event clip export delivers signed evidence bundles.</p>
           </li>
         </ol>
+      </div>
+    </section>
+
+    <!-- CI/CD & SUPPLY CHAIN -->
+    <section class="section section--alt" id="cicd">
+      <div class="container">
+        <header class="section__head">
+          <span class="eyebrow">CI/CD &amp; supply chain</span>
+          <h2>9-job pipeline. 100% free. No SaaS lock-in.</h2>
+          <p>Every push runs a full security and quality gate using <strong>pip-audit</strong>, <strong>Safety</strong>, <strong>CodeQL</strong>, <strong>Semgrep</strong>, and <strong>Trivy</strong> — all free-tier. Multi-platform Docker images ship to GHCR with SBOMs.</p>
+        </header>
+
+        <div class="pipe">
+          <div class="pipe__item">
+            <div class="pipe__icon">🎨</div>
+            <div class="pipe__copy">
+              <h4>lint + mypy</h4>
+              <p>ruff style + mypy types</p>
+            </div>
+          </div>
+          <div class="pipe__item">
+            <div class="pipe__icon">🧪</div>
+            <div class="pipe__copy">
+              <h4>unit tests (SQLite)</h4>
+              <p>66 tests · ~17s · ≥50% coverage</p>
+            </div>
+          </div>
+          <div class="pipe__item">
+            <div class="pipe__icon">🐘</div>
+            <div class="pipe__copy">
+              <h4>integration (PostgreSQL)</h4>
+              <p>pgvector + psycopg</p>
+            </div>
+          </div>
+          <div class="pipe__item">
+            <div class="pipe__icon">🔒</div>
+            <div class="pipe__copy">
+              <h4>dependency audit</h4>
+              <p><code>pip-audit</code> + <code>safety</code></p>
+            </div>
+          </div>
+          <div class="pipe__item">
+            <div class="pipe__icon">🛡️</div>
+            <div class="pipe__copy">
+              <h4>SAST (CodeQL + Semgrep)</h4>
+              <p>OWASP · secrets · Python</p>
+            </div>
+          </div>
+          <div class="pipe__item">
+            <div class="pipe__icon">📦</div>
+            <div class="pipe__copy">
+              <h4>container scan</h4>
+              <p>Trivy SARIF to GitHub Security</p>
+            </div>
+          </div>
+          <div class="pipe__item">
+            <div class="pipe__icon">🐳</div>
+            <div class="pipe__copy">
+              <h4>docker build + push</h4>
+              <p>amd64 + arm64 · GHCR</p>
+            </div>
+          </div>
+          <div class="pipe__item">
+            <div class="pipe__icon">📋</div>
+            <div class="pipe__copy">
+              <h4>SBOM (SPDX)</h4>
+              <p>Generated per release</p>
+            </div>
+          </div>
+          <div class="pipe__item">
+            <div class="pipe__icon">✅</div>
+            <div class="pipe__copy">
+              <h4>quality gate</h4>
+              <p>Blocks merge on lint/test fail</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="cve">
+          <div><span class="cve__ok">●</span><b>pip-audit</b> — PyPI / OSV</div>
+          <div><span class="cve__ok">●</span><b>Safety</b> — pyup.io safety DB</div>
+          <div><span class="cve__ok">●</span><b>Trivy</b> — GHSA / TSL / NVD</div>
+          <div><span class="cve__ok">●</span><b>CodeQL</b> — GitHub code scanning</div>
+          <div><span class="cve__ok">●</span><b>Semgrep</b> — OWASP / secrets / Python</div>
+          <div><span class="cve__ok">●</span><b>Dependabot</b> — weekly auto-PRs</div>
+        </div>
+
+        <p class="note">Container images are built for <code>linux/amd64</code> and <code>linux/arm64</code> (Jetson / RPi), signed with SLSA-style provenance, and tagged automatically on every push. See <a href="https://github.com/jatinkray/localsight/blob/main/docs/operations/ci-cd-pipeline.md" target="_blank" rel="noopener">docs/operations/ci-cd-pipeline.md</a>.</p>
       </div>
     </section>
 
@@ -206,10 +303,12 @@
           <ul class="checklist">
             <li><b>No cloud by default.</b> All inference is local; the platform makes no outbound calls to third parties.</li>
             <li><b>Recognition is opt-in.</b> Face identification is disabled unless you explicitly enable it with a lawful basis.</li>
-            <li><b>Encrypted at rest.</b> Stream URLs, embeddings, snapshots, plate data and alert config use envelope encryption.</li>
-            <li><b>SSRF guard.</b> Camera, webhook and ONVIF egress are blocked to private / loopback / metadata destinations unless allow-listed.</li>
-            <li><b>Immutable audit log.</b> Every sensitive action — camera changes, alert routes, live-ticket issuance — is recorded.</li>
-            <li><b>Bounded retention.</b> A worker sweeper auto-expires recordings, events, snapshots and embeddings on schedules you control.</li>
+            <li><b>Encrypted at rest.</b> Stream URLs, embeddings, snapshots, plate data, alert configs, and MQTT credentials use envelope encryption (AES-256-GCM, per-record data keys).</li>
+            <li><b>SSRF guard.</b> Camera, webhook, and ONVIF egress are blocked to private / loopback / metadata destinations unless allow-listed.</li>
+            <li><b>Per-route alert cooldown.</b> Suppresses alert storms — one page per (channel × rule × camera) per window.</li>
+            <li><b>Immutable audit log.</b> Every sensitive action — camera changes, alert routes, live-ticket issuance, video clip exports — is recorded.</li>
+            <li><b>Bounded retention.</b> A worker sweeper auto-expires recordings, events, snapshots, and embeddings on schedules you control.</li>
+            <li><b>Free supply-chain security.</b> The CI pipeline catches vulnerable deps and SAST issues using only free-tier tools (pip-audit, Safety, Trivy, CodeQL, Semgrep).</li>
           </ul>
         </div>
         <aside class="privacy__panel">
@@ -218,6 +317,7 @@
           <div class="kv"><span>Encryption</span><b class="ok">Envelope / AES</b></div>
           <div class="kv"><span>Auth</span><b class="ok">Argon2id + MFA</b></div>
           <div class="kv"><span>Network</span><b class="ok">SSRF-guarded</b></div>
+          <div class="kv"><span>Dep. vulnerabilities</span><b class="ok">CI-blocked</b></div>
           <div class="kv"><span>Deployment</span><b class="ok">Self-hosted</b></div>
         </aside>
       </div>
@@ -318,6 +418,8 @@ docker compose -f infrastructure/compose/docker-compose.yml --env-file .env up -
           <a href="https://github.com/jatinkray/localsight/tree/main/docs/architecture" target="_blank" rel="noopener">Architecture</a>
           <a href="https://github.com/jatinkray/localsight/tree/main/docs/security" target="_blank" rel="noopener">Security</a>
           <a href="https://github.com/jatinkray/localsight/tree/main/docs/operations" target="_blank" rel="noopener">Operations</a>
+          <a href="https://github.com/jatinkray/localsight/blob/main/docs/operations/ci-cd-pipeline.md" target="_blank" rel="noopener">CI/CD</a>
+          <a href="https://github.com/jatinkray/localsight/blob/main/docs/operations/onnx-detector.md" target="_blank" rel="noopener">ONNX detector</a>
         </div>
         <div>
           <h4>Integrations</h4>
