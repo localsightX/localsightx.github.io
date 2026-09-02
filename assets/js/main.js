@@ -51,3 +51,19 @@ document.querySelectorAll('.card, .flow__step, .section__head, .privacy__panel')
   el.classList.add('reveal');
   io.observe(el);
 });
+
+// Product-tour tabs (separate from the quick-start code tabs)
+document.querySelectorAll('#tourTabs .tabs__btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const id = btn.dataset.tour;
+    const root = document.getElementById('tourTabs');
+    root.querySelectorAll('.tabs__btn').forEach(b => {
+      const on = b === btn;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-selected', String(on));
+    });
+    root.querySelectorAll('.tour-panel').forEach(p =>
+      p.classList.toggle('is-active', p.dataset.tourPanel === id)
+    );
+  });
+});

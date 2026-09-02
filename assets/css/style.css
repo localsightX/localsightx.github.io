@@ -64,7 +64,7 @@ code { font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace; 
               radial-gradient(50% 50% at 80% 0%, rgba(129,140,248,.22), transparent 60%);
   filter: blur(20px); pointer-events: none;
 }
-.hero__inner { position: relative; display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+.hero__inner { position: relative; display: grid; grid-template-columns: .92fr 1.08fr; gap: 48px; align-items: center; }
 .pill {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: .8rem; color: var(--muted);
@@ -251,3 +251,41 @@ code { font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace; 
   .mock { transform: none; }
   .footer__cols { grid-template-columns: 1fr 1fr; }
 }
+
+
+/* ── PRODUCT TOUR ─────────────────────────────────────────────────────── */
+.hero__visual .mock--wide { transform: none; width: 100%; }
+.mock__shot { position: relative; overflow: hidden; background: #0a0f1c; }
+.mock__shot img { display: block; width: 100%; height: auto; }
+.mock--wide .mock__scan { position: absolute; inset: 0; background:
+  linear-gradient(180deg, transparent, rgba(34,211,238,.08), transparent);
+  height: 40%; animation: scan 3.4s linear infinite; }
+.shot-link { display: block; text-decoration: none; }
+.shot-cap { display: block; text-align: center; margin-top: 10px;
+  font-size: .78rem; color: var(--muted); letter-spacing: .02em; }
+
+.tabs__bar--tour { flex-wrap: wrap; }
+.tabs--tour { margin-top: 6px; }
+.tour-panel { display: none; }
+.tour-panel.is-active { display: block; animation: fadein .35s ease; }
+@keyframes fadein { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: none;} }
+.tour-shot { margin: 0 0 22px; border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; background: #0a0f1c;
+  box-shadow: 0 18px 50px rgba(0,0,0,.38); }
+.tour-shot img { display: block; width: 100%; height: auto; }
+.tour-shot figcaption { padding: 12px 16px; font-size: .88rem;
+  color: var(--muted); border-top: 1px solid var(--border); }
+.tour-shot figcaption b { color: var(--text); }
+.tour-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.tour-shot .k { font-family: ui-monospace, monospace; font-size: .72rem;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 5px; padding: 1px 6px; margin-left: 6px; color: var(--text);
+  white-space: nowrap; float: right; }
+
+@media (max-width: 760px) {
+  .tour-grid { grid-template-columns: 1fr; }
+}
+
+/* hero screenshot: clickable, subtle lift */
+.shot-link:hover .mock--wide { box-shadow: 0 34px 90px rgba(0,0,0,.55); }
+.shot-link .mock--wide { transition: box-shadow .25s ease; }

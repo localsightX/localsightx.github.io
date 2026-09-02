@@ -27,6 +27,7 @@
         <span>Local<strong>Sight</strong></span>
       </a>
       <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="#tour">Product tour</a>
         <a href="#features">Capabilities</a>
         <a href="#how">How it works</a>
         <a href="#privacy">Privacy</a>
@@ -64,36 +65,27 @@
             <li>✓ No cloud dependency</li>
             <li>✓ Multi-class ONNX detection</li>
             <li>✓ MQTT / push / webhook alerts</li>
-            <li>✓ 66 automated tests · 9-job CI/CD</li>
+            <li>✓ 140 automated tests · 10-job CI/CD</li>
+            <li>✓ Enterprise console: RBAC · MFA · audit</li>
             <li>✓ Docker &amp; bare-metal</li>
           </ul>
         </div>
 
-        <!-- Dashboard mock -->
-        <div class="hero__visual" aria-hidden="true">
-          <div class="mock">
-            <div class="mock__bar">
-              <span class="mock__dot"></span><span class="mock__dot"></span><span class="mock__dot"></span>
-              <span class="mock__title">localsight · live</span>
-            </div>
-            <div class="mock__body">
-              <div class="mock__feed">
-                <div class="bbox bbox--person" style="top:18%;left:14%;width:18%;height:42%"><span>person 0.92</span></div>
-                <div class="bbox bbox--vehicle" style="top:55%;left:55%;width:30%;height:26%"><span>vehicle 0.88</span></div>
-                <div class="bbox bbox--alert" style="top:30%;left:60%;width:24%;height:30%"><span>intrusion</span></div>
-                <div class="mock__scan"></div>
+        <!-- Real product screenshot inside a browser frame -->
+        <div class="hero__visual">
+          <a class="shot-link" href="#tour" aria-label="See the product tour">
+            <div class="mock mock--wide">
+              <div class="mock__bar">
+                <span class="mock__dot"></span><span class="mock__dot"></span><span class="mock__dot"></span>
+                <span class="mock__title">localsight · overview</span>
               </div>
-              <div class="mock__side">
-                <div class="mock__stat"><b>8</b><span>cameras</span></div>
-                <div class="mock__stat"><b>142</b><span>events / 24h</span></div>
-                <div class="mock__row"><span class="tag tag--ok">ANPR</span> HR-29F-1182</div>
-                <div class="mock__row"><span class="tag tag--warn">rule</span> line-cross · gate</div>
-                <div class="mock__row"><span class="tag tag--ok">MQTT</span> broker.alerts</div>
-                <div class="mock__row"><span class="tag tag--ok">push</span> ntfy · phone</div>
-                <div class="mock__row"><span class="tag tag--ok">search</span> "red truck near dock"</div>
+              <div class="mock__shot">
+                <img src="assets/img/shots/overview.webp" alt="LocalSight overview dashboard: cameras online, events today, enrolled identities, system health, recent events, alert feed" width="1200" height="750" loading="eager" decoding="async" />
+                <div class="mock__scan" aria-hidden="true"></div>
               </div>
             </div>
-          </div>
+            <span class="shot-cap">The real console — nothing mocked ↑</span>
+          </a>
         </div>
       </div>
     </section>
@@ -105,6 +97,96 @@
         <div><b>Privacy by design</b><span>Recognition off by default</span></div>
         <div><b>Fail-safe</b><span>One camera never takes down the platform</span></div>
         <div><b>Security-first</b><span>Argon2id · RBAC · SSRF guard · audit log</span></div>
+      </div>
+    </section>
+
+    <!-- PRODUCT TOUR -->
+    <section class="section" id="tour">
+      <div class="container">
+        <header class="section__head">
+          <span class="eyebrow">Product tour</span>
+          <h2>Every screen, from the real product</h2>
+          <p>These are working screenshots of the LocalSight console — the same UI you get from a fresh install. Click through the tabs: monitoring, investigation, and administration all ship in the box.</p>
+        </header>
+
+        <div class="tabs tabs--tour" id="tourTabs">
+          <div class="tabs__bar tabs__bar--tour" role="tablist" aria-label="Product tour">
+            <button class="tabs__btn is-active" data-tour="monitor" role="tab" aria-selected="true">Monitor</button>
+            <button class="tabs__btn" data-tour="investigate" role="tab" aria-selected="false">Investigate</button>
+            <button class="tabs__btn" data-tour="manage" role="tab" aria-selected="false">Manage</button>
+            <button class="tabs__btn" data-tour="account" role="tab" aria-selected="false">Account &amp; compliance</button>
+          </div>
+
+          <div class="tour-panel is-active" data-tour-panel="monitor">
+            <figure class="tour-shot">
+              <img src="assets/img/shots/overview.webp" alt="Overview dashboard — cameras online, events today, health, recent events and alert feed" loading="lazy" decoding="async" width="1200" height="750" />
+              <figcaption><b>Overview.</b> Live camera strip, event counts, system health and the recent-events feed — every timestamp honest UTC. <span class="k">g o</span></figcaption>
+            </figure>
+            <div class="tour-grid">
+              <figure class="tour-shot">
+                <img src="assets/img/shots/live.webp" alt="Live view wall — camera tiles with live statuses" loading="lazy" decoding="async" width="1200" height="750" />
+                <figcaption><b>Live wall.</b> Low-latency HLS grid, honest per-camera states, fullscreen mode. <span class="k">g l</span></figcaption>
+              </figure>
+              <figure class="tour-shot">
+                <img src="assets/img/shots/timeline.webp" alt="Unified timeline of events and recordings" loading="lazy" decoding="async" width="1200" height="750" />
+                <figcaption><b>Unified timeline.</b> Events merged with recording segments; click through to evidence. <span class="k">g t</span></figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div class="tour-panel" data-tour-panel="investigate">
+            <figure class="tour-shot">
+              <img src="assets/img/shots/events-bulk.webp" alt="Events table with sortable columns and bulk selection bar" loading="lazy" decoding="async" width="1200" height="750" />
+              <figcaption><b>Events.</b> Server-side sortable columns, bulk selection with audited CSV export, shareable filter links. <span class="k">g e</span></figcaption>
+            </figure>
+            <div class="tour-grid">
+              <figure class="tour-shot">
+                <img src="assets/img/shots/event-drawer.webp" alt="Event detail drawer with playback and evidence export" loading="lazy" decoding="async" width="1200" height="750" />
+                <figcaption><b>Evidence drawer.</b> One click from any row: playback, full context, signed clip export (audited, 5-minute link TTL).</figcaption>
+              </figure>
+              <figure class="tour-shot">
+                <img src="assets/img/shots/analytics-compare.webp" alt="Analytics with range presets and compare deltas" loading="lazy" decoding="async" width="1200" height="750" />
+                <figcaption><b>Analytics.</b> Preset ranges, A/B compare against the previous window, natural-language search.</figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div class="tour-panel" data-tour-panel="manage">
+            <figure class="tour-shot">
+              <img src="assets/img/shots/cameras.webp" alt="Camera grid with health and statuses" loading="lazy" decoding="async" width="1200" height="750" />
+                <figcaption><b>Cameras.</b> Health at a glance; detail tabs for streams, privacy masks, detection rules and retention. <span class="k">g c</span></figcaption>
+            </figure>
+            <div class="tour-grid">
+              <figure class="tour-shot">
+                <img src="assets/img/shots/users.webp" alt="Users and roles administration" loading="lazy" decoding="async" width="1200" height="750" />
+                <figcaption><b>Users &amp; roles.</b> RBAC with real permissions; MFA reset and sign-out-everywhere with typed confirmation.</figcaption>
+              </figure>
+              <figure class="tour-shot">
+                <img src="assets/img/shots/alerts.webp" alt="Alert routes administration" loading="lazy" decoding="async" width="1200" height="750" />
+                <figcaption><b>Alert routes.</b> Webhook / email / MQTT / push with per-route cooldowns and a test-delivery endpoint.</figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div class="tour-panel" data-tour-panel="account">
+            <figure class="tour-shot">
+              <img src="assets/img/shots/account.webp" alt="Account view with password, MFA, sessions and timezone" loading="lazy" decoding="async" width="1200" height="750" />
+              <figcaption><b>Account.</b> Self-service password rotation, TOTP MFA enrollment, per-device session revoke, display timezone.</figcaption>
+            </figure>
+            <div class="tour-grid">
+              <figure class="tour-shot">
+                <img src="assets/img/shots/audit.webp" alt="Audit log with filters, sorting and CSV export" loading="lazy" decoding="async" width="1200" height="750" />
+                <figcaption><b>Audit trail.</b> Filter by user / action / result / date, sort any column, export the filtered trail — every export is itself on the record.</figcaption>
+              </figure>
+              <figure class="tour-shot">
+                <img src="assets/img/shots/palette.webp" alt="Ctrl-K command palette fuzzy searching cameras" loading="lazy" decoding="async" width="1200" height="750" />
+                <figcaption><b>Ctrl-K palette.</b> Jump to any view, camera, person or recent event — full keyboard path, no mouse required.</figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+
+        <p class="note">Every pixel above ships in the open-source repo — <a href="https://github.com/jatinkray/localsight/blob/main/docs/USER_GUIDE.md" target="_blank" rel="noopener">the full user guide</a> walks through each screen, and the <a href="https://github.com/jatinkray/localsight/tree/main/tests/ui" target="_blank" rel="noopener">browser test suite</a> keeps them honest (43 e2e tests, zero axe violations).</p>
       </div>
     </section>
 
@@ -151,7 +233,7 @@
           <article class="card">
             <div class="card__icon">📊</div>
             <h3>Analytics &amp; BI</h3>
-            <p>People counting, occupancy trends, dwell time, event-type breakdown, heatmaps and a unified timeline — all behind <code>analytics:view</code> and ready for your dashboards.</p>
+            <p>People counting, occupancy trends, dwell time, event-type breakdown, heatmaps and a unified timeline — plus one-click range presets and A/B compare against the previous window. Shareable views, exportable CSVs.</p>
           </article>
           <article class="card">
             <div class="card__icon">🔎</div>
@@ -165,8 +247,8 @@
           </article>
           <article class="card">
             <div class="card__icon">🛡️</div>
-            <h3>Hardened by default</h3>
-            <p>Argon2id passwords, JWT rotation, TOTP MFA, RBAC, envelope encryption, signed media URLs and an immutable audit log of every sensitive action.</p>
+            <h3>Enterprise console</h3>
+            <p>RBAC with real permission gates, self-service password rotation, TOTP MFA enrollment, per-device session revoke, sortable/filterable audit trail with CSV export, Argon2id, envelope encryption and signed media URLs. WCAG 2.1 AA verified by axe on every view.</p>
           </article>
         </div>
       </div>
@@ -211,8 +293,8 @@
       <div class="container">
         <header class="section__head">
           <span class="eyebrow">CI/CD &amp; supply chain</span>
-          <h2>9-job pipeline. 100% free. No SaaS lock-in.</h2>
-          <p>Every push runs a full security and quality gate using <strong>pip-audit</strong>, <strong>Safety</strong>, <strong>CodeQL</strong>, <strong>Semgrep</strong>, and <strong>Trivy</strong> — all free-tier. Multi-platform Docker images ship to GHCR with SBOMs.</p>
+          <h2>10-job pipeline. 100% free. No SaaS lock-in.</h2>
+          <p>Every push runs a full security and quality gate — <strong>pip-audit</strong>, <strong>Safety</strong>, <strong>CodeQL</strong>, <strong>Semgrep</strong>, <strong>Trivy</strong> — plus a <strong>merge-blocking browser suite</strong>: real-Chromium e2e journeys, axe-core accessibility (zero violations), CSP console gate, visual regression and performance budgets. All free-tier. Multi-platform Docker images ship to GHCR with SBOMs.</p>
         </header>
 
         <div class="pipe">
@@ -227,7 +309,7 @@
             <div class="pipe__icon">🧪</div>
             <div class="pipe__copy">
               <h4>unit tests (SQLite)</h4>
-              <p>66 tests · ~17s · ≥50% coverage</p>
+              <p>97 tests · ~28s · dev-parity FK enforcement</p>
             </div>
           </div>
           <div class="pipe__item">
@@ -273,10 +355,17 @@
             </div>
           </div>
           <div class="pipe__item">
+            <div class="pipe__icon">🎭</div>
+            <div class="pipe__copy">
+              <h4>UI e2e (Playwright)</h4>
+              <p>43 tests · axe a11y · CSP · visual · perf</p>
+            </div>
+          </div>
+          <div class="pipe__item">
             <div class="pipe__icon">✅</div>
             <div class="pipe__copy">
               <h4>quality gate</h4>
-              <p>Blocks merge on lint/test fail</p>
+              <p>Blocks merge on lint/test/e2e fail</p>
             </div>
           </div>
         </div>
