@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LocalSight — Local-first AI video intelligence</title>
-  <meta name="description" content="LocalSight is a self-hosted, privacy-by-design video intelligence platform: on-prem multi-class AI detection, ANPR, behavior analytics, MQTT/push alerts, live view, VLM search, event clip export, and a 9-job CI/CD pipeline. No cloud, no monthly fees." />
+  <meta name="description" content="LocalSight is a self-hosted, privacy-by-design video intelligence platform: on-prem multi-class AI detection, ANPR, behavior rules, MQTT/push alerts, live view, VLM search, event clip export. MIT open source — no cloud, no monthly fees, no lock-in." />
   <meta name="theme-color" content="#0b1020" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="LocalSight — Local-first AI video intelligence" />
-  <meta property="og:description" content="Self-hosted smart surveillance with on-device AI. Multi-class detection (ONNX), ANPR, behavior rules, MQTT/push alerts, live view, analytics, VLM search, and event clip export — fully offline. 9-job free CI/CD pipeline." />
+  <meta property="og:description" content="Self-hosted smart surveillance with on-device AI. Multi-class detection (ONNX), ANPR, behavior rules, MQTT/push alerts, live view, analytics, VLM search, and event clip export — fully offline. MIT open source; your video never leaves your hardware." />
   <meta property="og:image" content="assets/img/og.svg" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
@@ -30,9 +30,10 @@
         <a href="#tour">Product tour</a>
         <a href="#features">Capabilities</a>
         <a href="#how">How it works</a>
+        <a href="#compare">Compare</a>
         <a href="#privacy">Privacy</a>
-        <a href="#cicd">CI/CD</a>
         <a href="#start">Quick start</a>
+        <a href="#opensource">Open source</a>
         <a href="#cameras">Cameras</a>
         <a class="nav__cta" href="https://github.com/jatinkray/localsight" target="_blank" rel="noopener">GitHub ↗</a>
       </nav>
@@ -65,7 +66,7 @@
             <li>✓ No cloud dependency</li>
             <li>✓ Multi-class ONNX detection</li>
             <li>✓ MQTT / push / webhook alerts</li>
-            <li>✓ 140 automated tests · 10-job CI/CD</li>
+            <li>✓ Open source (MIT) · self-hosted</li>
             <li>✓ Enterprise console: RBAC · MFA · audit</li>
             <li>✓ Docker &amp; bare-metal</li>
           </ul>
@@ -100,13 +101,41 @@
       </div>
     </section>
 
+    <!-- PROBLEM -->
+    <section class="section" id="problem">
+      <div class="container">
+        <header class="section__head">
+          <span class="eyebrow">The problem</span>
+          <h2>Your cameras record everything.<br>They understand nothing.</h2>
+          <p>An NVR full of footage is an archive of things you missed. Someone has to watch walls of timelines to find the one clip that matters — after the fact, when it's already too late. And the "smart" alternatives want your video in their cloud, on a monthly plan.</p>
+        </header>
+        <div class="grid grid--3">
+          <article class="card card--pain">
+            <div class="card__icon">📼</div>
+            <h3>Recording is not intelligence</h3>
+            <p>16 cameras × 24 hours = more footage than any team can review. Events get found hours or days later — if at all.</p>
+          </article>
+          <article class="card card--pain">
+            <div class="card__icon">☁️</div>
+            <h3>Cloud AI wants your video</h3>
+            <p>Commercial platforms route camera feeds to someone else's servers. Privacy, bandwidth cost and lock-in come bundled.</p>
+          </article>
+          <article class="card card--pain">
+            <div class="card__icon">💸</div>
+            <h3>Per-camera subscriptions</h3>
+            <p>$20–40 per camera per month compounds fast — 20 cameras is $4,800–$9,600 a year, forever, for features you don't control.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <!-- PRODUCT TOUR -->
     <section class="section" id="tour">
       <div class="container">
         <header class="section__head">
           <span class="eyebrow">Product tour</span>
-          <h2>Every screen, from the real product</h2>
-          <p>These are working screenshots of the LocalSight console — the same UI you get from a fresh install. Click through the tabs: monitoring, investigation, and administration all ship in the box.</p>
+          <h2>The answer: your cameras, thinking — on your hardware</h2>
+          <p>Working screenshots of the LocalSight console, exactly as a fresh install serves it. Detection, investigation and administration ship in the box — no staged scenarios, no marketing mock.</p>
         </header>
 
         <div class="tabs tabs--tour" id="tourTabs">
@@ -190,65 +219,75 @@
       </div>
     </section>
 
-    <!-- FEATURES -->
+    <!-- AI ENGINES -->
     <section class="section" id="features">
       <div class="container">
         <header class="section__head">
-          <span class="eyebrow">Capabilities</span>
-          <h2>Everything runs on your hardware</h2>
-          <p>Reference implementations work out of the box; drop in a staged ONNX / TensorRT / OpenVINO / TFLite model via the ModelRegistry for production accuracy. There are no insecure defaults and no third-party calls.</p>
+          <span class="eyebrow">AI engines</span>
+          <h2>One platform. Every threat covered.</h2>
+          <p>Every engine runs locally on your server — reference implementations work out of the box, and you stage production-grade ONNX / TensorRT / OpenVINO / TFLite models through the same interface when you're ready. No insecure defaults, no third-party calls.</p>
         </header>
 
         <div class="grid grid--3">
           <article class="card">
-            <div class="card__icon">🎯</div>
-            <h3>Multi-class object detection</h3>
-            <p>A SORT-style tracker produces stable IDs. The <code>onnx</code> backend detects person / vehicle / bicycle / motorcycle / bus / truck / animal / bag / package with GPU auto-detection; the <code>reference</code> CPU fallback handles demos without a model.</p>
+            <div class="card__icon">🚶</div>
+            <h3>Person &amp; vehicle detection</h3>
+            <p>Multi-class detection of person / vehicle / bicycle / motorcycle / bus / truck / animal / bag / package with a SORT-style tracker for stable IDs. CPU fallback works model-free.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">🚧</div>
+            <h3>Zone intrusion &amp; line-cross</h3>
+            <p>Draw a line, get alerts when someone crosses it — directional, so you know which way. Zone intrusion flags anyone inside who shouldn't be.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">⏳</div>
+            <h3>Loitering</h3>
+            <p>Dwell-time thresholds per camera — the person pacing outside the warehouse door for 20 minutes stops being invisible.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">🎒</div>
+            <h3>Object left / removed</h3>
+            <p>Unattended bags and vanished assets — flagged the moment they happen, clip attached.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">👥</div>
+            <h3>Crowd &amp; occupancy</h3>
+            <p>Headcounts and capacity thresholds per zone — compliance without anyone counting heads.</p>
           </article>
           <article class="card">
             <div class="card__icon">🔢</div>
-            <h3>ANPR / LPR</h3>
-            <p>Cropped, throttled and de-duplicated plate pipeline. Plate values are <strong>encrypted at rest</strong> with an anonymized hash. Real OCR activates when you stage a plate detector + OCR model.</p>
+            <h3>ANPR / plate recognition</h3>
+            <p>Cropped, throttled, de-duplicated plate pipeline with values <strong>encrypted at rest</strong>. Stage a plate detector + OCR model for real reads.</p>
           </article>
           <article class="card">
             <div class="card__icon">🪪</div>
             <h3>Face identification <span class="opt">opt-in</span></h3>
-            <p>Biometric matching is <strong>off by default</strong>. Enable only with a documented lawful basis; enrollment embeddings are encrypted and retention-bounded.</p>
+            <p>Biometric matching <strong>off by default</strong> — enable only with a documented lawful basis. Enrollment embeddings are encrypted and retention-bounded.</p>
           </article>
           <article class="card">
-            <div class="card__icon">⚡</div>
-            <h3>Behavior analytics</h3>
-            <p>Per-camera JSON rules: <code>line_cross</code> (directional), <code>intrusion</code>, <code>loitering</code>, <code>object_left</code>, <code>crowd</code>. Matched events become typed alerts fanned out to your channels.</p>
+            <div class="card__icon">🔎</div>
+            <h3>Semantic search</h3>
+            <p>"Red truck near the dock, Tuesday morning" — natural-language search ranks archived events by similarity. A CLIP/VLM backend drops in behind the same interface.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">📈</div>
+            <h3>Analytics &amp; counting</h3>
+            <p>People counting, occupancy trends, dwell, event breakdown, heatmaps, range presets and A/B compare — all behind <code>analytics:view</code>.</p>
           </article>
           <article class="card">
             <div class="card__icon">📡</div>
             <h3>Live view (LL-HLS)</h3>
-            <p>Ticketed, authorized low-latency HLS gateway transcodes the substream with FFmpeg. RTSP URLs and credentials are never exposed. Health endpoint shows active transcodes and PIDs.</p>
+            <p>Ticketed, authorized low-latency HLS gateway transcodes the substream — camera credentials never leave the server.</p>
           </article>
           <article class="card">
             <div class="card__icon">📤</div>
-            <h3>Event clip export</h3>
-            <p>Pull a signed, time-stamped manifest of every <code>VideoSegment</code> overlapping an event — for evidence handoff, insurance claims, or incident review. All downloads are audit-logged.</p>
-          </article>
-          <article class="card">
-            <div class="card__icon">📊</div>
-            <h3>Analytics &amp; BI</h3>
-            <p>People counting, occupancy trends, dwell time, event-type breakdown, heatmaps and a unified timeline — plus one-click range presets and A/B compare against the previous window. Shareable views, exportable CSVs.</p>
-          </article>
-          <article class="card">
-            <div class="card__icon">🔎</div>
-            <h3>VLM semantic search</h3>
-            <p>Ask in natural language — "find the red truck near the gate" — and rank archived events by similarity. A CLIP / VLM backend drops in behind the same interface.</p>
+            <h3>Evidence export</h3>
+            <p>Signed, time-stamped manifest of every segment overlapping an event — for insurance or incident review. Every download is audit-logged.</p>
           </article>
           <article class="card">
             <div class="card__icon">📨</div>
             <h3>Multi-channel alerts</h3>
-            <p>Route events to <strong>webhook</strong>, <strong>email</strong>, <strong>MQTT</strong>, or <strong>push</strong> (ntfy.sh). Per-route <code>cooldown_sec</code> suppresses storms; SSRF-validated webhooks; a test endpoint verifies delivery.</p>
-          </article>
-          <article class="card">
-            <div class="card__icon">🛡️</div>
-            <h3>Enterprise console</h3>
-            <p>RBAC with real permission gates, self-service password rotation, TOTP MFA enrollment, per-device session revoke, sortable/filterable audit trail with CSV export, Argon2id, envelope encryption and signed media URLs. WCAG 2.1 AA verified by axe on every view.</p>
+            <p>Webhook / email / MQTT / push (ntfy) with per-route <code>cooldown_sec</code> storm suppression and a test-delivery endpoint.</p>
           </article>
         </div>
       </div>
@@ -259,127 +298,59 @@
       <div class="container">
         <header class="section__head">
           <span class="eyebrow">How it works</span>
-          <h2>From RTSP stream to actionable alert</h2>
-          <p>LocalSight is a focused pipeline: AI runs on the low-res substream while the main stream is recorded, keeping bandwidth and compute minimal. Every step is local, encrypted, and auditable.</p>
+          <h2>Connect. Monitor. Act.</h2>
+          <p>LocalSight runs AI on the low-res substream while recording the main stream — minimal compute, full fidelity. Every step on your hardware, encrypted and auditable.</p>
         </header>
 
         <ol class="flow">
           <li class="flow__step">
             <div class="flow__num">1</div>
-            <h3>Ingest</h3>
-            <p>Pull RTSP / RTSPS / ONVIF streams from cameras and NVRs. TP-Link VIGI/Tapo NVRs provision in one call; ONVIF discovery and multi-vendor presets (Axis, Hanwha, Hikvision, Dahua, Reolink, Bosch, GB/T 28181) cover the rest.</p>
+            <h3>Connect your cameras</h3>
+            <p>Keep the hardware you own: RTSP / RTSPS / ONVIF from cameras and NVRs. TP-Link VIGI/Tapo NVRs provision in one call; ONVIF discovery and presets for Axis, Hanwha, Hikvision, Dahua, Reolink, Bosch cover the rest. No swaps, no cloud onboarding.</p>
           </li>
           <li class="flow__step">
             <div class="flow__num">2</div>
-            <h3>Analyze</h3>
-            <p>The worker runs local multi-class detection, tracking, behavior rules, ANPR and (optional) face matching on the substream — no frames leave the server. GPU acceleration is automatic when an ONNX model is staged.</p>
+            <h3>AI starts monitoring</h3>
+            <p>Detection, tracking, behavior rules, ANPR and (opt-in) face matching run on the substream — no frames ever leave the server. GPU acceleration engages automatically when a model is staged.</p>
           </li>
           <li class="flow__step">
             <div class="flow__num">3</div>
-            <h3>Record &amp; store</h3>
-            <p>Main-stream segments are written to local or S3 storage; snapshots, embeddings and plates are encrypted at rest. The unified timeline merges events and recording for fast review.</p>
+            <h3>Get real-time alerts</h3>
+            <p>Matched events fan out to webhook / email / MQTT / push with storm-suppressing cooldowns, land in analytics, and become searchable on the unified timeline — signed clip export for evidence included.</p>
           </li>
           <li class="flow__step">
             <div class="flow__num">4</div>
-            <h3>Act &amp; review</h3>
-            <p>Matched events trigger routed alerts (webhook / email / MQTT / push), populate analytics, and become searchable via timeline + VLM semantic search. Event clip export delivers signed evidence bundles.</p>
+            <h3>Own the whole stack</h3>
+            <p>Main-stream segments stay on your storage; snapshots, embeddings and plates are encrypted at rest. The code is MIT-licensed on GitHub — read it, audit it, change it. It's yours.</p>
           </li>
         </ol>
       </div>
     </section>
 
-    <!-- CI/CD & SUPPLY CHAIN -->
-    <section class="section section--alt" id="cicd">
+    <!-- COMPARE -->
+    <section class="section" id="compare">
       <div class="container">
         <header class="section__head">
-          <span class="eyebrow">CI/CD &amp; supply chain</span>
-          <h2>10-job pipeline. 100% free. No SaaS lock-in.</h2>
-          <p>Every push runs a full security and quality gate — <strong>pip-audit</strong>, <strong>Safety</strong>, <strong>CodeQL</strong>, <strong>Semgrep</strong>, <strong>Trivy</strong> — plus a <strong>merge-blocking browser suite</strong>: real-Chromium e2e journeys, axe-core accessibility (zero violations), CSP console gate, visual regression and performance budgets. All free-tier. Multi-platform Docker images ship to GHCR with SBOMs.</p>
+          <span class="eyebrow">Why self-hosted wins</span>
+          <h2>Cloud AI subscriptions vs LocalSight</h2>
+          <p>Commercial video intelligence is a rental: their cloud, their models, their price hikes. LocalSight is an asset you run next to the cameras it watches.</p>
         </header>
-
-        <div class="pipe">
-          <div class="pipe__item">
-            <div class="pipe__icon">🎨</div>
-            <div class="pipe__copy">
-              <h4>lint + mypy</h4>
-              <p>ruff style + mypy types</p>
-            </div>
-          </div>
-          <div class="pipe__item">
-            <div class="pipe__icon">🧪</div>
-            <div class="pipe__copy">
-              <h4>unit tests (SQLite)</h4>
-              <p>97 tests · ~28s · dev-parity FK enforcement</p>
-            </div>
-          </div>
-          <div class="pipe__item">
-            <div class="pipe__icon">🐘</div>
-            <div class="pipe__copy">
-              <h4>integration (PostgreSQL)</h4>
-              <p>pgvector + psycopg</p>
-            </div>
-          </div>
-          <div class="pipe__item">
-            <div class="pipe__icon">🔒</div>
-            <div class="pipe__copy">
-              <h4>dependency audit</h4>
-              <p><code>pip-audit</code> + <code>safety</code></p>
-            </div>
-          </div>
-          <div class="pipe__item">
-            <div class="pipe__icon">🛡️</div>
-            <div class="pipe__copy">
-              <h4>SAST (CodeQL + Semgrep)</h4>
-              <p>OWASP · secrets · Python</p>
-            </div>
-          </div>
-          <div class="pipe__item">
-            <div class="pipe__icon">📦</div>
-            <div class="pipe__copy">
-              <h4>container scan</h4>
-              <p>Trivy SARIF to GitHub Security</p>
-            </div>
-          </div>
-          <div class="pipe__item">
-            <div class="pipe__icon">🐳</div>
-            <div class="pipe__copy">
-              <h4>docker build + push</h4>
-              <p>amd64 + arm64 · GHCR</p>
-            </div>
-          </div>
-          <div class="pipe__item">
-            <div class="pipe__icon">📋</div>
-            <div class="pipe__copy">
-              <h4>SBOM (SPDX)</h4>
-              <p>Generated per release</p>
-            </div>
-          </div>
-          <div class="pipe__item">
-            <div class="pipe__icon">🎭</div>
-            <div class="pipe__copy">
-              <h4>UI e2e (Playwright)</h4>
-              <p>43 tests · axe a11y · CSP · visual · perf</p>
-            </div>
-          </div>
-          <div class="pipe__item">
-            <div class="pipe__icon">✅</div>
-            <div class="pipe__copy">
-              <h4>quality gate</h4>
-              <p>Blocks merge on lint/test/e2e fail</p>
-            </div>
-          </div>
+        <div class="table-wrap">
+          <table class="cmp">
+            <thead>
+              <tr><th></th><th>Cloud AI platforms</th><th>LocalSight</th></tr>
+            </thead>
+            <tbody>
+              <tr><th>Where video goes</th><td class="no">To their servers</td><td class="yes">Nowhere — stays on site</td></tr>
+              <tr><th>Cost model</th><td class="no">$20–40 / camera / month, forever</td><td class="yes">$0 after install — MIT licensed</td></tr>
+              <tr><th>Works offline</th><td class="no">Needs their cloud reachable</td><td class="yes">Fully air-gap capable</td></tr>
+              <tr><th>Model choice</th><td class="no">Whatever they ship</td><td class="yes">Stage ONNX / TensorRT / OpenVINO / TFLite</td></tr>
+              <tr><th>Auditable</th><td class="no">Trust their black box</td><td class="yes">Every line on GitHub</td></tr>
+              <tr><th>Lock-in</th><td class="no">Your footage, their format</td><td class="yes">Standard MP4 segments + export manifests</td></tr>
+              <tr><th>Data at rest</th><td class="no">Their retention policy</td><td class="yes">Envelope-encrypted, your retention knobs</td></tr>
+            </tbody>
+          </table>
         </div>
-
-        <div class="cve">
-          <div><span class="cve__ok">●</span><b>pip-audit</b> — PyPI / OSV</div>
-          <div><span class="cve__ok">●</span><b>Safety</b> — pyup.io safety DB</div>
-          <div><span class="cve__ok">●</span><b>Trivy</b> — GHSA / TSL / NVD</div>
-          <div><span class="cve__ok">●</span><b>CodeQL</b> — GitHub code scanning</div>
-          <div><span class="cve__ok">●</span><b>Semgrep</b> — OWASP / secrets / Python</div>
-          <div><span class="cve__ok">●</span><b>Dependabot</b> — weekly auto-PRs</div>
-        </div>
-
-        <p class="note">Container images are built for <code>linux/amd64</code> and <code>linux/arm64</code> (Jetson / RPi), signed with SLSA-style provenance, and tagged automatically on every push. See <a href="https://github.com/jatinkray/localsight/blob/main/docs/operations/ci-cd-pipeline.md" target="_blank" rel="noopener">docs/operations/ci-cd-pipeline.md</a>.</p>
       </div>
     </section>
 
@@ -396,8 +367,8 @@
             <li><b>SSRF guard.</b> Camera, webhook, and ONVIF egress are blocked to private / loopback / metadata destinations unless allow-listed.</li>
             <li><b>Per-route alert cooldown.</b> Suppresses alert storms — one page per (channel × rule × camera) per window.</li>
             <li><b>Immutable audit log.</b> Every sensitive action — camera changes, alert routes, live-ticket issuance, video clip exports — is recorded.</li>
+            <li><b>Verifiable by design.</b> The whole platform is open source — security claims don't have to be taken on faith, they can be read.</li>
             <li><b>Bounded retention.</b> A worker sweeper auto-expires recordings, events, snapshots, and embeddings on schedules you control.</li>
-            <li><b>Free supply-chain security.</b> The CI pipeline catches vulnerable deps and SAST issues using only free-tier tools (pip-audit, Safety, Trivy, CodeQL, Semgrep).</li>
           </ul>
         </div>
         <aside class="privacy__panel">
@@ -409,6 +380,35 @@
           <div class="kv"><span>Dep. vulnerabilities</span><b class="ok">CI-blocked</b></div>
           <div class="kv"><span>Deployment</span><b class="ok">Self-hosted</b></div>
         </aside>
+      </div>
+    </section>
+
+    <!-- OPEN SOURCE -->
+    <section class="section" id="opensource">
+      <div class="container">
+        <header class="section__head">
+          <span class="eyebrow">The soul of it</span>
+          <h2>Open source isn't a feature. It's the point.</h2>
+          <p>Surveillance software watches people. The people running it deserve to know exactly what the software does — line by line, packet by packet. That's only possible when the code is public.</p>
+        </header>
+        <div class="grid grid--3">
+          <article class="card">
+            <div class="card__icon">📖</div>
+            <h3>Read every line</h3>
+            <p>MIT-licensed on GitHub. Audit the detection path, the encryption, the alert fan-out yourself — or hire anyone to. No trust required beyond your own review.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">🔧</div>
+            <h3>Own your stack</h3>
+            <p>Self-host on a mini-PC or a rack server; Docker Compose or bare metal. Your cameras, your storage, your rules — enforced by RBAC and an immutable audit log.</p>
+          </article>
+          <article class="card">
+            <div class="card__icon">🛡️</div>
+            <h3>Prove it works</h3>
+            <p>The repo ships its own evidence: a browser-level test suite — real journeys, accessibility and security gates, 140 automated checks — runs on every change. Claims you can verify beat marketing copy.</p>
+          </article>
+        </div>
+        <p class="note">Clone it, run it, judge it: <a href="https://github.com/jatinkray/localsight" target="_blank" rel="noopener">github.com/jatinkray/localsight</a> — the <a href="https://github.com/jatinkray/localsight/blob/main/docs/USER_GUIDE.md" target="_blank" rel="noopener">user guide</a> walks every screen with real screenshots.</p>
       </div>
     </section>
 
@@ -478,8 +478,8 @@ docker compose -f infrastructure/compose/docker-compose.yml --env-file .env up -
     <!-- CTA -->
     <section class="cta">
       <div class="container cta__inner">
-        <h2>Take back your surveillance stack</h2>
-        <p>Self-host LocalSight and keep every frame, plate and face on your premises.</p>
+        <h2>Your cameras already see.<br>Run the intelligence that understands.</h2>
+        <p>Self-host LocalSight and keep every frame, plate and face on your premises — MIT-licensed, no subscription, no lock-in.</p>
         <div class="hero__actions">
           <a class="btn btn--primary" href="https://github.com/jatinkray/localsight" target="_blank" rel="noopener">Star on GitHub</a>
           <a class="btn btn--ghost" href="https://github.com/jatinkray/localsight/tree/main/docs" target="_blank" rel="noopener">Read the docs</a>
@@ -507,7 +507,7 @@ docker compose -f infrastructure/compose/docker-compose.yml --env-file .env up -
           <a href="https://github.com/jatinkray/localsight/tree/main/docs/architecture" target="_blank" rel="noopener">Architecture</a>
           <a href="https://github.com/jatinkray/localsight/tree/main/docs/security" target="_blank" rel="noopener">Security</a>
           <a href="https://github.com/jatinkray/localsight/tree/main/docs/operations" target="_blank" rel="noopener">Operations</a>
-          <a href="https://github.com/jatinkray/localsight/blob/main/docs/operations/ci-cd-pipeline.md" target="_blank" rel="noopener">CI/CD</a>
+          <a href="https://github.com/jatinkray/localsight/blob/main/docs/USER_GUIDE.md" target="_blank" rel="noopener">User guide</a>
           <a href="https://github.com/jatinkray/localsight/blob/main/docs/operations/onnx-detector.md" target="_blank" rel="noopener">ONNX detector</a>
         </div>
         <div>

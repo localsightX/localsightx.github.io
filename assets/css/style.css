@@ -289,3 +289,29 @@ code { font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace; 
 /* hero screenshot: clickable, subtle lift */
 .shot-link:hover .mock--wide { box-shadow: 0 34px 90px rgba(0,0,0,.55); }
 .shot-link .mock--wide { transition: box-shadow .25s ease; }
+
+/* ── PROBLEM / COMPARE / OPEN-SOURCE ─────────────────────────────────── */
+.card--pain .card__icon { filter: none; opacity: .9; }
+.card--pain h3 { color: var(--text); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--border);
+  border-radius: var(--radius); background: var(--surface); }
+table.cmp { width: 100%; border-collapse: collapse; min-width: 640px; }
+table.cmp th, table.cmp td { padding: 13px 18px; text-align: left;
+  font-size: .92rem; border-bottom: 1px solid var(--border); }
+table.cmp thead th { font-family: "Space Grotesk", sans-serif;
+  color: var(--text); font-size: .95rem; letter-spacing: .02em; }
+table.cmp thead th:nth-child(2) { color: var(--muted); }
+table.cmp thead th:nth-child(3) { color: var(--ok); }
+table.cmp tbody th { color: var(--muted); font-weight: 500; white-space: nowrap; }
+table.cmp td { color: var(--text); }
+table.cmp td.no { color: #ff8f8f; }
+table.cmp td.yes { color: var(--ok); font-weight: 600; }
+table.cmp td.no::before { content: "✗  "; }
+table.cmp td.yes::before { content: "✓  "; }
+table.cmp tr:last-child td, table.cmp tr:last-child th { border-bottom: none; }
+
+@media (max-width: 760px) {
+  .table-wrap { margin: 0 -22px; border-left: none; border-right: none;
+    border-radius: 0; }
+}
