@@ -49,6 +49,7 @@
     <!-- HERO -->
     <section class="hero">
       <div class="hero__glow" aria-hidden="true"></div>
+      <canvas id="detfield" class="hero__field" aria-hidden="true"></canvas>
       <div class="container hero__inner">
         <div class="hero__copy">
           <span class="pill"><span class="dot"></span> Self-hosted · On-prem · Open</span>
@@ -523,6 +524,7 @@ docker compose -f infrastructure/compose/docker-compose.yml --env-file .env up -
     </div>
   </footer>
 
+  <script src="assets/js/hero-field.js" defer></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

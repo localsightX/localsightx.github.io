@@ -67,3 +67,52 @@ document.querySelectorAll('#tourTabs .tabs__btn').forEach(btn => {
     );
   });
 });
+
+
+// Product-tour auto-slider: advances every 7s with a progress ring on the
+// active tab; pauses on hover/focus within the section or after a manual
+// click (resumes after 15s idle). A11y: buttons are real tabs, rotation
+// stops entirely when the user prefers reduced motion.
+(() => {
+  const root = document.getElementById('tourTabs');
+  if (!root) return;
+  const btns = [...root.querySelectorAll('.tabs__btn')];
+  const panels = [...root.querySelectorAll('.tour-panel')];
+  const HOLD = 7000, IDLE = 15000;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let i = 0, timer = null, paused = false, resumeAt = 0, prog = 0, last = 0;
+
+  function show(n, fromAuto) {
+    i = (n + btns.length) % btns.length;
+    btns.forEach((b, k) => {
+      const on = k === i;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-selected', String(on));
+    });
+    panels.forEach((p, k) => p.classList.toggle('is-active', k === i));
+    prog = 0;
+    if (!fromAuto) { paused = true; resumeAt = Date.now() + IDLE; }
+  }
+
+  function tick(ts) {
+    if (last) {
+      const dt = ts - last;
+      if (paused && Date.now() > resumeAt) paused = false;
+      if (!paused) {
+        prog += dt;
+        const b = btns[i];
+        if (b) b.style.setProperty('--p', String(Math.min(1, prog / HOLD)));
+        if (prog >= HOLD) show(i + 1, true);
+      }
+    }
+    last = ts;
+    requestAnimationFrame(tick);
+  }
+
+  btns.forEach((b, k) => b.addEventListener('click', () => show(k, false)));
+  root.addEventListener('pointerenter', () => { paused = true; });
+  root.addEventListener('pointerleave', () => { resumeAt = Date.now() + 250; paused = false; });
+  root.addEventListener('focusin', () => { paused = true; resumeAt = Date.now() + IDLE; });
+
+  if (!reduced.matches) { show(0, true); requestAnimationFrame(tick); }
+})();

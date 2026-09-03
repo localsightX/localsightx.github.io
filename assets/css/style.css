@@ -315,3 +315,24 @@ table.cmp tr:last-child td, table.cmp tr:last-child th { border-bottom: none; }
   .table-wrap { margin: 0 -22px; border-left: none; border-right: none;
     border-radius: 0; }
 }
+
+/* ── HERO DETECTION FIELD ──────────────────────────────────────────────── */
+.hero { position: relative; }
+.hero__field {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: auto; opacity: .9;
+}
+.hero .container { position: relative; z-index: 1; pointer-events: none; }
+.hero .container a, .hero .container button,
+.hero .container input, .hero .container [role="button"] { pointer-events: auto; }
+.hero__glow { z-index: 0; }
+
+/* ── TOUR AUTO-SLIDER PROGRESS ────────────────────────────────────────── */
+.tabs__bar--tour .tabs__btn { position: relative; overflow: hidden; }
+.tabs__bar--tour .tabs__btn::after {
+  content: ""; position: absolute; left: 0; bottom: 0; height: 2px;
+  width: 100%; transform: scaleX(var(--p, 0)); transform-origin: left;
+  background: linear-gradient(90deg, var(--accent), var(--accent-3, #7de8b2));
+  opacity: .9;
+}
+.tabs__bar--tour .tabs__btn.is-active::after { opacity: 1; }
