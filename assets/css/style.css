@@ -415,11 +415,17 @@ table.cmp tr:last-child td, table.cmp tr:last-child th { border-bottom: none; }
 @media (max-width: 720px) { .msticky { display: block; } }
 
 /* ── TOUR CAROUSEL (one shot per slide) ────────────────────────────────── */
+/* `margin: 0` on .slide is load-bearing: slides are <figure>s (for valid
+   <figcaption>), and the UA default `figure { margin: 1em 40px }` adds 80px
+   to each slide's stride. translateX(-i*100%) advances by container width
+   (980px) while the flex track then spaces slides 1060px apart, so every
+   slide lands progressively off-center and the last sits ~880px past its
+   slot with the previous slide peeking into frame. */
 .carousel { position: relative; max-width: 980px; margin: 0 auto; }
 .car-track { overflow: hidden; border-radius: 12px; }
 .slides { display: flex; transition: transform .45s cubic-bezier(.4,0,.2,1);
   margin: 0; }
-.slide { flex: 0 0 100%; position: relative; border: 1px solid var(--border);
+.slide { flex: 0 0 100%; position: relative; margin: 0; border: 1px solid var(--border);
   border-radius: 12px; overflow: hidden; background: #0a0f1c;
   box-shadow: 0 18px 50px rgba(0,0,0,.38); }
 .slide img { display: block; width: 100%; height: auto; }
