@@ -71,7 +71,9 @@ document.querySelectorAll('#tourTabs .tabs__btn').forEach(btn => {
 
 
 // Product-tour carousel: one screenshot per slide, dots + arrows + swipe,
-// auto-advance 5s (paused on hover/focus/manual use; off under reduced motion).
+// auto-advance 5s. Rotation pauses while the visitor interacts and resumes
+// after an idle window — engagement is DERIVED from live state each tick
+// (hover or focus inside), never a sticky flag, so it can never deadlock.
 (() => {
   const root = document.getElementById('tourCarousel');
   if (!root) return;
@@ -82,15 +84,16 @@ document.querySelectorAll('#tourTabs .tabs__btn').forEach(btn => {
   const next = root.querySelector('.car-next');
   const HOLD = 5000, IDLE = 12000;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let i = 0, timer = null, auto = !reduced.matches, lastUse = 0;
+  let i = 0, timer = null, lastUse = 0;
 
-  // dots
+  const occupied = () => root.matches(':hover') || root.contains(document.activeElement);
+
   slides.forEach((_, k) => {
     const d = document.createElement('button');
     d.type = 'button';
     d.setAttribute('role', 'tab');
     d.setAttribute('aria-label', `Screenshot ${k + 1} of ${slides.length}`);
-    d.addEventListener('click', () => { go(k); user(); });
+    d.addEventListener('click', (e) => { go(k); used(e); });
     dotsEl.appendChild(d);
   });
   const dots = [...dotsEl.children];
@@ -105,39 +108,47 @@ document.querySelectorAll('#tourTabs .tabs__btn').forEach(btn => {
     slides.forEach((s, k) => s.setAttribute('aria-hidden', String(k !== i)));
   }
 
-  function user() { auto = false; lastUse = Date.now(); }
+  function used(e) {
+    lastUse = Date.now();
+    // Pointer-activated controls release focus so keyboard users don't lose
+    // their place but rotation isn't held hostage by a clicked button.
+    if (e && e.currentTarget && e.detail !== 0) e.currentTarget.blur();
+  }
 
-  prev.addEventListener('click', () => { go(i - 1); user(); });
-  next.addEventListener('click', () => { go(i + 1); user(); });
+  prev.addEventListener('click', (e) => { go(i - 1); used(e); });
+  next.addEventListener('click', (e) => { go(i + 1); used(e); });
 
-  root.addEventListener('pointerenter', () => { auto = false; });
-  root.addEventListener('pointerleave', () => { if (Date.now() - lastUse > IDLE) auto = !reduced.matches; });
-  root.addEventListener('focusin', () => { auto = false; });
-
-  // keyboard on the carousel region
   root.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') { go(i - 1); user(); e.preventDefault(); }
-    if (e.key === 'ArrowRight') { go(i + 1); user(); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { go(i - 1); used(); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { go(i + 1); used(); e.preventDefault(); }
   });
 
-  // touch swipe
   let x0 = null;
-  root.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; user(); }, { passive: true });
+  root.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; lastUse = Date.now(); }, { passive: true });
   root.addEventListener('touchend', (e) => {
     if (x0 === null) return;
     const dx = e.changedTouches[0].clientX - x0;
-    if (Math.abs(dx) > 40) go(dx < 0 ? i + 1 : i - 1);
+    if (Math.abs(dx) > 40) { go(dx < 0 ? i + 1 : i - 1); lastUse = Date.now(); }
     x0 = null;
   }, { passive: true });
 
   function tick() {
-    if (auto && Date.now() - lastUse > IDLE) auto = !reduced.matches;
-    if (auto) go(i + 1);
-    timer = setTimeout(tick, auto ? HOLD : 1500);
+    clearTimeout(timer);
+    if (!reduced.matches && !occupied() && Date.now() - lastUse > IDLE) {
+      go(i + 1);                      // idle + unattended -> rotate
+      timer = setTimeout(tick, HOLD);
+    } else {
+      timer = setTimeout(tick, 1200); // busy or cooling down -> re-check soon
+    }
   }
 
+  document.addEventListener('visibilitychange', () => {
+    clearTimeout(timer);
+    if (!document.hidden) timer = setTimeout(tick, 800);
+  });
+
   go(0);
-  if (!reduced.matches) timer = setTimeout(tick, HOLD);
+  if (!reduced.matches) timer = setTimeout(tick, HOLD); else go(0);
 })();
 
 
