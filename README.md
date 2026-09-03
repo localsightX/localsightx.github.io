@@ -2,7 +2,7 @@
 
 The public website for **LocalSight**, a local-first, privacy-by-design video
 intelligence platform. Served via GitHub Pages at
-`https://localsight.github.io/`.
+`https://localsightx.github.io/`.
 
 ## Sections
 
