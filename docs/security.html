@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Security Architecture — LocalSight Docs</title>
+  <meta name="description" content="Authentication, RBAC, envelope encryption, audit logging, the SSRF egress guard, and AI supply-chain integrity." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Security</span>
+          <span class="sep">/</span>
+          <span>Security Architecture</span>
+        </p>
+        <h1>Security Architecture</h1>
+        <p class="lede">Authentication, RBAC, envelope encryption, audit logging, the SSRF egress guard, and AI supply-chain integrity.</p>
+        <p class="meta">
+          <span class="tag">2 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/security/SECURITY.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html">Installation & Setup</a></li>
+      <li><a href="user-guide.html">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="tplink-vigi.html">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html">Data Model (ERD)</a></li>
+      <li><a href="adr.html">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html" aria-current="page">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<p>Maps the plan's security requirements to concrete implementations in this codebase.</p>
+<h2 id="authentication">Authentication</h2>
+<ul>
+<li><strong>Argon2id</strong> password hashing (<code>packages/security/passwords.py</code>).</li>
+<li><strong>JWT access + refresh with rotation</strong>: access short-lived (15m) carries roles +
+  permissions; refresh tokens are server-side tracked, single-use, and rotate on
+  every use (<code>packages/security/jwt.py</code>, <code>routers/auth.py</code>). Replayed refreshes are
+  rejected (<code>replaced_by</code>).</li>
+<li><strong>Account lockout</strong> after <code>MAX_LOGIN_ATTEMPTS</code> (5) for <code>LOCKOUT_MINUTES</code> (15).</li>
+<li><strong>TOTP MFA</strong> (RFC 6238, stdlib-only) with step-up login; secret encrypted at rest.</li>
+<li><strong>No plaintext secrets</strong>: passwords/tokens/MFA secrets are never logged.</li>
+</ul>
+<h2 id="authorization-rbac-enforced-server-side">Authorization (RBAC, enforced server-side)</h2>
+<ul>
+<li>Roles: <code>ADMIN | SECURITY_OPERATOR | ANALYST | VIEWER</code> with atomic permissions
+  (<code>camera:view</code>, <code>person:enroll</code>, <code>video:export</code>, <code>audit:view</code>, <code>user:manage</code>, …).</li>
+<li>Enforcement via <code>require_permission(...)</code> dependency — never client-supplied.</li>
+<li>A viewer cannot enroll/delete identities; only <code>user:manage</code> can grant roles.</li>
+</ul>
+<h2 id="encryption">Encryption</h2>
+<ul>
+<li><strong>Envelope encryption</strong> (<code>packages/security/crypto.py</code>): per-record data key wrapped
+  by a KEK from env/secrets. Used for embeddings, snapshots, stream URLs, NVR creds,
+  MFA secrets. Keys are kept separate from the DB. KEK rotation supported.</li>
+<li><strong>In transit</strong>: TLS everywhere (nginx terminates; HSTS in prod). Never transmit
+  credentials over plaintext.</li>
+</ul>
+<h2 id="audit-logging">Audit logging</h2>
+<ul>
+<li>Immutable-style <code>audit_logs</code> for login, enrollment, deletion, export, config
+  changes, etc. Captures <code>user, action, resource, result, source_ip, request_id</code>.</li>
+<li>No passwords/tokens/biometrics in logs. Viewable only with <code>audit:view</code>.</li>
+</ul>
+<h2 id="ssrf-egress-guard">SSRF / egress guard</h2>
+<ul>
+<li><code>packages/security/ssrf.py</code> rejects loopback/private/link-local/metadata
+  destinations for operator-supplied camera URLs unless explicitly allow-listed.</li>
+<li>Pair with network-level egress restrictions (see threat model).</li>
+</ul>
+<h2 id="api-media-security">API &amp; media security</h2>
+<ul>
+<li>Rate limiting (per-IP token bucket), request size/timeout limits, pagination caps.</li>
+<li><strong>Path-traversal-safe storage</strong>: keys validated; no <code>../</code> escapes (<code>storage/local.py</code>).</li>
+<li><strong>Signed, expiring media URLs</strong>; no permanent public links (<code>/api/video/{key}</code>).</li>
+<li>Security headers (CSP, HSTS, X-Frame-Options, etc.) via middleware.</li>
+<li>FFmpeg invoked with <strong>structured argv, no shell</strong> → no command injection
+  (<code>packages/video/ffmpeg.py</code>).</li>
+</ul>
+<h2 id="ai-security">AI security</h2>
+<ul>
+<li>Models are dependencies: each carries name/version/hash/source/license and is
+  verified against the registry before load (<code>packages/ai/registry.py</code>).</li>
+<li>Inference isolated from public network; runs locally.</li>
+</ul>
+<h2 id="hardening-defaults">Hardening defaults</h2>
+<ul>
+<li>App refuses to boot without <code>JWT_SECRET</code>/<code>MASTER_ENCRYPTION_KEY</code>.</li>
+<li>Biometric recognition disabled by default (<code>AI_IDENTITY_RECOGNITION_ENABLED=false</code>).</li>
+<li>No automatic identity creation from footage; explicit enrollment only.</li>
+</ul>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#authentication" data-toc="authentication">Authentication</a></li>
+      <li><a class="" href="#authorization-rbac-enforced-server-side" data-toc="authorization-rbac-enforced-server-side">Authorization (RBAC, enforced server-side)</a></li>
+      <li><a class="" href="#encryption" data-toc="encryption">Encryption</a></li>
+      <li><a class="" href="#audit-logging" data-toc="audit-logging">Audit logging</a></li>
+      <li><a class="" href="#ssrf-egress-guard" data-toc="ssrf-egress-guard">SSRF / egress guard</a></li>
+      <li><a class="" href="#api-media-security" data-toc="api-media-security">API & media security</a></li>
+      <li><a class="" href="#ai-security" data-toc="ai-security">AI security</a></li>
+      <li><a class="" href="#hardening-defaults" data-toc="hardening-defaults">Hardening defaults</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

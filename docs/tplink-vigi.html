@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camera & NVR Integrations — LocalSight Docs</title>
+  <meta name="description" content="TP-Link VIGI/Tapo setup (one call provisions a whole NVR), ONVIF discovery, and multi-vendor RTSP presets." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Reference</span>
+          <span class="sep">/</span>
+          <span>Camera & NVR Integrations</span>
+        </p>
+        <h1>Camera & NVR Integrations</h1>
+        <p class="lede">TP-Link VIGI/Tapo setup (one call provisions a whole NVR), ONVIF discovery, and multi-vendor RTSP presets.</p>
+        <p class="meta">
+          <span class="tag">4 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/integrations/tplink-vigi.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html">Installation & Setup</a></li>
+      <li><a href="user-guide.html">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="tplink-vigi.html" aria-current="page">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html">Data Model (ERD)</a></li>
+      <li><a href="adr.html">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<p>LocalSight is RTSP/ONVIF-native, which is exactly what TP-Link's surveillance gear
+speaks. This document confirms compatibility and shows the native setup for TP-Link.</p>
+<h2 id="verdict">Verdict</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Device</th>
+<th>Protocols</th>
+<th>Works with LocalSight</th>
+<th>Native fit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>VIGI camera</strong> (direct)</td>
+<td>RTSP <code>stream1</code>/<code>stream2</code>, ONVIF S/G/T</td>
+<td>Yes — no code change</td>
+<td>Full</td>
+</tr>
+<tr>
+<td><strong>VIGI NVR</strong></td>
+<td>Per-channel RTSP <code>live/ch/&lt;N&gt;/stream/&lt;1|2&gt;</code>, ONVIF</td>
+<td>Yes — <code>POST /api/cameras/from-nvr</code></td>
+<td>Full (1 call provisions all channels)</td>
+</tr>
+<tr>
+<td><strong>Tapo (wired)</strong></td>
+<td>RTSP <code>stream1</code>/<code>stream2</code>, ONVIF S</td>
+<td>Yes (creds in URL)</td>
+<td>Full for wired models</td>
+</tr>
+<tr>
+<td><strong>Tapo (battery/solar)</strong></td>
+<td>—</td>
+<td>No</td>
+<td>Unsupported by TP-Link itself</td>
+</tr>
+</tbody>
+</table></div>
+<p>LocalSight maps onto TP-Link 1:1: the <strong>substream</strong> (<code>stream2</code> / channel sub) is
+used for AI (bandwidth-efficient), the <strong>main stream</strong> (<code>stream1</code>) for recording.</p>
+<h2 id="confirmed-conventions-tp-link-official-docs">Confirmed conventions (TP-Link official docs)</h2>
+<h3 id="vigi-camera-direct-attach">VIGI camera (direct attach)</h3>
+<ul>
+<li>Main: <code>rtsp://&lt;ip&gt;:554/stream1</code> · Sub: <code>rtsp://&lt;ip&gt;:554/stream2</code></li>
+<li>ONVIF port <strong>80</strong> (newer firmware) or <strong>2020</strong> (legacy); RTSP port <strong>554</strong></li>
+<li>Auth: HTTP <strong>digest</strong> (MD5 or SHA-256) — the camera's own login</li>
+<li>Enable ONVIF at <em>Settings → Network → Advanced → ONVIF</em></li>
+</ul>
+<h3 id="vigi-nvr-per-channel">VIGI NVR (per-channel)</h3>
+<ul>
+<li>Live: <code>rtsp://&lt;nvr&gt;:554/live/ch/&lt;N&gt;/stream/1</code> (main) and <code>/stream/2</code> (sub)</li>
+<li>Channel <strong>0</strong> = channel-zero overview (main only); channels <strong>1..N</strong> are cameras</li>
+<li>ONVIF port 80/2020; digest auth</li>
+<li>This is the most "native" path: add the NVR once, LocalSight ingests every channel.</li>
+</ul>
+<h3 id="tapo-wired-only">Tapo (wired only)</h3>
+<ul>
+<li>Main: <code>rtsp://&lt;user&gt;:&lt;pass&gt;@&lt;ip&gt;:554/stream1</code> · Sub: <code>.../stream2</code></li>
+<li>ONVIF port <strong>2020</strong>; credentials are a <strong>Camera Account</strong> created in the Tapo app
+  (separate from the Tapo login, 6–32 chars)</li>
+<li>Battery/solar models (C425, C460, C660, C645D, D230, …) do <strong>not</strong> support RTSP</li>
+<li>Dual-lens models: telephoto lens is <code>stream6</code>/<code>stream7</code></li>
+</ul>
+<h2 id="security-notes-important">Security notes (important)</h2>
+<ul>
+<li>TP-Link states RTSP/ONVIF are <strong>not secure</strong> and must not be exposed publicly.
+  Put cameras/NVR on an isolated VLAN; reach them only via VPN/port-forward if remote.</li>
+<li>LocalSight's <strong>SSRF egress guard blocks private/loopback/metadata by default</strong> —
+  allow-list your camera VLAN in <code>SSRF_ALLOWLIST</code> (e.g. <code>192.168.0.0/16</code>) or camera
+  adds will be rejected. This is by design.</li>
+<li>Stream URLs and NVR credentials are <strong>encrypted at rest</strong> and never returned to clients.</li>
+<li>Biometric recognition stays <strong>off by default</strong>; enable only with lawful basis.</li>
+</ul>
+<h2 id="quick-start-with-a-vigi-nvr-one-call">Quick start with a VIGI NVR (one call)</h2>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># 1) List the built-in vendor presets</span>
+curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/api/cameras/presets<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+
+<span class="c1"># 2) Provision the NVR + all 8 channels (adjust nvr_ip to your device)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/cameras/from-nvr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"nvr_ip":"192.168.1.50","nvr_name":"VIGI NVR","channel_count":8,"retention_days":7}'</span>
+<span class="c1"># =&gt; {"nvr_id": "...", "cameras": [ {id, name:"VIGI NVR ch1", main_stream, sub_stream}, ... ]}</span>
+</code></pre></div>
+
+<h2 id="adding-a-single-vigi-camera-directly">Adding a single VIGI camera directly</h2>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/cameras<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"name":"Lobby","stream_url":"rtsp://192.168.1.20:554/stream1",</span>
+<span class="s1">       "substream_url":"rtsp://192.168.1.20:554/stream2"}'</span>
+</code></pre></div>
+
+<h2 id="adding-a-wired-tapo-camera">Adding a wired Tapo camera</h2>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/cameras<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"name":"Garage","stream_url":"rtsp://tapoUser:StrongPass@192.168.1.30:554/stream1",</span>
+<span class="s1">       "substream_url":"rtsp://tapoUser:StrongPass@192.168.1.30:554/stream2"}'</span>
+</code></pre></div>
+
+<h2 id="gotchas">Gotchas</h2>
+<ul>
+<li><strong>Digest SHA-256 incompatibility</strong>: some third-party ONVIF clients fail against
+  VIGI's SHA-256 digest. FFmpeg/LocalSight handle digest fine; if ONVIF discovery
+  misbehaves, set the camera's <em>Digest Authentication Algorithm</em> to MD5/SHA256.</li>
+<li><strong>ONVIF port after firmware upgrade</strong>: older port 2020 stays open; both 80 and
+  2020 are accepted by LocalSight's presets.</li>
+<li><strong>Tapo stream limits</strong>: a camera can't do cloud + microSD + NVR simultaneously;
+  remove the microSD to keep NVR/RTSP recording.</li>
+<li><strong>No permanent public exposure</strong> — LocalSight issues signed, expiring media URLs.</li>
+</ul>
+<h2 id="beyond-tp-link-onvif-multi-vendor">Beyond TP-Link — ONVIF &amp; multi-vendor</h2>
+<p>LocalSight is not limited to TP-Link. Any RTSP/ONVIF camera works:</p>
+<ul>
+<li><strong>ONVIF discovery</strong> — <code>POST /api/cameras/onvif/discover</code> finds devices on the LAN
+  (WS-Discovery). <code>POST /api/cameras/onvif/streams</code> returns RTSP URIs for a device
+  profile. Both are SSRF-validated and audited.</li>
+<li><strong>Vendor presets</strong> — <code>GET /api/cameras/presets</code> lists URL templates for
+  <code>axis</code>, <code>hanwha</code>, <code>hikvision</code> (ISAPI), <code>dahua</code> (CGI), <code>reolink</code>, <code>bosch</code>, <code>onvif</code>,
+  and <code>gbt28181</code>. <code>POST /api/cameras/presets/build</code> constructs a <code>rtsp://</code> URL for a
+  vendor (credentials are never echoed back in the response — they are encrypted at
+  rest when the camera is created).</li>
+</ul>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># List vendor presets</span>
+curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/api/cameras/presets<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>json.tool
+
+<span class="c1"># Discover ONVIF devices</span>
+curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/cameras/onvif/discover<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"timeout":2.0}'</span>
+
+<span class="c1"># Fetch streams for one device (xaddr must be on the SSRF allowlist)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/cameras/onvif/streams<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">'{"xaddr":"http://192.168.1.5/onvif"}'</span>
+</code></pre></div>
+
+<p>For non-TP-Link cameras, add them via <code>POST /api/cameras</code> with the <code>stream_url</code> /
+<code>substream_url</code> from the preset (or ONVIF discovery), exactly as shown above for a
+single VIGI camera.</p>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#verdict" data-toc="verdict">Verdict</a></li>
+      <li><a class="" href="#confirmed-conventions-tp-link-official-docs" data-toc="confirmed-conventions-tp-link-official-docs">Confirmed conventions (TP-Link official docs)</a></li>
+      <li><a class="toc-h3" href="#vigi-camera-direct-attach" data-toc="vigi-camera-direct-attach">VIGI camera (direct attach)</a></li>
+      <li><a class="toc-h3" href="#vigi-nvr-per-channel" data-toc="vigi-nvr-per-channel">VIGI NVR (per-channel)</a></li>
+      <li><a class="toc-h3" href="#tapo-wired-only" data-toc="tapo-wired-only">Tapo (wired only)</a></li>
+      <li><a class="" href="#security-notes-important" data-toc="security-notes-important">Security notes (important)</a></li>
+      <li><a class="" href="#quick-start-with-a-vigi-nvr-one-call" data-toc="quick-start-with-a-vigi-nvr-one-call">Quick start with a VIGI NVR (one call)</a></li>
+      <li><a class="" href="#adding-a-single-vigi-camera-directly" data-toc="adding-a-single-vigi-camera-directly">Adding a single VIGI camera directly</a></li>
+      <li><a class="" href="#adding-a-wired-tapo-camera" data-toc="adding-a-wired-tapo-camera">Adding a wired Tapo camera</a></li>
+      <li><a class="" href="#gotchas" data-toc="gotchas">Gotchas</a></li>
+      <li><a class="" href="#beyond-tp-link-onvif-multi-vendor" data-toc="beyond-tp-link-onvif-multi-vendor">Beyond TP-Link — ONVIF & multi-vendor</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+# Local build tooling
+.venv/
+__pycache__/
+*.pyc
+site_shots/

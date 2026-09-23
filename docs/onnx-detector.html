@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Model Staging (ONNX) — LocalSight Docs</title>
+  <meta name="description" content="Stage detection, ANPR, face and attribute models with SHA-256 verification. Backends, GPU acceleration, and per-camera performance gates." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Operations</span>
+          <span class="sep">/</span>
+          <span>AI Model Staging (ONNX)</span>
+        </p>
+        <h1>AI Model Staging (ONNX)</h1>
+        <p class="lede">Stage detection, ANPR, face and attribute models with SHA-256 verification. Backends, GPU acceleration, and per-camera performance gates.</p>
+        <p class="meta">
+          <span class="tag">11 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/operations/onnx-detector.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html">Installation & Setup</a></li>
+      <li><a href="user-guide.html">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html" aria-current="page">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="tplink-vigi.html">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html">Data Model (ERD)</a></li>
+      <li><a href="adr.html">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<p>LocalSight's <code>Detector</code> interface is pluggable; the production-ready backend
+is <code>ONNXDetector</code>, which runs any ONNX-exported YOLO/RT-DETR model via
+<code>onnxruntime</code>. A <code>ReferenceMotionDetector</code> fallback ensures the full pipeline
+runs on CPU without a model.</p>
+<blockquote>
+<p><strong>Where do the weights live? (BYOM)</strong> The repo and the container ship
+<strong>zero</strong> model weights: <code>models/staged/</code> is gitignored and excluded from
+the Docker build context. The operator stages each artifact into
+<code>models/staged/</code> (compose mounts <code>../../models</code> read-only) and registers
+its SHA-256 in <code>models/registry.json</code>; <code>ModelRegistry.verify</code> refuses a
+hash mismatch and nothing is fetched at runtime. Until an artifact is
+staged, <code>AI_DETECTOR=onnx</code> fails closed and the pipeline logs a downgrade
+to the reference detector.</p>
+<p><strong>License duty travels with the artifact.</strong> YOLO11n exports are
+AGPL-3.0 (Ultralytics — code <em>and</em> trained weights). The InsightFace
+model-zoo checkpoints (SCRFD <code>det_500m</code>, <code>w600k_mbf</code>) are explicitly
+"available for non-commercial research purposes only" per the zoo banner;
+a commercial face-recognition deployment needs a license-cleared
+alternative. The exact strings are recorded per artifact in
+<code>models/registry.json</code>.</p>
+</blockquote>
+<h2 id="available-backends">Available backends</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Backend</th>
+<th>Runtime</th>
+<th>GPU</th>
+<th>Model file needed</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reference</code></td>
+<td>CPU (no GPU)</td>
+<td>No</td>
+<td>None (frame-differencing)</td>
+<td><code>ReferenceMotionDetector</code></td>
+</tr>
+<tr>
+<td><code>onnx</code></td>
+<td>onnxruntime</td>
+<td>CUDA when available</td>
+<td><code>.onnx</code></td>
+<td><code>ONNXDetector</code></td>
+</tr>
+<tr>
+<td><code>tensorrt</code></td>
+<td>TensorRT</td>
+<td>NVIDIA only</td>
+<td><code>.engine</code></td>
+<td><code>TensorRTDetector</code> (stub)</td>
+</tr>
+<tr>
+<td><code>openvino</code></td>
+<td>OpenVINO</td>
+<td>Intel iGPU/NPU</td>
+<td><code>.xml</code> + <code>.bin</code></td>
+<td><code>OpenVINODetector</code> (stub)</td>
+</tr>
+<tr>
+<td><code>tflite</code></td>
+<td>TFLite</td>
+<td>ARM / Coral</td>
+<td><code>.tflite</code></td>
+<td><code>TFLiteDetector</code> (stub)</td>
+</tr>
+</tbody>
+</table></div>
+<p>All backends are selected via the <code>AI_DETECTOR</code> env var. The factory in
+<code>packages/ai/detectors.py:build_detector</code> looks up the model in the
+<code>ModelRegistry</code>, verifies the SHA-256, and instantiates the backend.</p>
+<h2 id="class-labels">Class labels</h2>
+<p>The default label set is COCO-aligned and supports the common surveillance
+classes:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="n">DEFAULT_LABELS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"person"</span><span class="p">,</span> <span class="s2">"vehicle"</span><span class="p">,</span> <span class="s2">"bicycle"</span><span class="p">,</span> <span class="s2">"motorcycle"</span><span class="p">,</span> <span class="s2">"bus"</span><span class="p">,</span> <span class="s2">"truck"</span><span class="p">,</span>
+    <span class="s2">"animal"</span><span class="p">,</span> <span class="s2">"bag"</span><span class="p">,</span> <span class="s2">"package"</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div>
+
+<p>These flow into:
+- The <code>Detection.label</code> field of every detected object
+- The <code>Event.event_type</code> taxonomy in the DB
+- The behavior rules (e.g. line-crossing works for any label, not just "person")
+- The <code>event_type_breakdown</code> analytics endpoint</p>
+<h2 id="quick-start-enabling-the-onnx-detector">Quick start: enabling the ONNX detector</h2>
+<h3 id="1-stage-a-model">1. Stage a model</h3>
+<p>The ONNX detector requires a model file staged at a known path. LocalSight
+<strong>never downloads models from user-supplied URLs</strong> — operators stage them
+directly into the <code>models/</code> directory.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># 1. Create the registry config (one-time)</span>
+cat<span class="w"> </span>&gt;<span class="w"> </span>models/registry.json<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<span class="s">{</span>
+<span class="s">  "models": [</span>
+<span class="s">    {</span>
+<span class="s">      "name": "yolo11n",</span>
+<span class="s">      "version": "v1.0.0",</span>
+<span class="s">      "path": "models/yolo11n.onnx",</span>
+<span class="s">      "hash_sha256": "&lt;SHA-256 of the .onnx file&gt;",</span>
+<span class="s">      "source": "Ultralytics YOLO11 (exported to ONNX)",</span>
+<span class="s">      "license": "AGPL-3.0"</span>
+<span class="s">    }</span>
+<span class="s">  ]</span>
+<span class="s">}</span>
+<span class="s">EOF</span>
+
+<span class="c1"># 2. Copy the model file</span>
+cp<span class="w"> </span>/path/to/yolo11n.onnx<span class="w"> </span>models/yolo11n.onnx
+
+<span class="c1"># 3. Compute the hash and update the registry</span>
+sha256sum<span class="w"> </span>models/yolo11n.onnx
+<span class="c1"># Update the hash_sha256 field with the output</span>
+</code></pre></div>
+
+<p>The hash verification happens in <code>ModelRegistry.verify()</code> (line 53-56). If the
+on-disk hash doesn't match the registry, <code>build_detector()</code> raises a
+<code>RuntimeError</code> and the worker fails to start the camera — this is by design.</p>
+<h3 id="2-configure-the-worker">2. Configure the worker</h3>
+<p>Set the following env vars in <code>.env</code>:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># Use the ONNX backend</span>
+<span class="nv">AI_DETECTOR</span><span class="o">=</span>onnx
+
+<span class="c1"># Point at the staged model</span>
+<span class="nv">AI_MODEL_NAME</span><span class="o">=</span>yolo11n
+<span class="nv">AI_MODEL_VERSION</span><span class="o">=</span>v1.0.0
+
+<span class="c1"># Inference cadence (frames per second on the substream)</span>
+<span class="nv">AI_INFERENCE_FPS</span><span class="o">=</span><span class="m">5</span>
+
+<span class="c1"># Min confidence (0.0–1.0)</span>
+<span class="nv">AI_CONFIDENCE_THRESHOLD</span><span class="o">=</span><span class="m">0</span>.45
+
+<span class="c1"># Min IOU for the tracker</span>
+<span class="nv">AI_IOU_THRESHOLD</span><span class="o">=</span><span class="m">0</span>.50
+</code></pre></div>
+
+<h3 id="3-restart-the-worker">3. Restart the worker</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>python<span class="w"> </span>-m<span class="w"> </span>apps.worker
+</code></pre></div>
+
+<p>On first frame, you'll see <code>ONNXDetector</code> initialize the inference session:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>INFO  localsight.worker  starting pipeline for camera cam1 (Lobby)
+</code></pre></div>
+
+<h3 id="4-verify-detection-is-working">4. Verify detection is working</h3>
+<p>Within a few seconds, the timeline should populate with new events. Check:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># Recent events for the camera</span>
+curl<span class="w"> </span><span class="s2">"http://localhost:8000/api/events?camera_id=</span><span class="nv">$CAM</span><span class="s2">&amp;limit=10"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"items": [{"event_type": "presence", "confidence": 0.87, ...}], ...}</span>
+
+<span class="c1"># Event-type breakdown (multi-class proof)</span>
+curl<span class="w"> </span><span class="s2">"http://localhost:8000/api/analytics/breakdown"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"rows": [</span>
+<span class="c1">#       {"event_type": "presence", "count": 412},</span>
+<span class="c1">#       {"event_type": "intrusion", "count": 23},</span>
+<span class="c1">#       {"event_type": "line_cross", "count": 156}</span>
+<span class="c1">#     ]}</span>
+</code></pre></div>
+
+<h2 id="gpu-acceleration">GPU acceleration</h2>
+<p><code>ONNXDetector</code> automatically uses GPU when <code>onnxruntime-gpu</code> is installed and
+a CUDA-capable GPU is present. The session is created with
+<code>providers=("CUDAExecutionProvider", "CPUExecutionProvider")</code> so onnxruntime
+selects CUDA first, falling back to CPU if the GPU is unavailable.</p>
+<p>To enable GPU:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>onnxruntime-gpu
+</code></pre></div>
+
+<p>Verify the GPU is visible:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import onnxruntime as ort; print(ort.get_available_providers())"</span>
+<span class="c1"># =&gt; ['CUDAExecutionProvider', 'CPUExecutionProvider']</span>
+</code></pre></div>
+
+<p>CPU inference works on the same code path — there's no separate config knob.</p>
+<h2 id="use-cases">Use cases</h2>
+<h3 id="use-case-1-person-vehicle-counting-at-a-parking-entrance">Use case 1: Person + vehicle counting at a parking entrance</h3>
+<p>A logistics yard needs to count cars entering and exiting. The default COCO
+labels cover "car" → mapped to "vehicle" via the alias table. The behavior
+rule engine emits a <code>line_cross</code> event for every car crossing the gate line.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># 1. Configure the line-cross rule on the entrance camera</span>
+curl<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span>http://localhost:8000/api/cameras/<span class="nv">$CAM</span>/rules<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"rules": [</span>
+<span class="s1">    {"type": "line_cross", "rule_id": "entrance-line",</span>
+<span class="s1">     "a": [0.5, 0.0], "b": [0.5, 1.0], "direction": 1}</span>
+<span class="s1">  ]}'</span>
+
+<span class="c1"># 2. Query the count</span>
+curl<span class="w"> </span><span class="s2">"http://localhost:8000/api/analytics/people-count?camera_id=</span><span class="nv">$CAM</span><span class="s2">&amp;start=...&amp;end=..."</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+
+<h3 id="use-case-2-loitering-detection-at-a-retail-doorway">Use case 2: Loitering detection at a retail doorway</h3>
+<p>A retail store wants to know how long customers linger near the entrance.
+Loitering is a built-in rule that fires when an object stays inside a
+polygon for <code>dwell_sec</code> seconds.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"loitering"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"rule_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"entryway-loiter"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"zone"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">]],</span>
+<span class="w">      </span><span class="nt">"dwell_sec"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="use-case-3-intrusion-in-a-no-go-zone">Use case 3: Intrusion in a no-go zone</h3>
+<p>A server room has a restricted zone. A multi-class detector can distinguish
+"person" (genuine intrusion) from "animal" (a cat) to reduce false alerts.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"intrusion"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"rule_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"server-room-zone"</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">"zone"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="mf">0.2</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">0.8</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">0.8</span><span class="p">]]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>The alert route filters on <code>event_type == "intrusion"</code> to avoid cat-triggered
+pages.</p>
+<h2 id="architectural-details">Architectural details</h2>
+<h3 id="preprocessing-pipeline">Preprocessing pipeline</h3>
+<p><code>_RuntimeDetector._preprocess</code> performs letterbox-free resize + CHW float
+conversion. The default expects:
+- Input shape <code>(H, W, 3)</code> in RGB uint8
+- Output shape <code>(1, 3, H', W')</code> in float32, normalized to [0, 1]</p>
+<p>For YOLO models, the input resolution is <code>in_hw=(640, 640)</code> by default and
+can be tuned via the <code>ONNXDetector.__init__</code> args.</p>
+<h3 id="output-postprocessing">Output postprocessing</h3>
+<p><code>postprocess_yolo()</code> (in <code>packages/ai/detectors.py:56-101</code>) converts the
+raw YOLO output tensor (shape <code>[1, N, 5 + num_classes]</code>) into a list of
+<code>Detection</code> objects:</p>
+<ol>
+<li><strong>Per-class argmax + threshold</strong>: for each row, pick the class with the
+   highest score; drop rows below <code>conf_thr</code>.</li>
+<li><strong>Coordinate conversion</strong>: model-pixel <code>x, y, w, h</code> (center) → frame-normalized
+   <code>(x, y, w, h)</code> (top-left).</li>
+<li><strong>NMS</strong>: pure-Python non-maximum suppression with <code>iou_thr=0.45</code> (tunable).</li>
+</ol>
+<p>Bounding boxes in the output are <strong>normalized [0, 1]</strong>: <code>(x, y, w, h)</code> where
+<code>(x, y)</code> is the top-left corner. This matches the rest of the pipeline.</p>
+<h3 id="pure-logic-testability">Pure-logic testability</h3>
+<p>The detector is split into pure functions (<code>iou</code>, <code>nms</code>, <code>postprocess_yolo</code>,
+<code>_preprocess</code>, <code>_decode</code>) and side-effect-bearing methods (<code>_ensure_session</code>,
+<code>_infer</code>). The pure functions are covered by 8 dedicated tests in
+<code>tests/test_surveillance.py</code>:</p>
+<ul>
+<li><code>test_iou_and_nms</code> — IoU math + NMS suppression</li>
+<li><code>test_postprocess_yolo_synthetic</code> — full YOLO-output → Detection roundtrip</li>
+<li><code>test_postprocess_yolo_rejects_low_conf</code> — confidence thresholding</li>
+<li><code>test_postprocess_yolo_nms_removes_overlap</code> — NMS in action</li>
+<li><code>test_onnx_detector_lazy_session</code> — <code>onnxruntime</code> import is deferred</li>
+<li><code>test_runtime_detector_preprocess_and_decode</code> — preprocessing + RGB24 decode</li>
+<li><code>test_build_detector_unknown_backend</code> — error handling</li>
+<li><code>test_build_detector_tensorrt_not_installed</code> — runtime-not-installed path</li>
+</ul>
+<p>Tests run without <code>onnxruntime</code> or <code>numpy</code> installed in the venv; they mock
+the imports at the <code>sys.modules</code> level.</p>
+<h2 id="operational-guidance">Operational guidance</h2>
+<h3 id="choosing-a-model">Choosing a model</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Size</th>
+<th>Speed (RTX 3060)</th>
+<th>mAP@50-95</th>
+<th>Recommended for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>YOLOv8n (640)</td>
+<td>12 MB</td>
+<td>8 ms/frame</td>
+<td>37.3</td>
+<td>Edge / Jetson</td>
+</tr>
+<tr>
+<td>YOLOv8s (640)</td>
+<td>22 MB</td>
+<td>12 ms/frame</td>
+<td>44.9</td>
+<td>Balance</td>
+</tr>
+<tr>
+<td>YOLOv8m (640)</td>
+<td>52 MB</td>
+<td>25 ms/frame</td>
+<td>50.2</td>
+<td>Accuracy</td>
+</tr>
+<tr>
+<td>YOLOv11n (640)</td>
+<td>5 MB</td>
+<td>5 ms/frame</td>
+<td>39.5</td>
+<td>Newest edge</td>
+</tr>
+<tr>
+<td>RT-DETR-R50 (640)</td>
+<td>85 MB</td>
+<td>35 ms/frame</td>
+<td>53.1</td>
+<td>High accuracy</td>
+</tr>
+</tbody>
+</table></div>
+<p>For surveillance, <strong>YOLOv8s</strong> or <strong>YOLOv11n</strong> are good starting points.</p>
+<h3 id="int8-quantization-for-edge">INT8 quantization for edge</h3>
+<p>For Jetson / Coral deployment, convert the ONNX model to INT8 using
+<code>onnxruntime.quantization.quantize_dynamic</code>:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">onnxruntime.quantization</span><span class="w"> </span><span class="kn">import</span> <span class="n">quantize_dynamic</span><span class="p">,</span> <span class="n">QuantType</span>
+<span class="n">quantize_dynamic</span><span class="p">(</span>
+    <span class="s2">"models/yolo11n.onnx"</span><span class="p">,</span>
+    <span class="s2">"models/yolo11n_int8.onnx"</span><span class="p">,</span>
+    <span class="n">weight_type</span><span class="o">=</span><span class="n">QuantType</span><span class="o">.</span><span class="n">QInt8</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+<p>Typically 2-2.5x speedup with &lt; 1% mAP drop. Update the registry entry with
+the new file path and hash.</p>
+<p>Record the artifact as quantized so the bench report and the registry are
+self-describing (never infer quantization from a filename):</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>python<span class="w"> </span>scripts/stage_model.py<span class="w"> </span>--name<span class="w"> </span>detector_int8<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--path<span class="w"> </span>models/staged/yolo11n_int8.onnx<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source<span class="w"> </span><span class="s2">"operator INT8 export of yolo11n-detect.onnx"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--license<span class="w"> </span><span class="s2">"AGPL-3.0 (Ultralytics YOLO11n, COCO-pretrained)"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--quantized
+</code></pre></div>
+
+<p>Then select it with <code>AI_MODEL_NAME=detector_int8</code>. For static-shape INT8,
+export with a fixed 1x3x384x640 input (<code>onnxruntime.quantization.
+quantize_static</code> + a small calibration set of frames from the target cameras)
+— dynamic quantization is the pragmatic default, static is the fastest.</p>
+<h3 id="choosing-between-yolo11n-and-yolo26n">Choosing between YOLO11n and YOLO26n</h3>
+<p>Both are staged the same way; only the upstream export differs.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># Operator-side export (their AGPL duty, their choice of runner), then:</span>
+python<span class="w"> </span>scripts/stage_model.py<span class="w"> </span>--name<span class="w"> </span>detector_yolo26<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--path<span class="w"> </span>models/staged/yolo26n.onnx<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source<span class="w"> </span><span class="s2">"https://github.com/ultralytics/assets (yolo26n export)"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--license<span class="w"> </span><span class="s2">"AGPL-3.0 (Ultralytics YOLO26n, COCO-pretrained)"</span>
+<span class="c1"># AI_MODEL_NAME=detector_yolo26</span>
+</code></pre></div>
+
+<p>Notes that matter in this codebase:</p>
+<ul>
+<li><strong>Export <code>nms=False</code></strong> (YOLO26's end-to-end head). The decoder in
+  <code>packages/ai/detectors.py</code> detects the <code>(batch, max_det, 6)</code> layout and uses
+  <code>postprocess_yolo_e2e</code> (no NMS pass, FP32-safe class ids) — measurably the
+  cheapest decode we measure (<code>e2e_decode_ms</code> in the bench report).</li>
+<li>A classic <code>nms=True</code> export still works: both the row-major and the
+  transposed v8/v11/v26 heads are auto-detected and decoded by
+  <code>postprocess_yolo</code>.</li>
+<li>YOLO26n is the better default for CPU-only edge boxes (reported ~40 % faster
+  CPU latency than YOLO11n at equal or better COCO mAP) and its STAL label
+  assignment improves small/far-field objects — the long-corridor case where a
+  640×360 substream is weakest.</li>
+<li>Model weights are <strong>not</strong> committed to this repository: they are
+  operator-staged and hash-verified (AGPL-3.0 covered — see the license table
+  at the top of this document).</li>
+</ul>
+<h3 id="reverting-to-the-reference-detector">Reverting to the reference detector</h3>
+<p>If the ONNX model is misbehaving or you want to test without GPU, set:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="nv">AI_DETECTOR</span><span class="o">=</span>reference
+</code></pre></div>
+
+<p>The <code>ReferenceMotionDetector</code> runs without any model download and uses pure
+NumPy frame-differencing. It's intentionally less accurate — use it as a
+sanity check, not production.</p>
+<h3 id="failure-modes">Failure modes</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RuntimeError: model detector@latest failed integrity check</code></td>
+<td>Hash mismatch in registry</td>
+<td>Recompute <code>sha256sum</code> on the model file</td>
+</tr>
+<tr>
+<td><code>RuntimeError: onnxruntime is not installed</code></td>
+<td>Missing dep</td>
+<td><code>pip install onnxruntime</code> (or <code>onnxruntime-gpu</code>)</td>
+</tr>
+<tr>
+<td><code>RuntimeError: unknown AI_DETECTOR backend</code></td>
+<td>Typo in <code>AI_DETECTOR</code></td>
+<td>Use <code>reference</code>, <code>onnx</code>, <code>tensorrt</code>, <code>openvino</code>, or <code>tflite</code></td>
+</tr>
+<tr>
+<td>Camera <code>OFFLINE</code> after switching to ONNX</td>
+<td>Worker can't init session</td>
+<td>Check worker logs; verify <code>models/</code> is mounted in Docker</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="staging-the-anpr-chain-plate_detector-plate_ocr">Staging the ANPR chain (plate_detector + plate_ocr)</h2>
+<p>ANPR is opt-in (<code>AI_ANPR_ENABLED=1</code>). With no staged models the pipeline logs a
+downgrade and uses the reference chain (honest placeholder). The production
+chain is two operator-staged, hash-verified ONNX models:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Registry name</th>
+<th>Artifact</th>
+<th>Suggested source</th>
+<th>License class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plate_detector</code></td>
+<td>single-class YOLO detect export ("plate")</td>
+<td>operator fine-tune (e.g. CCPD/Open-Images-derived)</td>
+<td>verify per artifact</td>
+</tr>
+<tr>
+<td><code>plate_ocr</code></td>
+<td>CTC (CRNN/SVTR) recognizer, input <code>1×3×48×W</code></td>
+<td>PaddleOCR PP-OCRv4 rec export (convention built in: /255 → (x−0.5)/0.5, BGR, h=48, width ≤320 pad-right)</td>
+<td><strong>Apache-2.0</strong></td>
+</tr>
+<tr>
+<td><code>plate_charset</code> (optional)</td>
+<td>text file, one char per line, blank at CTC index 0</td>
+<td>from the OCR training dict</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>python<span class="w"> </span>scripts/stage_model.py<span class="w"> </span>--name<span class="w"> </span>plate_detector<span class="w"> </span>--path<span class="w"> </span>models/staged/plate-det.onnx<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source<span class="w"> </span><span class="s2">"operator-trained YOLO plate detector"</span><span class="w"> </span>--license<span class="w"> </span><span class="s2">"see artifact"</span>
+python<span class="w"> </span>scripts/stage_model.py<span class="w"> </span>--name<span class="w"> </span>plate_ocr<span class="w"> </span>--path<span class="w"> </span>models/staged/ppocr-rec.onnx<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source<span class="w"> </span><span class="s2">"PaddleOCR PP-OCRv4 rec (ONNX export)"</span><span class="w"> </span>--license<span class="w"> </span><span class="s2">"Apache-2.0"</span>
+</code></pre></div>
+
+<p>Both must verify (hash match) or the factory downgrades. CTC decode is greedy
+over the argmax sequence (blank=0, repeats collapsed). Privacy: plate text is
+envelope-encrypted (<code>plate_enc</code>); the searchable index is an <strong>HMAC-SHA256
+bound to the master key</strong> (<code>plate_hash</code>) — never a bare SHA-256, which a
+stolen DB could brute-force over the tiny plate keyspace.</p>
+<h2 id="staging-the-attribute-chain-attribute_encoder-attribute_prompts">Staging the attribute chain (attribute_encoder + attribute_prompts)</h2>
+<p>Clothing attributes ("jacket", hi-vis, colors, backpack, hat) are CLIP
+zero-shot: person-track crops are embedded by a staged CLIP image-encoder ONNX
+and compared against prompt vectors generated <strong>once</strong> from the same
+checkpoint (MIT-licensed OpenAI CLIP ViT-B/32 is a known-good source). The
+vocabulary is an operator-editable JSON — new attributes need no retraining.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Registry name</th>
+<th>Artifact</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>attribute_encoder</code></td>
+<td>CLIP image encoder, ONNX, 224×224 input</td>
+<td>normalization baked to CLIP means/std</td>
+</tr>
+<tr>
+<td><code>attribute_prompts</code></td>
+<td><code>{"image_encoder_sha256": …, "groups": [{"group": "jacket", "items": [{"text", "label", "vector"}]}]}</code></td>
+<td>vectors L2-normalized at load; the loader <strong>refuses a checkpoint/embedding mismatch</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Generate the prompt vectors once, operator-side (the AGPL/MS-licensing of the
+training environment is the operator's choice, LocalSight ships neither code
+nor weights):</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span><span class="o">,</span><span class="w"> </span><span class="nn">open_clip</span>   <span class="c1"># example: open_clip (Apache-2.0)</span>
+<span class="n">model</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">open_clip</span><span class="o">.</span><span class="n">create_model_and_transforms</span><span class="p">(</span><span class="s2">"ViT-B-32"</span><span class="p">,</span> <span class="n">pretrained</span><span class="o">=</span><span class="s2">"openai"</span><span class="p">)</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">open_clip</span><span class="o">.</span><span class="n">get_tokenizer</span><span class="p">(</span><span class="s2">"ViT-B-32"</span><span class="p">)</span>
+<span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"a photo of a person wearing a jacket"</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>  <span class="c1"># keep groups aligned</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode_text</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">(</span><span class="n">texts</span><span class="p">))</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="n">v</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</code></pre></div>
+
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>python<span class="w"> </span>scripts/stage_model.py<span class="w"> </span>--name<span class="w"> </span>attribute_encoder<span class="w"> </span>--path<span class="w"> </span>models/staged/clip-image-enc.onnx<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source<span class="w"> </span><span class="s2">"CLIP ViT-B/32 image encoder"</span><span class="w"> </span>--license<span class="w"> </span><span class="s2">"MIT"</span>
+python<span class="w"> </span>scripts/stage_model.py<span class="w"> </span>--name<span class="w"> </span>attribute_prompts<span class="w"> </span>--path<span class="w"> </span>models/staged/attribute_prompts.json<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source<span class="w"> </span><span class="s2">"prompt embeddings from the same checkpoint"</span><span class="w"> </span>--license<span class="w"> </span><span class="s2">"MIT"</span>
+</code></pre></div>
+
+<h2 id="performance-gates-per-camera-frame-budget-at-ai_inference_fps5">Performance gates (per-camera frame budget at <code>AI_INFERENCE_FPS=5</code>)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>When</th>
+<th>Cost control</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object detect</td>
+<td>every sampled frame</td>
+<td>motion gate (<code>AI_MOTION_GATE_ENABLED</code>), substream only</td>
+</tr>
+<tr>
+<td>Face chain (SCRFD+ArcFace)</td>
+<td>per person track ≤ every 2 s</td>
+<td><strong>far-field gate</strong>: bbox height &lt; 0.06 skips the whole chain</td>
+</tr>
+<tr>
+<td>ANPR (det+OCR)</td>
+<td>per vehicle track ≤ every 5 s</td>
+<td>vehicle-only, event emitted on plate change</td>
+</tr>
+<tr>
+<td>Attribute tagging</td>
+<td>per person track ≤ every 5 s</td>
+<td>person-only, bbox height ≥ 0.08</td>
+</tr>
+</tbody>
+</table></div>
+<p>All chains log a downgrade (reference fallback) instead of failing the camera
+— optional capabilities degrade loudly, the object detector fails closed.</p>
+<h2 id="durability-notes">Durability notes</h2>
+<ul>
+<li>SQLite (dev): WAL + <code>synchronous=NORMAL</code> — API reads never block behind
+  worker commits; commits survive app crashes. PostgreSQL is the prod answer.</li>
+<li><code>tracks.detail</code> (attribute tags) is additive via <code>bootstrap._ensure_columns</code>
+  and lives in JSON — swept with tracks/events by the retention sweep.</li>
+<li><code>plate_hash</code> tokens are master-key-bound; rotating
+  <code>MASTER_ENCRYPTION_KEY</code> invalidates existing hashes (re-index event).</li>
+</ul>
+<h2 id="security">Security</h2>
+<p>The ModelRegistry verifies SHA-256 of every model before load. This prevents:
+- <strong>Tampering</strong>: an attacker replacing the model file with a backdoored variant
+- <strong>Supply-chain attacks</strong>: an unauthorized model being silently swapped in</p>
+<p>A <code>trivy image</code> scan in CI also catches vulnerable Python packages in the
+container image that the ONNX runtime depends on.</p>
+<h2 id="future-onnx-profile-m-compliance">Future: ONNX Profile M compliance</h2>
+<p>LocalSight's <code>Event</code> shape and <code>Detector</code> output are ONVIF Profile M
+compatible (normalized bboxes, typed events with confidence + duration). The
+profile compliance doc is forthcoming under <code>docs/integrations/onvif-m.md</code>.</p>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#available-backends" data-toc="available-backends">Available backends</a></li>
+      <li><a class="" href="#class-labels" data-toc="class-labels">Class labels</a></li>
+      <li><a class="" href="#quick-start-enabling-the-onnx-detector" data-toc="quick-start-enabling-the-onnx-detector">Quick start: enabling the ONNX detector</a></li>
+      <li><a class="toc-h3" href="#1-stage-a-model" data-toc="1-stage-a-model">1. Stage a model</a></li>
+      <li><a class="toc-h3" href="#2-configure-the-worker" data-toc="2-configure-the-worker">2. Configure the worker</a></li>
+      <li><a class="toc-h3" href="#3-restart-the-worker" data-toc="3-restart-the-worker">3. Restart the worker</a></li>
+      <li><a class="toc-h3" href="#4-verify-detection-is-working" data-toc="4-verify-detection-is-working">4. Verify detection is working</a></li>
+      <li><a class="" href="#gpu-acceleration" data-toc="gpu-acceleration">GPU acceleration</a></li>
+      <li><a class="" href="#use-cases" data-toc="use-cases">Use cases</a></li>
+      <li><a class="toc-h3" href="#use-case-1-person-vehicle-counting-at-a-parking-entrance" data-toc="use-case-1-person-vehicle-counting-at-a-parking-entrance">Use case 1: Person + vehicle counting at a parking entrance</a></li>
+      <li><a class="toc-h3" href="#use-case-2-loitering-detection-at-a-retail-doorway" data-toc="use-case-2-loitering-detection-at-a-retail-doorway">Use case 2: Loitering detection at a retail doorway</a></li>
+      <li><a class="toc-h3" href="#use-case-3-intrusion-in-a-no-go-zone" data-toc="use-case-3-intrusion-in-a-no-go-zone">Use case 3: Intrusion in a no-go zone</a></li>
+      <li><a class="" href="#architectural-details" data-toc="architectural-details">Architectural details</a></li>
+      <li><a class="toc-h3" href="#preprocessing-pipeline" data-toc="preprocessing-pipeline">Preprocessing pipeline</a></li>
+      <li><a class="toc-h3" href="#output-postprocessing" data-toc="output-postprocessing">Output postprocessing</a></li>
+      <li><a class="toc-h3" href="#pure-logic-testability" data-toc="pure-logic-testability">Pure-logic testability</a></li>
+      <li><a class="" href="#operational-guidance" data-toc="operational-guidance">Operational guidance</a></li>
+      <li><a class="toc-h3" href="#choosing-a-model" data-toc="choosing-a-model">Choosing a model</a></li>
+      <li><a class="toc-h3" href="#int8-quantization-for-edge" data-toc="int8-quantization-for-edge">INT8 quantization for edge</a></li>
+      <li><a class="toc-h3" href="#choosing-between-yolo11n-and-yolo26n" data-toc="choosing-between-yolo11n-and-yolo26n">Choosing between YOLO11n and YOLO26n</a></li>
+      <li><a class="toc-h3" href="#reverting-to-the-reference-detector" data-toc="reverting-to-the-reference-detector">Reverting to the reference detector</a></li>
+      <li><a class="toc-h3" href="#failure-modes" data-toc="failure-modes">Failure modes</a></li>
+      <li><a class="" href="#staging-the-anpr-chain-plate_detector-plate_ocr" data-toc="staging-the-anpr-chain-plate_detector-plate_ocr">Staging the ANPR chain (plate_detector + plate_ocr)</a></li>
+      <li><a class="" href="#staging-the-attribute-chain-attribute_encoder-attribute_prompts" data-toc="staging-the-attribute-chain-attribute_encoder-attribute_prompts">Staging the attribute chain (attribute_encoder + attribute_prompts)</a></li>
+      <li><a class="" href="#performance-gates-per-camera-frame-budget-at-ai_inference_fps5" data-toc="performance-gates-per-camera-frame-budget-at-ai_inference_fps5">Performance gates (per-camera frame budget at AI_INFERENCE_FPS=5 )</a></li>
+      <li><a class="" href="#durability-notes" data-toc="durability-notes">Durability notes</a></li>
+      <li><a class="" href="#security" data-toc="security">Security</a></li>
+      <li><a class="" href="#future-onnx-profile-m-compliance" data-toc="future-onnx-profile-m-compliance">Future: ONNX Profile M compliance</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

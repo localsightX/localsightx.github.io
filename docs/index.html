@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation — LocalSight</title>
+  <meta name="description" content="LocalSight documentation: installation, user guide, operations runbook, troubleshooting, API reference, camera integrations, architecture, threat model and security controls." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#dochub">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a>
+        <a href="../index.html#features">AI engines</a>
+        <a href="../index.html#compare">Compare</a>
+        <a href="../index.html#privacy">Privacy</a>
+        <a href="../index.html#start">Quick start</a>
+        <a href="../index.html#opensource">Open source</a>
+        <a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="docshead" id="dochub">
+      <div class="container">
+        <p class="crumb">
+          <a href="../index.html">Home</a>
+          <span class="sep">/</span>
+          <span>Documentation</span>
+        </p>
+        <h1>Documentation</h1>
+        <p class="lede">
+          Everything about running LocalSight — from a five-minute install to the
+          full API, the operations runbook, and the security architecture underneath.
+        </p>
+        <p class="meta">
+          <span class="tag">14 guides</span>
+          <span>Mirrors the source repository, so it's never out of date</span>
+        </p>
+        <div class="searchbox" style="margin-top: 22px;">
+          <svg class="sicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input id="docSearch" type="search" placeholder="Search the documentation — try “ffmpeg”, “retention”, “alert”…" aria-label="Search the documentation" autocomplete="off" />
+        </div>
+        <p class="srstatus" id="docSearchStatus" role="status" aria-live="polite"></p>
+        <div class="searchresults" id="docSearchResults"></div>
+      </div>
+    </section>
+
+    <div class="docgrid-home">
+      <div class="dgroup" id="cat-getting-started">
+        <div class="dgroup__h"><h2>Getting started</h2><span>From zero to recordings</span></div>
+        <div class="dcards">
+          <a class="dcard" href="installation.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span>
+            <h3>Installation &amp; Setup</h3>
+            <p>Prerequisites, three install paths (venv, Docker Compose, local rig), first-run bootstrap, and a post-install verification checklist.</p>
+            <span class="more">Read the guide →</span>
+          </a>
+          <a class="dcard" href="user-guide.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+            <h3>User Guide</h3>
+            <p>Every screen of the console, end to end: cameras, privacy masks, behavior rules, live view, events, alerts, people, and privacy controls.</p>
+            <span class="more">Read the guide →</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="dgroup" id="cat-operations">
+        <div class="dgroup__h"><h2>Operations</h2><span>Keep it running 24/7</span></div>
+        <div class="dcards">
+          <a class="dcard" href="runbook.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><path d="M12 12l4-4"/></svg></span>
+            <h3>Operations Runbook</h3>
+            <p>Health &amp; readiness, retention, backup and restore, capacity planning, alert channels, and the secure-deployment checklist.</p>
+            <span class="more">Read the runbook →</span>
+          </a>
+          <a class="dcard" href="troubleshooting.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+            <h3>Troubleshooting</h3>
+            <p>Symptom → likely cause → fix, for startup, cameras &amp; ingestion, recording and live view, alerts, storage and performance.</p>
+            <span class="more">Fix it →</span>
+          </a>
+          <a class="dcard" href="onnx-detector.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg></span>
+            <h3>AI Model Staging (ONNX)</h3>
+            <p>Stage detection, ANPR, face and attribute models with SHA-256 verification. Backends, GPU acceleration, and per-camera performance gates.</p>
+            <span class="more">Stage a model →</span>
+          </a>
+          <a class="dcard" href="ci-cd-pipeline.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="9" r="3"/><path d="M18 12v3a3 3 0 0 1-3 3H9M6 9v6"/></svg></span>
+            <h3>CI/CD Pipeline</h3>
+            <p>The 10-job pipeline behind every commit — lint, tests, SAST, dependency and container scans, browser e2e, quality gate — and its local equivalents.</p>
+            <span class="more">See the pipeline →</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="dgroup" id="cat-reference">
+        <div class="dgroup__h"><h2>Reference</h2><span>Look it up</span></div>
+        <div class="dcards">
+          <a class="dcard" href="api-reference.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span>
+            <h3>API Reference</h3>
+            <p>Every endpoint with its required permission, plus copy-paste curl use cases: cameras, forensic search, timeline, rules, live view, analytics, alerts.</p>
+            <span class="more">Browse the API →</span>
+          </a>
+          <a class="dcard" href="tplink-vigi.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v6M8 8h8l-1 6a4 4 0 0 1-6 0z"/><path d="M12 20v2"/></svg></span>
+            <h3>Camera &amp; NVR Integrations</h3>
+            <p>TP-Link VIGI/Tapo setup (one call provisions a whole NVR), ONVIF discovery on the LAN, and multi-vendor RTSP presets.</p>
+            <span class="more">Wire up cameras →</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="dgroup" id="cat-architecture">
+        <div class="dgroup__h"><h2>Architecture</h2><span>How it fits together</span></div>
+        <div class="dcards">
+          <a class="dcard" href="system-architecture.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
+            <h3>System Architecture</h3>
+            <p>End-to-end data flow, the per-camera processing pipeline, security boundaries, and the scaling story.</p>
+            <span class="more">Understand it →</span>
+          </a>
+          <a class="dcard" href="erd.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3M21 5v14c0 1.66-4 3-9 3s-9-1.34-9-3V5"/></svg></span>
+            <h3>Data Model (ERD)</h3>
+            <p>Tables and relationships, hot-path indexes, and exactly which columns are encrypted at rest.</p>
+            <span class="more">See the schema →</span>
+          </a>
+          <a class="dcard" href="adr.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3v18M7 7h9a3 3 0 0 1 0 6H7"/><circle cx="18" cy="10" r="2"/></svg></span>
+            <h3>Decision Records (ADR)</h3>
+            <p>Why a modular monolith, SQLite by default, swappable AI interfaces, envelope encryption, and no insecure defaults.</p>
+            <span class="more">Read the rationale →</span>
+          </a>
+          <a class="dcard" href="threat-model.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M5 7h14M7 7l-3 7h6zM17 7l-3 7h6z"/></svg></span>
+            <h3>Threat Model</h3>
+            <p>STRIDE-aligned threats with the attack, impact, mitigation, detection, and recovery for each.</p>
+            <span class="more">Review the model →</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="dgroup" id="cat-security">
+        <div class="dgroup__h"><h2>Security &amp; engineering</h2><span>Privacy by design, verifiable</span></div>
+        <div class="dcards">
+          <a class="dcard" href="security.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+            <h3>Security Architecture</h3>
+            <p>Authentication, RBAC, envelope encryption, audit logging, the SSRF egress guard, and AI supply-chain integrity.</p>
+            <span class="more">Read the controls →</span>
+          </a>
+          <a class="dcard" href="engineering-review.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></span>
+            <h3>Architectural Review</h3>
+            <p>The full engineering review with evidence and fix rationale — every defect found, why it mattered, and the regression test that pins it.</p>
+            <span class="more">Read the review →</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>
+        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>
+        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Troubleshooting — LocalSight Docs</title>
+  <meta name="description" content="Symptom → likely cause → fix, for startup, cameras & ingestion, recording and live view, alerts, storage and performance." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Operations</span>
+          <span class="sep">/</span>
+          <span>Troubleshooting</span>
+        </p>
+        <h1>Troubleshooting</h1>
+        <p class="lede">Symptom → likely cause → fix, for startup, cameras & ingestion, recording and live view, alerts, storage and performance.</p>
+        <p class="meta">
+          <span class="tag">10 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/operations/troubleshooting.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html">Installation & Setup</a></li>
+      <li><a href="user-guide.html">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html" aria-current="page">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="tplink-vigi.html">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html">Data Model (ERD)</a></li>
+      <li><a href="adr.html">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<p>Symptom → likely cause → fix, organized by area. Start with
+<a href="#gathering-facts-first">gathering facts</a> — most issues resolve in two minutes
+once you know which layer is wrong.</p>
+<p>If you're setting up for the first time, <a href="installation.html">Installation & Setup</a>
+has the step-by-step path and a post-install verification checklist.</p>
+<hr>
+<h2 id="gathering-facts-first">Gathering facts first</h2>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># Layer 1 — is the API process up? (unauthenticated)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/health/live
+<span class="c1"># =&gt; {"status": "alive", ...}</span>
+
+<span class="c1"># Layer 2 — is the DB + storage reachable? (unauthenticated)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/health/ready
+<span class="c1"># =&gt; {"status": "ready", "components": {"database": {"status":"ok"}, "storage": {"status":"ok"}}}</span>
+<span class="c1"># "degraded" tells you WHICH component is down — read the "detail" string.</span>
+
+<span class="c1"># Layer 3 — component statuses, model names, live transcodes (authed)</span>
+<span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/auth/login<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"email":"admin@localsight.local","password":"YOUR_PASSWORD"}'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import sys,json;print(json.load(sys.stdin)['access_token'])"</span><span class="k">)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/api/system/health<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/api/live/streams<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+
+<p>Where the logs are:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Install</th>
+<th>How to read logs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bare metal</td>
+<td>The <code>uvicorn</code> and <code>python -m apps.worker</code> consoles. Add <code>LOG_LEVEL=DEBUG</code> to <code>.env</code> and restart for verbose output.</td>
+</tr>
+<tr>
+<td>Docker Compose</td>
+<td><code>docker compose -f infrastructure/compose/docker-compose.yml logs -f api worker postgres nginx</code></td>
+</tr>
+<tr>
+<td>Local rig</td>
+<td><code>python scripts/local_cctv_rig.py watch</code>, or read <code>.rig/logs/{api,worker,broker,capture}.log</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The worker logs the per-camera pipeline startup, model load/downgrade
+decisions, reconnect attempts, and retention sweeps — start there for any
+ingestion question.</p>
+<hr>
+<h2 id="startup-boot">Startup &amp; boot</h2>
+<h3 id="the-app-refuses-to-start-jwt_secret-missing-or-placeholder">The app refuses to start: "JWT_SECRET … missing or placeholder"</h3>
+<p><code>gen_env.py</code> was skipped or <code>.env</code> isn't loaded. The app treats a missing,
+empty, or <code>CHANGE_ME_*</code> secret as a hard failure rather than inventing one.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>python<span class="w"> </span>scripts/gen_env.py<span class="w">        </span><span class="c1"># writes .env with fresh random secrets</span>
+</code></pre></div>
+
+<p>If <code>.env</code> already exists it <strong>refuses to overwrite</strong> — delete it first only if
+you truly want new secrets (this invalidates all sessions and encrypted data).</p>
+<h3 id="the-app-refuses-to-start-bootstrap_admin_password-too-short-min-12-chars">The app refuses to start: "BOOTSTRAP_ADMIN_PASSWORD … too short (min 12 chars)"</h3>
+<p>The bootstrap admin password must be <strong>≥12 characters</strong> — there is no default.
+Set a strong value in <code>.env</code> (or let <code>gen_env.py</code> mint a random one) and
+restart. This only applies on first boot (the admin is created only when no
+users exist); on an initialized DB, change the password via the <strong>Account</strong>
+view or the <code>user:manage</code> API.</p>
+<h3 id="address-already-in-use-on-port-8000"><code>Address already in use</code> on port 8000</h3>
+<p>Another process (often a stale LocalSight, or the local rig's API) holds the
+port.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>lsof<span class="w"> </span>-i<span class="w"> </span>:8000<span class="w">                    </span><span class="c1"># find the PID</span>
+<span class="c1"># macOS:  kill &lt;PID&gt;</span>
+<span class="c1"># Linux:  kill &lt;PID&gt;   (or fuser -k 8000/tcp)</span>
+</code></pre></div>
+
+<p>If it's a stale rig instance, tear it down properly instead:
+<code>python scripts/local_cctv_rig.py stop</code> (SIGTERM lets the worker flush
+in-flight recorder segments and reap its ffmpeg children — a blunt <code>kill -9</code>
+can truncate evidence and leave zombies).</p>
+<h3 id="python-modulenotfounderror-psycopg-pgvector">Python <code>ModuleNotFoundError: psycopg</code> / <code>pgvector</code></h3>
+<p>You set <code>DATABASE_URL=postgresql+psycopg://...</code> without the driver. Production
+installs should use <code>requirements-prod.txt</code>:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements-prod.txt<span class="w">    </span><span class="c1"># psycopg[binary], psutil, onnxruntime</span>
+</code></pre></div>
+
+<h3 id="login-fails-on-a-fresh-install">Login fails on a fresh install</h3>
+<p>Almost always one of: the bootstrap password was never recorded (regenerate by
+deleting <code>.env</code> <strong>and</strong> the DB, since the admin only seeds when no users
+exist); the account is locked after <code>MAX_LOGIN_ATTEMPTS</code> (5) failed tries —
+wait <code>LOCKOUT_MINUTES</code> (15); or you're hitting the API through a proxy that
+strips the <code>Authorization</code> header. The error message distinguishes "Incorrect
+email or password" from "Account temporarily locked".</p>
+<hr>
+<h2 id="cameras-ingestion">Cameras &amp; ingestion</h2>
+<h3 id="camera-stays-offline-unreachable">Camera stays OFFLINE / <code>unreachable</code></h3>
+<p>The worker writes camera liveness (<code>ONLINE→streaming</code>,
+<code>RECONNECTING→unstable</code>, <code>OFFLINE→unreachable</code>), so a stuck <code>offline</code> means
+the worker never got a frame. In order:</p>
+<ol>
+<li><strong>Is the worker running?</strong> <code>ps aux | grep apps.worker</code> — the API alone will
+   never ingest.</li>
+<li><strong>SSRF allowlist</strong> — the guard blocks private/loopback/metadata
+   destinations by default. A LAN camera is rejected until its CIDR is listed:
+   <code>SSRF_ALLOWLIST=192.168.0.0/16</code>. Note the <strong>worker</strong> needs this too (it's
+   the process that dials the camera) — in compose, both services carry it.</li>
+<li><strong>URL correctness</strong> — the dashboard's <strong>+ Add camera → verify</strong> step pulls
+   one real frame before committing; use it to catch typos, wrong channel
+   numbers, and dead credentials up front.</li>
+<li><strong>Exotic IP spellings</strong> — <code>2130706433</code>, <code>0x7f.0.0.1</code>, <code>0177.0.0.1</code> and
+   IPv4-mapped IPv6 (<code>::ffff:10.0.0.5</code>) are canonicalized before the
+   allowlist check, so they can't sneak past it — but they can confuse <em>you</em>
+   when eyeballing logs. Use dotted-quad.</li>
+<li><strong>Camera side</strong> — RTSP enabled? ONVIF enabled? Correct port (554)? Digest
+   auth algorithm (some VIGI firmware is picky — see
+   <a href="tplink-vigi.html"><code>docs/integrations/tplink-vigi.md</code></a>)?</li>
+</ol>
+<h3 id="camera-flaps-online-reconnecting-repeatedly">Camera flaps ONLINE → RECONNECTING repeatedly</h3>
+<p>Network loss between the host and the camera, or the camera can't sustain two
+streams. The gateway reconnects with backoff automatically. Check switch/NVR
+uptime, and confirm the <strong>substream</strong> (not just the main stream) is configured
+— AI runs on the substream. Reduce <code>AI_INFERENCE_FPS</code> if the camera is
+starved.</p>
+<h3 id="stream-unreachable-503-in-the-add-camera-wizard">"stream unreachable" (503) in the add-camera wizard</h3>
+<p>The verify step actually pulled a frame and failed — this is the feature
+working. Re-check the URL/credentials; for ONVIF devices, use
+<code>POST /api/cameras/onvif/streams</code> to get a known-good RTSP URI first.</p>
+<h3 id="no-detections-events-at-all">No detections / events at all</h3>
+<ul>
+<li><strong>Detector mode</strong> — <code>AI_DETECTOR=reference</code> emits <code>person</code> only and uses a
+  motion gate; a still scene with no movement produces nothing by design.</li>
+<li><strong>Motion gate</strong> — <code>AI_MOTION_GATE_ENABLED=true</code> with
+  <code>AI_MOTION_THRESHOLD=0.004</code> skips frames below a mean delta. For dim indoor
+  scenes, lower the threshold; for noisy outdoor scenes, raise it.</li>
+<li><strong>Privacy masks</strong> — a detection whose center is inside a mask (or whose box
+  overlaps ≥50%) is dropped <em>before</em> tracking. Check the camera's Masks tab.</li>
+<li><strong>Confidence</strong> — lower <code>AI_CONFIDENCE_THRESHOLD</code> (default 0.45) if the
+  detector is under-reporting.</li>
+<li><strong>Rules</strong> — <code>AI_RULES_ENABLED=true</code>? Individual rules have their own
+  enabled/cooldown state in the rules editor; replay a fixture through
+  <strong>Replay &amp; verdict</strong> (or <code>POST /api/rules/test</code>) to confirm the engine sees
+  your tracks.</li>
+</ul>
+<h3 id="onnx-detector-logs-a-downgrade-to-reference">ONNX detector logs a "downgrade to reference"</h3>
+<p>Expected when no model is staged, or when <code>onnxruntime</code> isn't installed. It's
+an <em>optional</em> capability degrading loudly, not a crash. To use real
+multi-class detection, stage a model and set <code>AI_DETECTOR=onnx</code> — see
+<a href="onnx-detector.html">AI Model Staging (ONNX)</a>. If you <em>did</em> stage one and still see a
+downgrade, check that <code>AI_MODEL_NAME</code>/<code>AI_MODEL_VERSION</code> match the registry
+entry and that the SHA-256 in <code>models/registry.json</code> matches the file on disk</p>
+<hr>
+<h2 id="recording-live-view-media">Recording, live view &amp; media</h2>
+<h3 id="no-recordings-empty-timeline">No recordings / empty Timeline</h3>
+<p>Recording needs <strong>FFmpeg on <code>PATH</code></strong> <em>and</em> a configured <strong>main stream</strong> URL.
+<code>VideoSegment</code> rows are only listed once their file actually landed
+(<code>size_bytes &gt; 0</code>), so a scrub can never land in a hole that 404s — but it also
+means a half-written segment is invisible until complete.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>ffmpeg<span class="w"> </span>-version<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="w">        </span><span class="c1"># must resolve</span>
+curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/api/cameras/<span class="o">{</span>id<span class="o">}</span>/recordings<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+
+<p>Confirm <code>RECORD_ENABLED=true</code> (default) and that the camera has a
+<code>stream_url</code> (main stream). In Docker the image bundles FFmpeg; on bare metal
+install it (<code>brew install ffmpeg</code> / <code>apt-get install ffmpeg</code>).</p>
+<h3 id="live-tile-says-stream-unavailable-running-false-with-pid-0">Live tile says "Stream unavailable" / <code>running: false</code> with PID 0</h3>
+<p>The live gateway transcodes the <strong>substream</strong> via ffmpeg. Check
+<code>GET /api/live/streams</code> — a <code>pid: 0</code> / <code>running: false</code> entry means ffmpeg
+never started: usually ffmpeg missing from PATH, or the camera has no
+<code>substream_url</code>. Install ffmpeg or set the substream; stop and restart the
+tile (or <code>POST /api/live/{camera_id}/stop</code> then reload).</p>
+<h3 id="live-transcodes-accumulate-cpu-stays-high">Live transcodes accumulate / CPU stays high</h3>
+<p>They shouldn't — the reaper stops any transcode with no viewer for
+<code>LOCALSIGHT_LIVE_IDLE_TIMEOUT_SEC</code> (300 s) or older than
+<code>LOCALSIGHT_LIVE_MAX_DURATION_SEC</code> (4 h), and the API stops all of them on
+shutdown. If they persist:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/api/live/streams<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w">  </span><span class="c1"># check idle_sec</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/live/<span class="o">{</span>camera_id<span class="o">}</span>/stop<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+</code></pre></div>
+
+<p>Still stuck? Check the API logs for reaper-thread errors. Live CPU is meant to
+be proportional to <em>actual viewing</em>, not camera count.</p>
+<h3 id="event-clip-returns-no-segments">Event clip returns no segments</h3>
+<p>The event's time window has no overlapping <code>VideoSegment</code> rows — either
+recording was off/disabled at that moment, the camera was offline, or the
+segments aged out past retention. Confirm <code>RECORD_ENABLED=true</code> and that the
+Timeline shows coverage for that hour.</p>
+<h3 id="signed-url-media-403-or-expired">Signed URL / media 403 or "expired"</h3>
+<p>Signed URLs are HMAC-SHA256 over <code>key:exp</code>, capped at <strong>1 hour</strong> on both sign
+and verify. They're bearer credentials, not permanent links — don't archive
+them. A 403 on a fresh URL usually means the server's <code>MASTER_ENCRYPTION_KEY</code>
+rotated since the URL was issued, or the URL was minted by a different
+deployment.</p>
+<hr>
+<h2 id="alerts">Alerts</h2>
+<h3 id="alerts-not-arriving-at-all">Alerts not arriving at all</h3>
+<ol>
+<li><strong>Is a route configured?</strong> <code>GET /api/alerts/routes</code> — no routes, no
+   notifications.</li>
+<li><strong>Is the rule type matched?</strong> A route targets a <code>rule_type</code> (or <code>*</code> for
+   all). A route for <code>intrusion</code> won't carry <code>anpr</code> events.</li>
+<li><strong>Camera scope</strong> — a route scoped to one camera ignores the others.</li>
+<li><strong>Daily budget</strong> — <code>GET /api/alerts/budget</code>. A camera at its cap stops
+   <em>notifying</em> but still stores every event/clip/snapshot (evidence is never a
+   budget item). <code>0</code> = unlimited.</li>
+<li><strong>Is the worker running?</strong> The alert sender is a worker background thread.</li>
+<li><strong>Test delivery</strong>: <code>POST /api/alerts/test</code> pushes a synthetic alert through
+   every route and reports <code>{"delivered": N}</code> — the fastest end-to-end check.</li>
+</ol>
+<h3 id="webhook-route-delivery-fails-route-creation-rejected">Webhook route: delivery fails / route creation rejected</h3>
+<p>Route destinations are SSRF-validated <strong>at create time</strong> — a webhook pointing
+at private/loopback/metadata space is refused outright (127.0.0.1 is rejected
+unless you explicitly allowlist loopback). For an internal receiver, add its
+CIDR to <code>SSRF_ALLOWLIST</code>. If a previously-working webhook stops delivering,
+the receiving host moved to a blocked range.</p>
+<h3 id="alert-storms-the-same-alert-firing-repeatedly">Alert storms / the same alert firing repeatedly</h3>
+<p>Set <code>cooldown_sec</code> on the route — within the window, the same
+(channel × rule_type × camera_id) key suppresses re-firing. <code>0</code> disables
+suppression. For a per-camera daily ceiling, set <code>alert_budget_per_day</code>
+(Alerts screen) or the platform default <code>ALERT_BUDGET_PER_CAMERA_PER_DAY</code>.</p>
+<h3 id="mqtt-not-connecting">MQTT not connecting</h3>
+<p>Verify broker reachability, credentials, and a valid topic template
+(<code>{camera_id}</code> / <code>{rule_type}</code> expand). An <strong>unreachable broker is silently
+skipped</strong> — it never crashes the worker — so check the deliveries feed and
+worker logs rather than expecting a stack trace.</p>
+<h3 id="ntfy-push-not-working">ntfy push not working</h3>
+<p>Check the <code>server</code> URL, the <code>topic</code> name, and that <code>auth_token</code> is set for
+private topics. An unreachable server returns <code>0 delivered</code> (visible via
+<code>POST /api/alerts/test</code>).</p>
+<h3 id="email-not-working">Email not working</h3>
+<p>Port 465 = implicit TLS (SMTPS); 587 = STARTTLS — both handled automatically.
+Confirm SMTP credentials and that the account isn't rate-limited by the
+provider. Test with <code>POST /api/alerts/test</code>.</p>
+<hr>
+<h2 id="storage-retention-performance">Storage, retention &amp; performance</h2>
+<h3 id="disk-filling-up-storage-full-alerts">Disk filling up / "storage full" alerts</h3>
+<p>Disk-pressure pre-alarms fire at <code>DISK_WARN_PCT</code> (0.80) and
+<code>DISK_CRITICAL_PCT</code> (0.90) so a full disk never eats evidence silently. The
+worker's retention sweeper deletes expired recordings/events/snapshots/
+embeddings/audit/refresh-tokens <strong>and their storage objects</strong> hourly, in
+chunked transactions. So:</p>
+<ul>
+<li><strong>Keep the worker running</strong> — no worker, no sweeping, and both DB and disk
+  grow unbounded.</li>
+<li>Shorten retention (<code>RETENTION_RECORDINGS_DAYS</code> etc., or per-camera
+  <code>retention</code>), or add capacity: <code>python scripts/capacity.py --cameras N ...</code>.</li>
+</ul>
+<h3 id="prometheus-scrape-returns-401">Prometheus scrape returns 401</h3>
+<p><code>/api/system/metrics</code> needs either a user session or the static
+<code>METRICS_SCRAPE_TOKEN</code>. Set it on the api service <strong>and</strong> mirror it in
+<code>infrastructure/monitoring/prometheus.yml</code> (<code>authorization.credentials</code>) —
+they must match — then restart both.</p>
+<h3 id="high-cpu-slow-dashboard">High CPU / slow dashboard</h3>
+<ul>
+<li>Lower <code>AI_INFERENCE_FPS</code> (default 5) — the biggest single lever; inference
+  runs per camera on the substream.</li>
+<li>Keep <code>AI_MOTION_GATE_ENABLED=true</code> so still frames skip detection.</li>
+<li>Pin <code>AI_ORT_INTRA_THREADS</code> when many cameras share one CPU box — ORT's
+  default pool over-subscribes and slows <em>every</em> camera down.</li>
+<li>A GPU/NPU engages automatically when a real backend is present and a model
+  is staged; the <code>reference</code> detector never needs one.</li>
+<li>Live transcodes cost CPU only while someone is watching.</li>
+</ul>
+<h3 id="sqlite-database-is-locked">SQLite "database is locked"</h3>
+<p>Dev SQLite runs in WAL + <code>synchronous=NORMAL</code> so API reads don't block behind
+worker commits. If you still see lock contention under heavy load, that's the
+signal to move to PostgreSQL (<code>DATABASE_URL=postgresql+psycopg://...</code>) — the
+compose stack ships pgvector.</p>
+<hr>
+<h2 id="still-stuck">Still stuck?</h2>
+<p>Gather these before asking for help — they turn a guess into an answer:</p>
+<ol>
+<li>Output of the three health curls above (<code>health/live</code>, <code>health/ready</code>,
+   <code>api/system/health</code>).</li>
+<li>The <strong>worker</strong> console/log around the problem (it names the camera, the
+   model, and the transition).</li>
+<li><code>FFMPEG</code> presence, <code>AI_DETECTOR</code>, <code>SSRF_ALLOWLIST</code>, and the install path
+   (venv / compose / rig).</li>
+<li>A redacted <code>.env</code> — <strong>never</strong> paste <code>JWT_SECRET</code>, <code>MASTER_ENCRYPTION_KEY</code>,
+   <code>BOOTSTRAP_ADMIN_PASSWORD</code>, <code>DB_PASSWORD</code>, or camera credentials. Rotate
+   any secret you suspect was shared.</li>
+</ol>
+<p>File bugs via GitHub Issues with Python version, stack trace, and reproduction
+steps. <strong>Security issues must not go in a public issue</strong> — use GitHub Private
+Vulnerability Reporting instead.</p>
+<p>(<code>sha256sum models/staged/&lt;file&gt;</code>).</p>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#gathering-facts-first" data-toc="gathering-facts-first">Gathering facts first</a></li>
+      <li><a class="" href="#startup-boot" data-toc="startup-boot">Startup & boot</a></li>
+      <li><a class="toc-h3" href="#the-app-refuses-to-start-jwt_secret-missing-or-placeholder" data-toc="the-app-refuses-to-start-jwt_secret-missing-or-placeholder">The app refuses to start: "JWT_SECRET … missing or placeholder"</a></li>
+      <li><a class="toc-h3" href="#the-app-refuses-to-start-bootstrap_admin_password-too-short-min-12-chars" data-toc="the-app-refuses-to-start-bootstrap_admin_password-too-short-min-12-chars">The app refuses to start: "BOOTSTRAP_ADMIN_PASSWORD … too short (min 12 chars)"</a></li>
+      <li><a class="toc-h3" href="#address-already-in-use-on-port-8000" data-toc="address-already-in-use-on-port-8000">Address already in use on port 8000</a></li>
+      <li><a class="toc-h3" href="#python-modulenotfounderror-psycopg-pgvector" data-toc="python-modulenotfounderror-psycopg-pgvector">Python ModuleNotFoundError: psycopg / pgvector</a></li>
+      <li><a class="toc-h3" href="#login-fails-on-a-fresh-install" data-toc="login-fails-on-a-fresh-install">Login fails on a fresh install</a></li>
+      <li><a class="" href="#cameras-ingestion" data-toc="cameras-ingestion">Cameras & ingestion</a></li>
+      <li><a class="toc-h3" href="#camera-stays-offline-unreachable" data-toc="camera-stays-offline-unreachable">Camera stays OFFLINE / unreachable</a></li>
+      <li><a class="toc-h3" href="#camera-flaps-online-reconnecting-repeatedly" data-toc="camera-flaps-online-reconnecting-repeatedly">Camera flaps ONLINE → RECONNECTING repeatedly</a></li>
+      <li><a class="toc-h3" href="#stream-unreachable-503-in-the-add-camera-wizard" data-toc="stream-unreachable-503-in-the-add-camera-wizard">"stream unreachable" (503) in the add-camera wizard</a></li>
+      <li><a class="toc-h3" href="#no-detections-events-at-all" data-toc="no-detections-events-at-all">No detections / events at all</a></li>
+      <li><a class="toc-h3" href="#onnx-detector-logs-a-downgrade-to-reference" data-toc="onnx-detector-logs-a-downgrade-to-reference">ONNX detector logs a "downgrade to reference"</a></li>
+      <li><a class="" href="#recording-live-view-media" data-toc="recording-live-view-media">Recording, live view & media</a></li>
+      <li><a class="toc-h3" href="#no-recordings-empty-timeline" data-toc="no-recordings-empty-timeline">No recordings / empty Timeline</a></li>
+      <li><a class="toc-h3" href="#live-tile-says-stream-unavailable-running-false-with-pid-0" data-toc="live-tile-says-stream-unavailable-running-false-with-pid-0">Live tile says "Stream unavailable" / running: false with PID 0</a></li>
+      <li><a class="toc-h3" href="#live-transcodes-accumulate-cpu-stays-high" data-toc="live-transcodes-accumulate-cpu-stays-high">Live transcodes accumulate / CPU stays high</a></li>
+      <li><a class="toc-h3" href="#event-clip-returns-no-segments" data-toc="event-clip-returns-no-segments">Event clip returns no segments</a></li>
+      <li><a class="toc-h3" href="#signed-url-media-403-or-expired" data-toc="signed-url-media-403-or-expired">Signed URL / media 403 or "expired"</a></li>
+      <li><a class="" href="#alerts" data-toc="alerts">Alerts</a></li>
+      <li><a class="toc-h3" href="#alerts-not-arriving-at-all" data-toc="alerts-not-arriving-at-all">Alerts not arriving at all</a></li>
+      <li><a class="toc-h3" href="#webhook-route-delivery-fails-route-creation-rejected" data-toc="webhook-route-delivery-fails-route-creation-rejected">Webhook route: delivery fails / route creation rejected</a></li>
+      <li><a class="toc-h3" href="#alert-storms-the-same-alert-firing-repeatedly" data-toc="alert-storms-the-same-alert-firing-repeatedly">Alert storms / the same alert firing repeatedly</a></li>
+      <li><a class="toc-h3" href="#mqtt-not-connecting" data-toc="mqtt-not-connecting">MQTT not connecting</a></li>
+      <li><a class="toc-h3" href="#ntfy-push-not-working" data-toc="ntfy-push-not-working">ntfy push not working</a></li>
+      <li><a class="toc-h3" href="#email-not-working" data-toc="email-not-working">Email not working</a></li>
+      <li><a class="" href="#storage-retention-performance" data-toc="storage-retention-performance">Storage, retention & performance</a></li>
+      <li><a class="toc-h3" href="#disk-filling-up-storage-full-alerts" data-toc="disk-filling-up-storage-full-alerts">Disk filling up / "storage full" alerts</a></li>
+      <li><a class="toc-h3" href="#prometheus-scrape-returns-401" data-toc="prometheus-scrape-returns-401">Prometheus scrape returns 401</a></li>
+      <li><a class="toc-h3" href="#high-cpu-slow-dashboard" data-toc="high-cpu-slow-dashboard">High CPU / slow dashboard</a></li>
+      <li><a class="toc-h3" href="#sqlite-database-is-locked" data-toc="sqlite-database-is-locked">SQLite "database is locked"</a></li>
+      <li><a class="" href="#still-stuck" data-toc="still-stuck">Still stuck?</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

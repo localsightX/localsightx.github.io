@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Operations Runbook — LocalSight Docs</title>
+  <meta name="description" content="Day-to-day operations: health & readiness, retention, backup and restore, capacity, alert channels, and the secure-deployment checklist." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Operations</span>
+          <span class="sep">/</span>
+          <span>Operations Runbook</span>
+        </p>
+        <h1>Operations Runbook</h1>
+        <p class="lede">Day-to-day operations: health & readiness, retention, backup and restore, capacity, alert channels, and the secure-deployment checklist.</p>
+        <p class="meta">
+          <span class="tag">7 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/operations/runbook.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html">Installation & Setup</a></li>
+      <li><a href="user-guide.html">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html" aria-current="page">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="tplink-vigi.html">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html">Data Model (ERD)</a></li>
+      <li><a href="adr.html">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<p>Day-to-day operations for a running LocalSight deployment. If you're installing
+for the first time, start with <a href="installation.html">Installation & Setup</a>; if
+something is broken, go to <a href="troubleshooting.html">Troubleshooting</a>.</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#vendor-integrations">Vendor integrations</a></li>
+<li><a href="#local-run-no-containers">Local run (no containers)</a></li>
+<li><a href="#docker-compose">Docker Compose</a></li>
+<li><a href="#local-debug-access">Local debug access</a></li>
+<li><a href="#health-readiness">Health &amp; readiness</a></li>
+<li><a href="#retention-configurable-automatic">Retention (configurable, automatic)</a></li>
+<li><a href="#backup-and-restore">Backup and restore</a></li>
+<li><a href="#capacity">Capacity</a></li>
+<li><a href="#ai-detector-backends">AI detector backends</a></li>
+<li><a href="#alert-channels">Alert channels</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+<li><a href="#secure-deployment-checklist">Secure deployment checklist</a></li>
+</ul>
+<h2 id="vendor-integrations">Vendor integrations</h2>
+<ul>
+<li><strong>TP-Link VIGI / Tapo</strong>: RTSP/ONVIF-native. <code>POST /api/cameras/from-nvr</code> provisions a whole VIGI NVR in one call; <code>GET /api/cameras/presets</code> lists URL templates. Setup, ports, auth, and caveats: <code>docs/integrations/tplink-vigi.md</code>.</li>
+<li><strong>Multi-vendor</strong>: Any RTSP/ONVIF camera works. Use <code>POST /api/cameras/onvif/discover</code> to find devices on the LAN, then <code>POST /api/cameras/onvif/streams</code> to get RTSP URIs. Vendor presets available for Axis, Hanwha, Hikvision (ISAPI), Dahua (CGI), Reolink, Bosch, ONVIF, and GB/T 28181.</li>
+</ul>
+<h2 id="local-run-no-containers">Local run (no containers)</h2>
+<p>A zero-infra way to run the stack on SQLite. For the full walkthrough —
+prerequisites, FFmpeg, first-run bootstrap and the verification checklist —
+see <a href="installation.html">Installation & Setup</a>.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+python<span class="w"> </span>scripts/gen_env.py
+uvicorn<span class="w"> </span>apps.api.main:app<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">8000</span>
+python<span class="w"> </span>-m<span class="w"> </span>apps.worker<span class="w">          </span><span class="c1"># in a second shell</span>
+</code></pre></div>
+
+<h2 id="docker-compose">Docker Compose</h2>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>python<span class="w"> </span>scripts/gen_env.py
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>infrastructure/compose/docker-compose.yml<span class="w"> </span>--env-file<span class="w"> </span>.env<span class="w"> </span>up<span class="w"> </span>--build
+</code></pre></div>
+
+<ul>
+<li>Postgres+pgvector, API, worker, nginx (TLS) come up. Data persists in named volumes
+  <code>pgdata</code> and <code>storage</code>.</li>
+<li>To use real models, mount <code>./models</code> (already mounted) and add a <code>ModelRegistry</code>
+  entry; set <code>AI_DETECTOR</code> accordingly.</li>
+</ul>
+<h2 id="local-debug-access">Local debug access</h2>
+<p>The bootstrap admin is created once on first run from <code>BOOTSTRAP_ADMIN_EMAIL</code> /
+<code>BOOTSTRAP_ADMIN_PASSWORD</code> in <code>.env</code> (default <code>admin@localsight.local</code> /
+<code>CHANGE_ME_STRONG_PASSWORD</code> in <code>.env.example</code>). For local debugging:</p>
+<ul>
+<li><strong>UI</strong>: open <code>http://localhost:8000</code> and sign in with those credentials.</li>
+<li><strong>Token (curl)</strong>:
+  <code>bash
+  TOKEN=$(curl -s -X POST http://localhost:8000/api/auth/login \
+    -H 'Content-Type: application/json' \
+    -d '{"email":"admin@localsight.local","password":"CHANGE_ME_STRONG_PASSWORD"}' \
+    | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
+  curl http://localhost:8000/api/auth/me -H "Authorization: Bearer $TOKEN"</code></li>
+<li><strong>Swagger</strong>: <code>http://localhost:8000/docs</code> → click <strong>Authorize</strong> and paste the bearer token.</li>
+</ul>
+<p>To change the bootstrap password, edit <code>.env</code> and restart; the admin is only created
+when no users exist, so for an already-initialized DB use the <code>user:manage</code> endpoint
+or reset the database. Rotate <code>JWT_SECRET</code>/<code>MASTER_ENCRYPTION_KEY</code> (and re-encrypt
+embeddings) before any non-local deployment — never reuse the generated dev keys.</p>
+<h2 id="health-readiness">Health &amp; readiness</h2>
+<ul>
+<li><code>GET /health/live</code> — process alive.</li>
+<li><code>GET /health/ready</code> — DB + storage reachable.</li>
+<li><code>GET /api/system/health</code> — component statuses (authed).</li>
+<li><code>GET /api/system/metrics</code> — Prometheus exposition. Accepts either a user
+  session or a static scrape token: set <code>METRICS_SCRAPE_TOKEN</code> on the api
+  service and mirror it in <code>infrastructure/monitoring/prometheus.yml</code>
+  (<code>authorization.credentials</code>) — without the token every scrape 401s.</li>
+<li><code>GET /api/live/streams</code> — active LL-HLS transcodes, PIDs, and per-stream
+  <code>idle_sec</code> (authed).</li>
+<li><code>POST /api/live/{camera_id}/stop</code> — stop a transcode explicitly (authed).</li>
+</ul>
+<p>Live transcodes are lifecycle-managed: streams with no playback for
+<code>LOCALSIGHT_LIVE_IDLE_TIMEOUT_SEC</code> (default 300 s) or older than
+<code>LOCALSIGHT_LIVE_MAX_DURATION_SEC</code> (default 4 h) are terminated automatically
+by a reaper thread; the API also stops all transcodes on shutdown.</p>
+<h2 id="retention-configurable-automatic">Retention (configurable, automatic)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Recordings</td>
+<td>7 days</td>
+</tr>
+<tr>
+<td>Events</td>
+<td>30 days</td>
+</tr>
+<tr>
+<td>Snapshots</td>
+<td>14 days</td>
+</tr>
+<tr>
+<td>Embeddings</td>
+<td>90 days</td>
+</tr>
+<tr>
+<td>Audit</td>
+<td>365 days</td>
+</tr>
+<tr>
+<td>Refresh tokens</td>
+<td>purged after their 7-day expiry</td>
+</tr>
+</tbody>
+</table></div>
+<p>Retention is enforced <strong>automatically</strong> by the worker: a background sweeper
+deletes expired <code>VideoSegment</code> rows <strong>and their backing storage objects</strong>,
+expired <code>Event</code> rows, expired <code>Snapshot</code> rows (with storage objects), expired
+enrollment <code>PersonEmbedding</code> rows, expired <code>AuditLog</code> rows, and expired
+<code>RefreshToken</code> rows every hour, in chunked transactions (500 rows/commit) so
+long sweeps never hold locks. You do not need a separate cron job. All
+deletions are auditable. Per-camera overrides are supported via the camera
+<code>retention</code> JSON field.</p>
+<blockquote>
+<p>Warning: if the worker is not running, retention is not applied and storage/DB grow.
+Keep the worker process up (it also runs recording, analytics, and the alert sender).</p>
+</blockquote>
+<h2 id="backup-and-restore">Backup and restore</h2>
+<p>Test the restore before you rely on it.
+- <strong>Database + identity metadata + encrypted embeddings + config + audit</strong>: <code>pg_dump</code>
+  (or SQLite <code>cp</code>). Restore into a fresh DB and verify row counts.
+- <strong>Encrypted embeddings are useless without <code>MASTER_ENCRYPTION_KEY</code></strong> — back up the
+  key in your secrets manager separately from the DB.
+- <strong>Video</strong>: large; back up per retention policy / cold storage. Document and test a
+  restore at least once.</p>
+<h2 id="capacity">Capacity</h2>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>python<span class="w"> </span>scripts/capacity.py<span class="w"> </span>--cameras<span class="w"> </span><span class="m">8</span><span class="w"> </span>--main-bitrate-mbps<span class="w"> </span><span class="m">4</span><span class="w"> </span>--sub-bitrate-mbps<span class="w"> </span><span class="m">0</span>.4<span class="w"> </span>--ai-fps<span class="w"> </span><span class="m">5</span>
+</code></pre></div>
+
+<h2 id="ai-detector-backends">AI detector backends</h2>
+<p>Configure via <code>AI_DETECTOR</code> (environment):</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Runtime</th>
+<th>Model needed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reference</code> (default)</td>
+<td>CPU, no GPU</td>
+<td>None — frame-differencing fallback</td>
+</tr>
+<tr>
+<td><code>onnx</code></td>
+<td>CPU / CUDA</td>
+<td>YOLO/RT-DETR ONNX file staged via <code>ModelRegistry</code></td>
+</tr>
+<tr>
+<td><code>tensorrt</code></td>
+<td>NVIDIA GPU</td>
+<td>TensorRT engine file</td>
+</tr>
+<tr>
+<td><code>openvino</code></td>
+<td>Intel CPU/iGPU/NPU</td>
+<td>OpenVINO IR</td>
+</tr>
+<tr>
+<td><code>tflite</code></td>
+<td>ARM / Coral TPU</td>
+<td>TFLite model</td>
+</tr>
+</tbody>
+</table></div>
+<p>Set <code>AI_MODEL_NAME</code> and <code>AI_MODEL_VERSION</code> to match the registry entry. The
+<code>reference</code> backend works out of the box on any CPU with no model download.</p>
+<h2 id="alert-channels">Alert channels</h2>
+<p>LocalSight routes analytic events to four channels, each configured via
+<code>POST /api/alerts/routes</code>:</p>
+<h3 id="webhook">Webhook</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"rule_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"intrusion"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"channel"</span><span class="p">:</span><span class="w"> </span><span class="s2">"webhook"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://hooks.example.com/localsight"</span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"cooldown_sec"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>HTTP POST with JSON body; URL is SSRF-validated against <code>SSRF_ALLOWLIST</code>.</p>
+<h3 id="mqtt">MQTT</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"rule_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"anpr"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"channel"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mqtt"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"host"</span><span class="p">:</span><span class="w"> </span><span class="s2">"192.168.1.100"</span><span class="p">,</span><span class="w"> </span><span class="nt">"port"</span><span class="p">:</span><span class="w"> </span><span class="mi">1883</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"topic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"localsight/{camera_id}/alerts"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mqtt_user"</span><span class="p">,</span><span class="w"> </span><span class="nt">"password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"s3cret"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"qos"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"retain"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"cooldown_sec"</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Publishes a JSON message per alert to the configured topic. Template variables
+<code>{camera_id}</code> and <code>{rule_type}</code> are expanded.</p>
+<h3 id="push-ntfysh">Push (ntfy.sh)</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"rule_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"*"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"channel"</span><span class="p">:</span><span class="w"> </span><span class="s2">"push"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"server"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://ntfy.sh"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"topic"</span><span class="p">:</span><span class="w"> </span><span class="s2">"localsight-alerts"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"priority"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"tags"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"security"</span><span class="p">,</span><span class="w"> </span><span class="s2">"camera"</span><span class="p">],</span>
+<span class="w">    </span><span class="nt">"click"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://dashboard.example.com/events"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Delivers to ntfy.sh. Configure <code>auth_token</code> for private topics.</p>
+<h3 id="email">Email</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"rule_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"intrusion"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"channel"</span><span class="p">:</span><span class="w"> </span><span class="s2">"email"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"config"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"smtp_host"</span><span class="p">:</span><span class="w"> </span><span class="s2">"smtp.example.com"</span><span class="p">,</span><span class="w"> </span><span class="nt">"smtp_port"</span><span class="p">:</span><span class="w"> </span><span class="mi">587</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alerts@example.com"</span><span class="p">,</span><span class="w"> </span><span class="nt">"recipients"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"ops@example.com"</span><span class="p">]</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"cooldown_sec"</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Port 465 is implicit TLS (SMTPS); 587 uses STARTTLS — both are handled
+automatically.</p>
+<h3 id="alert-cooldown">Alert cooldown</h3>
+<p>Every route has a <code>cooldown_sec</code> field. Within the cooldown window, the same
+(channel × rule_type × camera_id) key suppresses re-firing. This prevents
+alert storms when the same event fires repeatedly. A cooldown of <code>0</code> disables
+suppression.</p>
+<h3 id="test-alert-delivery">Test alert delivery</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># Verify all routes without touching a camera</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/alerts/test<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"delivered": 2}</span>
+</code></pre></div>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>The quick first-aid list is below; for symptom → cause → fix organized by area
+(startup, cameras, recording/live, alerts, storage/performance) and the
+diagnostics to gather before filing an issue, see
+<a href="troubleshooting.html">Troubleshooting</a>.</p>
+<ul>
+<li><strong>App won't start</strong>: check for placeholder secrets (<code>JWT_SECRET</code>/<code>MASTER_ENCRYPTION_KEY</code>)</li>
+<li><strong>Camera OFFLINE</strong>: gateway reconnects with backoff; check RTSP URL + SSRF allowlist
+  (private/loopback blocked unless listed) and NVR reachability.</li>
+<li><strong>GPU missing</strong>: reduce <code>AI_INFERENCE_FPS</code>. The <code>reference</code> detector needs no GPU;
+  staged ONNX detectors use CUDA automatically when a GPU is present, CPU otherwise.</li>
+<li><strong>No recordings / live view</strong>: both require <strong>FFmpeg</strong> on <code>PATH</code> (bundled in the
+  Docker image). Confirm <code>ffmpeg</code> is installed locally and that the camera has a
+  configured main/sub stream URL.</li>
+<li><strong>Alerts not arriving</strong>: the worker runs the alert sender as a background service;
+  verify routes via <code>GET /api/alerts/routes</code> and that webhook URLs are on the SSRF
+  allowlist. Use <code>POST /api/alerts/test</code> to validate delivery.</li>
+<li><strong>Alert storm</strong>: set <code>cooldown_sec</code> on routes to suppress rapid re-firing.</li>
+<li><strong>MQTT not connecting</strong>: verify broker is reachable, credentials are correct,
+  and topic template is valid. Unreachable broker is silently skipped (no crash).</li>
+<li><strong>ntfy push not working</strong>: check <code>server</code> URL, <code>topic</code> name, and that the auth_token
+  is set for private topics. An unreachable server returns 0 delivered.</li>
+<li><strong>Storage full</strong>: alert fires at threshold; the worker retention sweeper deletes
+  expired data automatically — keep the worker running; add capacity if needed.</li>
+<li><strong>Token reuse errors</strong>: refresh rotation revoked a token; re-login.</li>
+<li><strong>Decoding failures</strong>: ensure FFmpeg present (in Docker image); run worker non-root
+  with resource limits.</li>
+<li><strong>Live stream PID 0 / not running</strong>: ffmpeg may not be on PATH; check <code>/api/live/streams</code>
+  returns <code>"running": false</code>. Install ffmpeg or check that the camera's substream URL is reachable.</li>
+<li><strong>Prometheus scrape 401</strong>: set <code>METRICS_SCRAPE_TOKEN</code> on the api service AND in
+  <code>infrastructure/monitoring/prometheus.yml</code> (they must match), then restart both.</li>
+<li><strong>Live transcodes accumulate</strong>: they shouldn't — idle streams are reaped at
+  <code>LOCALSIGHT_LIVE_IDLE_TIMEOUT_SEC</code>. If they persist, check the API logs for
+  reaper-thread errors; <code>POST /api/live/{id}/stop</code> stops one immediately.</li>
+<li><strong>Event clip returns no segments</strong>: the event has no overlapping <code>VideoSegment</code> rows in its
+  time window. Check that recording is enabled (<code>RECORD_ENABLED=true</code>) and segments exist.</li>
+</ul>
+<h2 id="secure-deployment-checklist">Secure deployment checklist</h2>
+<ul>
+<li>[ ] Unique secrets generated (never placeholders); KEK backed up in secrets manager.</li>
+<li>[ ] TLS 1.3 + HSTS at the proxy; redirect HTTP→HTTPS.</li>
+<li>[ ] Cameras on isolated VLAN; only RTSP from camera→server; no internet egress.</li>
+<li>[ ] <code>SSRF_ALLOWLIST</code> set to the camera VLAN CIDR.</li>
+<li>[ ] Biometric recognition enabled only after lawful basis + approval.</li>
+<li>[ ] MFA enforced for admins/operators.</li>
+<li>[ ] Audit log shipped to SIEM; retention policy applied.</li>
+<li>[ ] Backups (DB+key) tested.</li>
+</ul>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#contents" data-toc="contents">Contents</a></li>
+      <li><a class="" href="#vendor-integrations" data-toc="vendor-integrations">Vendor integrations</a></li>
+      <li><a class="" href="#local-run-no-containers" data-toc="local-run-no-containers">Local run (no containers)</a></li>
+      <li><a class="" href="#docker-compose" data-toc="docker-compose">Docker Compose</a></li>
+      <li><a class="" href="#local-debug-access" data-toc="local-debug-access">Local debug access</a></li>
+      <li><a class="" href="#health-readiness" data-toc="health-readiness">Health & readiness</a></li>
+      <li><a class="" href="#retention-configurable-automatic" data-toc="retention-configurable-automatic">Retention (configurable, automatic)</a></li>
+      <li><a class="" href="#backup-and-restore" data-toc="backup-and-restore">Backup and restore</a></li>
+      <li><a class="" href="#capacity" data-toc="capacity">Capacity</a></li>
+      <li><a class="" href="#ai-detector-backends" data-toc="ai-detector-backends">AI detector backends</a></li>
+      <li><a class="" href="#alert-channels" data-toc="alert-channels">Alert channels</a></li>
+      <li><a class="toc-h3" href="#webhook" data-toc="webhook">Webhook</a></li>
+      <li><a class="toc-h3" href="#mqtt" data-toc="mqtt">MQTT</a></li>
+      <li><a class="toc-h3" href="#push-ntfysh" data-toc="push-ntfysh">Push (ntfy.sh)</a></li>
+      <li><a class="toc-h3" href="#email" data-toc="email">Email</a></li>
+      <li><a class="toc-h3" href="#alert-cooldown" data-toc="alert-cooldown">Alert cooldown</a></li>
+      <li><a class="toc-h3" href="#test-alert-delivery" data-toc="test-alert-delivery">Test alert delivery</a></li>
+      <li><a class="" href="#troubleshooting" data-toc="troubleshooting">Troubleshooting</a></li>
+      <li><a class="" href="#secure-deployment-checklist" data-toc="secure-deployment-checklist">Secure deployment checklist</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference — LocalSight Docs</title>
+  <meta name="description" content="Every endpoint with its required permission, plus copy-paste curl use cases: cameras, search, timeline, rules, live view, analytics, alerts." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Reference</span>
+          <span class="sep">/</span>
+          <span>API Reference</span>
+        </p>
+        <h1>API Reference</h1>
+        <p class="lede">Every endpoint with its required permission, plus copy-paste curl use cases: cameras, search, timeline, rules, live view, analytics, alerts.</p>
+        <p class="meta">
+          <span class="tag">12 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/api/openapi-summary.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html">Installation & Setup</a></li>
+      <li><a href="user-guide.html">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html" aria-current="page">API Reference</a></li>
+      <li><a href="tplink-vigi.html">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html">Data Model (ERD)</a></li>
+      <li><a href="adr.html">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<p>Base path <code>/api</code>. All responses are JSON. All mutating/protected endpoints require
+<code>Authorization: Bearer &lt;access_token&gt;</code>. Pagination: <code>limit</code> (≤500), <code>offset</code>.</p>
+<h2 id="auth">Auth</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>/api/auth/login</code></td>
+<td>—</td>
+<td>email+password(+mfa); rate-limited; returns access+refresh</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/auth/refresh</code></td>
+<td>refresh token</td>
+<td>rotates token; old refresh revoked</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/auth/logout</code></td>
+<td>refresh token</td>
+<td>revokes refresh</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/auth/me</code></td>
+<td>user</td>
+<td>current user + permissions</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/auth/mfa/setup</code></td>
+<td>user</td>
+<td>returns TOTP secret + otpauth URI</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/auth/mfa/verify</code></td>
+<td>user</td>
+<td>enables MFA</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="cameras-nvr">Cameras / NVR</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET/POST</td>
+<td><code>/api/cameras</code></td>
+<td><code>camera:view</code> / <code>camera:configure</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/cameras/presets</code></td>
+<td><code>camera:view</code> (vendor RTSP/ONVIF URL templates, incl. TP-Link)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/cameras/from-nvr</code></td>
+<td><code>camera:configure</code> (provision a VIGI NVR + all channels)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/cameras/vendor-presets</code></td>
+<td><code>camera:view</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/cameras/presets/build</code></td>
+<td><code>camera:configure</code> (construct vendor RTSP URL; credentials never echoed)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/cameras/onvif/discover</code></td>
+<td><code>camera:configure</code> (WS-Discovery on LAN; SSRF-validated)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/cameras/onvif/streams</code></td>
+<td><code>camera:configure</code> (get RTSP URIs from ONVIF device)</td>
+</tr>
+<tr>
+<td>GET/PUT/DELETE</td>
+<td><code>/api/cameras/{id}</code></td>
+<td><code>camera:view</code> / <code>camera:configure</code> (DELETE removes the camera: cascades its recordings/events/snapshots/detections/tracks, stops its live transcode, and the worker stops ingesting within ~30 s)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/cameras/{id}/snapshot-url</code></td>
+<td><code>camera:view</code> (mint a 300 s signed snapshot URL for <img> loads)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/cameras/{id}/snapshot</code></td>
+<td>session token OR signed URL (one JPEG frame; honest 404/409/503)</td>
+</tr>
+<tr>
+<td>GET/POST</td>
+<td><code>/api/nvr</code></td>
+<td><code>camera:configure</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Camera stream URLs are <strong>SSRF-validated</strong> and <strong>encrypted at rest</strong>; they are never
+returned to clients. <code>PUT /api/cameras/{id}</code> also accepts
+<code>alert_budget_per_day</code> (R3.6): <code>null</code> = platform default, <code>0</code> = unlimited,
+<code>1-10000</code> = cap that camera's alert notifications per UTC day.</p>
+<h3 id="use-case-provision-a-vigi-nvr-in-one-call">Use case: Provision a VIGI NVR in one call</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/cameras/from-nvr<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"nvr_ip":"192.168.1.50","nvr_name":"Warehouse NVR","channel_count":8,"retention_days":7}'</span>
+<span class="c1"># =&gt; {"nvr_id": "...", "cameras": [{id, name, main_stream, sub_stream}, ...]}</span>
+</code></pre></div>
+
+<h3 id="use-case-discover-cameras-on-the-lan">Use case: Discover cameras on the LAN</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/cameras/onvif/discover<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"timeout":2.0}'</span>
+<span class="c1"># =&gt; ["rtsp://10.0.0.5/onvif/1", ...]</span>
+</code></pre></div>
+
+<h2 id="people-identity">People / identity</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET/POST</td>
+<td><code>/api/persons</code></td>
+<td><code>person:view</code> / <code>person:enroll</code> (list includes per-person <code>faces_enrolled</code>)</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/api/persons/{id}</code></td>
+<td><code>person:delete</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/persons/{id}/references</code></td>
+<td><code>person:enroll</code> (upload reference image → local embedding)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/persons/{id}/references</code></td>
+<td><code>person:enroll</code> (reference <strong>metadata</strong> — model, dimension, quality; image bytes are never retained)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="use-case-enroll-a-known-person">Use case: Enroll a known person</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/persons<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"label":"John Smith","role":"staff"}'</span>
+<span class="c1"># =&gt; {"id": "...", "label": "John Smith", ...}</span>
+
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/persons/<span class="nv">$ID</span>/references<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-F<span class="w"> </span><span class="s2">"image=@john.jpg"</span>
+<span class="c1"># Uploads face image, generates encrypted embedding, links to person record</span>
+</code></pre></div>
+
+<h2 id="events-search">Events / search</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/events</code></td>
+<td><code>events:view</code> (filters: camera/identity/status/time/confidence)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/events/{id}</code></td>
+<td><code>events:view</code> (returns signed snapshot/video URLs)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/events/{id}/export</code></td>
+<td><code>events:export</code> (audited, single signed URL)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/events/{id}/clip</code></td>
+<td><code>events:export</code> (assembles all overlapping recording segments)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/timeline?date=&amp;camera_id=</code></td>
+<td><code>events:view</code> (merged recording intervals + presence + markers)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/events</code> (filtered)</td>
+<td><code>events:view</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/alerts/events</code></td>
+<td><code>events:view</code> (includes <code>detail</code> context per event)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/search/attributes?key=&amp;value=&amp;camera_id=&amp;start=&amp;end=</code></td>
+<td><code>search:view</code> (B1: CLIP tags on tracks)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/search/plates?q=&amp;camera_id=&amp;start=&amp;end=</code></td>
+<td><code>search:view</code> (B2: exact keyed-HMAC plate match)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/searches</code></td>
+<td><code>search:view</code> (caller's saved searches)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/searches</code></td>
+<td><code>search:save</code> (audited)</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/api/searches/{id}</code></td>
+<td><code>search:save</code> (audited, owner-only)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Event rows carry a <code>detail</code> JSON column: rule events include <code>direction</code>,
+<code>dwell_sec</code>, <code>count</code>, <code>zone</code>; ANPR events include <code>plate_enc</code> (envelope-
+encrypted plate — decryptable only on the host) and <code>plate_hash</code> (anonymized
+correlation digest).</p>
+<h3 id="use-case-find-a-person-wearing-a-red-jacket-attribute-search">Use case: Find a person wearing a red jacket (attribute search)</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span><span class="s2">"http://localhost:8000/api/search/attributes?key=color&amp;value=red&amp;camera_id=</span><span class="nv">$CAM</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"query": {"key": "color", "value": "red"}, "results": [</span>
+<span class="c1">#      {"track_id": "cam-01-track-1842", "camera_id": "...", "identity_status": "unknown",</span>
+<span class="c1">#       "last_seen": "2026-09-19T14:02:11Z+00:00", "matched": {"color": "red"},</span>
+<span class="c1">#       "attributes": {"jacket": true, "color": "red", "jacket_conf": 0.83}}]}</span>
+<span class="c1"># Searches the Track.detail CLIP tags; omit `value` for has-key semantics.</span>
+</code></pre></div>
+
+<h3 id="use-case-look-up-a-plate-exact-match-over-the-keyed-hmac-index">Use case: Look up a plate (exact match over the keyed HMAC index)</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span><span class="s2">"http://localhost:8000/api/search/plates?q=ab-12%20cd"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"query": {"plate": "AB12CD"}, "results": [{"event_id": "...", "camera_id": "...",</span>
+<span class="c1">#      "ts": "...", "confidence": 0.94}]}</span>
+<span class="c1"># Input is normalized exactly like the OCR pipeline (uppercase, [A-Z0-9]) and</span>
+<span class="c1"># matched against the master-key HMAC tokens — plaintext plates are never</span>
+<span class="c1"># stored, returned, or searched. Partial plates are not searchable by design.</span>
+</code></pre></div>
+
+<h3 id="gate-access-lanes-r41-in-development">Gate-access lanes (R4.1 — in development)</h3>
+<p>The lane schema has landed — <code>Lane</code> and <code>LaneWhitelistEntry</code> tables plus
+<code>cameras.pipeline_flags</code> (see <a href="erd.html"><code>docs/architecture/erd.md</code></a>)
+— but the endpoints are not shipped yet. Planned surface: lane CRUD and whitelist
+enrollment behind <code>lanes:manage</code> / <code>lanes:view</code>, barrier destinations validated with
+the same SSRF guard as alert routes, and every whitelist row stored as a <code>plate_hash</code>
+HMAC token — the identical token <code>GET /api/search/plates</code> matches — so enrollment and
+sighting share one index and plaintext plates never reach the DB. Until the endpoints
+ship, <code>lane_access</code> stays off by default and nothing can trigger a barrier.</p>
+<h3 id="use-case-save-a-forensic-search-for-the-team-shift-audited">Use case: Save a forensic search for the team shift (audited)</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/searches<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"name": "red jackets front gate", "kind": "attributes", "params": {"key": "color", "value": "red"}}'</span>
+<span class="c1"># Saved per user (quota 50, unique name, payload ≤ 2 KB); GET /api/searches lists</span>
+<span class="c1"># the caller's own searches, DELETE removes one. Save and delete are audit-logged.</span>
+</code></pre></div>
+
+<h3 id="use-case-search-events-by-camera-and-time-range">Use case: Search events by camera and time range</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span><span class="s2">"http://localhost:8000/api/events?camera_id=</span><span class="nv">$CAM</span><span class="s2">&amp;start=2026-03-01T08:00:00Z&amp;end=2026-03-01T18:00:00Z"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"items": [...], "total": 42, "limit": 50, "offset": 0}</span>
+</code></pre></div>
+
+<h3 id="use-case-export-event-clip-assemble-segments-into-a-downloadable-video">Use case: Export event clip (assemble segments into a downloadable video)</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>http://localhost:8000/api/events/<span class="nv">$EVT_ID</span>/clip<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {</span>
+<span class="c1">#   "event_id": "...",</span>
+<span class="c1">#   "camera_id": "...",</span>
+<span class="c1">#   "segment_count": 3,</span>
+<span class="c1">#   "total_size_bytes": 15728640,</span>
+<span class="c1">#   "segments": [</span>
+<span class="c1">#     {"id": "...", "start_ts": "...", "end_ts": "...", "duration_sec": 300.0,</span>
+<span class="c1">#      "url": "/api/video/cam1/2026-03-01/seg-a.mp4?exp=...&amp;sig=..."},</span>
+<span class="c1">#     ...</span>
+<span class="c1">#   ],</span>
+<span class="c1">#   "expires_in": 300</span>
+<span class="c1"># }</span>
+<span class="c1"># Each segment URL is signed and expiring; all overlapping segments are included.</span>
+</code></pre></div>
+
+<h2 id="timeline">Timeline</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/timeline?date=YYYY-MM-DD</code></td>
+<td><code>events:view</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Returns a merged view of recording intervals + presence windows + analytic event markers
+for a given UTC date. One call populates the full 24-hour timeline widget.</p>
+<h3 id="use-case-load-the-dashboard-timeline-for-a-specific-day">Use case: Load the dashboard timeline for a specific day</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span><span class="s2">"http://localhost:8000/api/timeline?date=2026-03-01"</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {</span>
+<span class="c1">#   "date": "2026-03-01",</span>
+<span class="c1">#   "timeline": [</span>
+<span class="c1">#     {"camera_id": "cam1", "label": "John S.", "intervals": [</span>
+<span class="c1">#       {"start": "2026-03-01T09:00:00Z", "end": "2026-03-01T09:15:00Z", "confidence": 0.92, "identity_status": "known"}</span>
+<span class="c1">#     ]}</span>
+<span class="c1">#   ],</span>
+<span class="c1">#   "recording": [</span>
+<span class="c1">#     {"camera_id": "cam1", "start": "2026-03-01T00:00:00Z", "end": "2026-03-01T23:59:59Z", "duration_sec": 86400.0}</span>
+<span class="c1">#   ],</span>
+<span class="c1">#   "markers": [</span>
+<span class="c1">#     {"id": "...", "camera_id": "cam1", "event_type": "intrusion", "ts": "2026-03-01T14:23:01Z", "identity_status": "unknown"}</span>
+<span class="c1">#   ],</span>
+<span class="c1">#   "limits": {"recording": 500, "markers": 500}</span>
+<span class="c1"># }</span>
+</code></pre></div>
+
+<h2 id="behavior-analytics-rules">Behavior analytics (rules)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/cameras/{id}/rules</code></td>
+<td><code>rules:configure</code></td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/api/cameras/{id}/rules</code></td>
+<td><code>rules:configure</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/rules/test</code></td>
+<td><code>rules:configure</code> (dry-run replay, no persistence)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Rules are stored as JSON on the camera and evaluated by the AI worker per frame.
+Supported rule types:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>line_cross</code></td>
+<td>Directional tripwire crossing (R3.3: direction from a ≥3-sample trajectory window, so a jittery detection cannot flip it)</td>
+</tr>
+<tr>
+<td><code>intrusion</code></td>
+<td>Polygon zone entry detection</td>
+</tr>
+<tr>
+<td><code>loitering</code></td>
+<td>Dwell time exceeding threshold within a zone</td>
+</tr>
+<tr>
+<td><code>object_left</code></td>
+<td>Object stationary for <code>stationary_sec</code>, <strong>only while unattended</strong> (R3.4: an attached person/vehicle means not abandoned; <code>require_unattended: false</code> restores stationarity-only)</td>
+</tr>
+<tr>
+<td><code>crowd</code></td>
+<td>Occupancy count exceeding threshold in a zone</td>
+</tr>
+<tr>
+<td><code>stopped_vehicle</code></td>
+<td>R3.4: vehicle at/below <code>max_speed</code> for <code>stopped_sec</code> inside a no-stopping zone</td>
+</tr>
+</tbody>
+</table></div>
+<p>Writes are validated against <strong>rule grammar v1</strong> (<code>packages/ai/rulegrammar.py</code>):
+geometry must be normalized <code>[0,1]</code>, labels must come from the platform
+vocabulary, and numeric knobs are range-checked. An invalid payload returns
+<code>400</code> with <code>{"message", "schema_version", "errors": ["rules[0].zone: ..."]}</code>
+field-path errors. Every rule also accepts the engine knobs <code>cooldown_sec</code>
+(minimum seconds between fires, 0 = unlimited) and <code>min_size</code> (normalized
+bbox-area floor to ignore tiny/far detections); zone rules additionally accept
+<code>id_switch_grace_sec</code> (R3.2: dwell state carries across a tracker ID switch
+inside the zone, so re-assigned tracks neither reset dwell nor double-fire),
+<code>object_left</code> accepts <code>require_unattended</code> (R3.4) and <code>stopped_vehicle</code> accepts
+<code>stopped_sec</code> / <code>max_speed</code> (R3.4).
+A zone hit means the detection centroid is inside the polygon OR at least 50%
+of the detection box is covered by it — the same coverage semantics as privacy
+masks. The audit trail records the grammar <code>schema_version</code> with each write.</p>
+<p><code>POST /api/rules/test</code> is the R3.5 dry-run replay tester: send draft <code>rules</code>
+plus recorded <code>frames</code> (<code>{"t": seconds, "tracks": [["id", "label", [x, y, w, h]],
+...]}</code>) and get back the verdict timeline — every evaluated decision per frame
+(<code>fired</code>, <code>cooldown_blocked</code>, <code>no_zone_hit</code>, <code>dwell_warming</code>, ...) plus the
+fired events, a per-rule summary and, when an <code>expect</code> block is supplied, the
+golden-replay verdict (<code>pass</code> / <code>expect_errors</code>). Nothing is persisted and no
+alert fan-out occurs; the same core backs <code>scripts/rule_replay.py</code> (CLI) and
+the <code>tests/replays/</code> pytest suite. The Rules editor's <strong>Replay &amp; verdict</strong>
+card calls this endpoint from the UI: pick a fixture file, replay the
+editor's current (unsaved) draft rules, and the PASS/FAIL banner, per-rule
+verdict lanes and fire markers render inline.</p>
+<h3 id="use-case-configure-a-perimeter-intrusion-zone">Use case: Configure a perimeter intrusion zone</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span>http://localhost:8000/api/cameras/<span class="nv">$CAM</span>/rules<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"rules": [</span>
+<span class="s1">    {"type": "intrusion", "rule_id": "perimeter-1",</span>
+<span class="s1">     "zone": [[0.4,0.4],[0.6,0.4],[0.6,0.6],[0.4,0.6]]},</span>
+<span class="s1">    {"type": "loitering", "rule_id": "gate-loiter",</span>
+<span class="s1">     "zone": [[0.0,0.0],[1.0,0.0],[1.0,1.0],[0.0,1.0]], "dwell_sec": 10},</span>
+<span class="s1">    {"type": "line_cross", "rule_id": "entry-tripwire",</span>
+<span class="s1">     "a": [0.5, 0.0], "b": [0.5, 1.0], "direction": 1}</span>
+<span class="s1">  ]}'</span>
+<span class="c1"># direction: 1 / -1 = required crossing sign relative to the a-&gt;b line vector,</span>
+<span class="c1"># null = any direction. For the vertical a=[0.5,0] -&gt; b=[0.5,1] line below:</span>
+<span class="c1"># -1 = left-to-right entry, 1 = right-to-left (verified by tests/replays/).</span>
+</code></pre></div>
+
+<h2 id="live-view">Live view</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/live/streams</code></td>
+<td><code>live:view</code> (health of active transcodes)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/live/ticket</code></td>
+<td><code>live:view</code> (issue short-lived camera-scoped ticket)</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/live/{camera_id}/play</code></td>
+<td><code>live:view</code> (validate ticket, start LL-HLS transcode)</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/live/{camera_id}/stop</code></td>
+<td><code>live:view</code> (stop transcode; dashboard control)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Transcodes are lifecycle-managed: streams idle for
+<code>LOCALSIGHT_LIVE_IDLE_TIMEOUT_SEC</code> (default 300 s) or older than
+<code>LOCALSIGHT_LIVE_MAX_DURATION_SEC</code> (default 4 h) are reaped automatically.</p>
+<h3 id="use-case-watch-a-live-camera-stream">Use case: Watch a live camera stream</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># Step 1: get a ticket (short-lived, camera-scoped, encrypted)</span>
+<span class="nv">TICKET</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/live/ticket<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{"camera_id": "'</span><span class="nv">$CAM</span><span class="s1">'", "ttl_sec": 300}'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import sys,json;print(json.load(sys.stdin)['ticket'])"</span><span class="k">)</span>
+
+<span class="c1"># Step 2: exchange ticket for HLS manifest (ffmpeg starts transcode in background)</span>
+curl<span class="w"> </span><span class="s2">"http://localhost:8000/api/live/</span><span class="nv">$CAM</span><span class="s2">/play?ticket=</span><span class="nv">$TICKET</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"camera_id": "cam1", "hls_manifest": "/live-media/cam1/index.m3u8", "protocols": ["ll-hls"], "ticket": "..."}</span>
+
+<span class="c1"># Step 3: point an HLS player at /live-media/cam1/index.m3u8</span>
+<span class="c1"># The RTSP URL and credentials are never exposed to the client.</span>
+</code></pre></div>
+
+<h3 id="use-case-check-which-streams-are-actively-transcoding">Use case: Check which streams are actively transcoding</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>http://localhost:8000/api/live/streams<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"active": [{"camera_id": "cam1", "running": true, "pid": 18427, "idle_sec": 4}], "count": 1}</span>
+</code></pre></div>
+
+<h3 id="use-case-stop-a-stream-when-done-watching">Use case: Stop a stream when done watching</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/live/<span class="nv">$CAM</span>/stop<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"camera_id": "cam1", "stopped": true}   (stopped=false when nothing was running)</span>
+</code></pre></div>
+
+<h2 id="analytics-bi">Analytics / BI</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/analytics/people-count</code></td>
+<td><code>analytics:view</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/analytics/occupancy</code></td>
+<td><code>analytics:view</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/analytics/dwell</code></td>
+<td><code>analytics:view</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/analytics/breakdown</code></td>
+<td><code>analytics:view</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/analytics/heatmap</code></td>
+<td><code>analytics:view</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/analytics/search</code></td>
+<td><code>analytics:view</code> (natural-language forensic search)</td>
+</tr>
+</tbody>
+</table></div>
+<p>All accept <code>camera_id</code>, <code>start</code>, <code>end</code> (ISO 8601) parameters.</p>
+<h3 id="use-case-get-a-retail-sites-hourly-occupancy-trend">Use case: Get a retail site's hourly occupancy trend</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span><span class="s2">"http://localhost:8000/api/analytics/occupancy?camera_id=</span><span class="nv">$CAM</span><span class="s2">&amp;start=2026-03-01T08:00:00Z&amp;end=2026-03-01T20:00:00Z&amp;bucket_min=60"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"camera_id": "cam1", "buckets": [</span>
+<span class="c1">#     {"ts": "2026-03-01T08:00:00Z", "count": 3},</span>
+<span class="c1">#     {"ts": "2026-03-01T09:00:00Z", "count": 7},</span>
+<span class="c1">#     ...</span>
+<span class="c1">#   ]}</span>
+</code></pre></div>
+
+<h3 id="use-case-find-person-in-red-near-the-gate-using-semantic-search">Use case: Find "person in red near the gate" using semantic search</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span><span class="s2">"http://localhost:8000/api/analytics/search?q=person%20in%20red%20near%20the%20gate&amp;camera_id=</span><span class="nv">$CAM</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"query": "person in red near the gate", "results": [</span>
+<span class="c1">#     {"id": "evt-001", "event_type": "intrusion", "camera_id": "cam1",</span>
+<span class="c1">#      "ts": "2026-03-01T14:23:01Z", "score": 0.9234},</span>
+<span class="c1">#     ...</span>
+<span class="c1">#   ]}</span>
+</code></pre></div>
+
+<h2 id="alerts">Alerts</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/alerts/routes</code></td>
+<td><code>alerts:manage</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/alerts/routes</code></td>
+<td><code>alerts:manage</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/api/alerts/routes/{id}</code></td>
+<td><code>alerts:manage</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/api/alerts/test</code></td>
+<td><code>alerts:manage</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/alerts/events</code></td>
+<td><code>events:view</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/alerts/budget</code></td>
+<td><code>alerts:manage</code> (per-camera daily budget: limit, used today, remaining)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Channels: <code>webhook</code> (HTTP POST), <code>email</code> (SMTP), <code>mqtt</code> (publish/subscribe), <code>push</code> (ntfy.sh).
+Routing by <code>rule_type</code> (<code>*</code> matches all) and optional <code>camera_id</code> scope.</p>
+<p>The daily alert budget (R3.6) caps <strong>notifications</strong> per camera per UTC day
+(<code>ALERT_BUDGET_PER_CAMERA_PER_DAY</code>, overridable per camera via
+<code>PUT /api/cameras/{id}</code>); <code>used_today</code> counts the analytic events stored since
+UTC midnight, so this view and the worker's enforcement read the same number.
+Evidence is never capped: detections, clips and search results are always kept.
+Routing by <code>rule_type</code> (<code>*</code> matches all) and optional <code>camera_id</code> scope.</p>
+<h3 id="use-case-route-all-intrusion-alerts-to-a-webhook-with-5-minute-cooldown">Use case: Route all intrusion alerts to a webhook with 5-minute cooldown</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/alerts/routes<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "rule_type": "intrusion",</span>
+<span class="s1">    "channel": "webhook",</span>
+<span class="s1">    "config": {"url": "https://hooks.example.com/localsight"},</span>
+<span class="s1">    "cooldown_sec": 300</span>
+<span class="s1">  }'</span>
+<span class="c1"># =&gt; {"id": "...", "channel": "webhook", "rule_type": "intrusion"}</span>
+</code></pre></div>
+
+<h3 id="use-case-route-anpr-events-to-mqtt-for-lpr-search-integration">Use case: Route ANPR events to MQTT for LPR search integration</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/alerts/routes<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "rule_type": "anpr",</span>
+<span class="s1">    "channel": "mqtt",</span>
+<span class="s1">    "config": {</span>
+<span class="s1">      "host": "192.168.1.100", "port": 1883,</span>
+<span class="s1">      "topic": "localsight/{camera_id}/alerts",</span>
+<span class="s1">      "username": "mqtt_user", "password": "s3cret"</span>
+<span class="s1">    },</span>
+<span class="s1">    "cooldown_sec": 60</span>
+<span class="s1">  }'</span>
+<span class="c1"># MQTT message payload:</span>
+<span class="c1"># {"source": "localsight", "rule_id": "...", "rule_type": "anpr",</span>
+<span class="c1">#  "camera_id": "cam1", "severity": "info", "ts": "2026-03-01T14:23:01Z",</span>
+<span class="c1">#  "message": "...", "detail": {"direction": ..., "dwell_sec": ...}}</span>
+<span class="c1">#</span>
+<span class="c1"># NOTE: `detail` is filtered to third-party-safe keys (direction, dwell_sec,</span>
+<span class="c1"># count, zone, stationary_sec). Encrypted plate material (plate_enc/plate_hash)</span>
+<span class="c1"># never leaves the host — only the host-side API can decrypt it.</span>
+</code></pre></div>
+
+<h3 id="use-case-push-alerts-to-ntfysh-for-mobile-notifications">Use case: Push alerts to ntfy.sh for mobile notifications</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/alerts/routes<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s1">'{</span>
+<span class="s1">    "rule_type": "*",</span>
+<span class="s1">    "channel": "push",</span>
+<span class="s1">    "config": {</span>
+<span class="s1">      "server": "https://ntfy.sh",</span>
+<span class="s1">      "topic": "localsight-alerts",</span>
+<span class="s1">      "priority": 4,</span>
+<span class="s1">      "tags": ["security", "camera"],</span>
+<span class="s1">      "click": "https://dashboard.example.com/events"</span>
+<span class="s1">    }</span>
+<span class="s1">  }'</span>
+</code></pre></div>
+
+<h3 id="use-case-verify-alert-delivery-without-touching-a-camera">Use case: Verify alert delivery without touching a camera</h3>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/alerts/test<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+<span class="c1"># =&gt; {"delivered": 2}  # sent to 2 active routes; 0 if broker unreachable (no crash)</span>
+</code></pre></div>
+
+<h2 id="users-admin">Users (admin)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET/POST</td>
+<td><code>/api/users</code></td>
+<td><code>user:manage</code></td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td><code>/api/users/{id}</code></td>
+<td><code>user:manage</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="audit">Audit</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/audit</code></td>
+<td><code>audit:view</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="system">System</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/health/live</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/health/ready</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/system/health</code></td>
+<td>user</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/api/system/metrics</code></td>
+<td>user (Prometheus text)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="media">Media</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/api/video/{key}?exp=&amp;sig=</code></td>
+<td>URL signature itself (HMAC-signed, expiring ≤300 s, scoped to one object)</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>Media URLs are consumed by <code>&lt;img&gt;</code>/<code>&lt;video&gt;</code> tags, which cannot send an
+<code>Authorization</code> header — so the signature is the authorization. URLs are
+only issued by permissioned endpoints (<code>events:view</code>/<code>events:export</code>),
+each issuance audited where applicable.</p>
+</blockquote>
+<p>Full interactive docs: <code>GET /docs</code> (FastAPI Swagger UI) when running.</p>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#auth" data-toc="auth">Auth</a></li>
+      <li><a class="" href="#cameras-nvr" data-toc="cameras-nvr">Cameras / NVR</a></li>
+      <li><a class="toc-h3" href="#use-case-provision-a-vigi-nvr-in-one-call" data-toc="use-case-provision-a-vigi-nvr-in-one-call">Use case: Provision a VIGI NVR in one call</a></li>
+      <li><a class="toc-h3" href="#use-case-discover-cameras-on-the-lan" data-toc="use-case-discover-cameras-on-the-lan">Use case: Discover cameras on the LAN</a></li>
+      <li><a class="" href="#people-identity" data-toc="people-identity">People / identity</a></li>
+      <li><a class="toc-h3" href="#use-case-enroll-a-known-person" data-toc="use-case-enroll-a-known-person">Use case: Enroll a known person</a></li>
+      <li><a class="" href="#events-search" data-toc="events-search">Events / search</a></li>
+      <li><a class="toc-h3" href="#use-case-find-a-person-wearing-a-red-jacket-attribute-search" data-toc="use-case-find-a-person-wearing-a-red-jacket-attribute-search">Use case: Find a person wearing a red jacket (attribute search)</a></li>
+      <li><a class="toc-h3" href="#use-case-look-up-a-plate-exact-match-over-the-keyed-hmac-index" data-toc="use-case-look-up-a-plate-exact-match-over-the-keyed-hmac-index">Use case: Look up a plate (exact match over the keyed HMAC index)</a></li>
+      <li><a class="toc-h3" href="#gate-access-lanes-r41-in-development" data-toc="gate-access-lanes-r41-in-development">Gate-access lanes (R4.1 — in development)</a></li>
+      <li><a class="toc-h3" href="#use-case-save-a-forensic-search-for-the-team-shift-audited" data-toc="use-case-save-a-forensic-search-for-the-team-shift-audited">Use case: Save a forensic search for the team shift (audited)</a></li>
+      <li><a class="toc-h3" href="#use-case-search-events-by-camera-and-time-range" data-toc="use-case-search-events-by-camera-and-time-range">Use case: Search events by camera and time range</a></li>
+      <li><a class="toc-h3" href="#use-case-export-event-clip-assemble-segments-into-a-downloadable-video" data-toc="use-case-export-event-clip-assemble-segments-into-a-downloadable-video">Use case: Export event clip (assemble segments into a downloadable video)</a></li>
+      <li><a class="" href="#timeline" data-toc="timeline">Timeline</a></li>
+      <li><a class="toc-h3" href="#use-case-load-the-dashboard-timeline-for-a-specific-day" data-toc="use-case-load-the-dashboard-timeline-for-a-specific-day">Use case: Load the dashboard timeline for a specific day</a></li>
+      <li><a class="" href="#behavior-analytics-rules" data-toc="behavior-analytics-rules">Behavior analytics (rules)</a></li>
+      <li><a class="toc-h3" href="#use-case-configure-a-perimeter-intrusion-zone" data-toc="use-case-configure-a-perimeter-intrusion-zone">Use case: Configure a perimeter intrusion zone</a></li>
+      <li><a class="" href="#live-view" data-toc="live-view">Live view</a></li>
+      <li><a class="toc-h3" href="#use-case-watch-a-live-camera-stream" data-toc="use-case-watch-a-live-camera-stream">Use case: Watch a live camera stream</a></li>
+      <li><a class="toc-h3" href="#use-case-check-which-streams-are-actively-transcoding" data-toc="use-case-check-which-streams-are-actively-transcoding">Use case: Check which streams are actively transcoding</a></li>
+      <li><a class="toc-h3" href="#use-case-stop-a-stream-when-done-watching" data-toc="use-case-stop-a-stream-when-done-watching">Use case: Stop a stream when done watching</a></li>
+      <li><a class="" href="#analytics-bi" data-toc="analytics-bi">Analytics / BI</a></li>
+      <li><a class="toc-h3" href="#use-case-get-a-retail-sites-hourly-occupancy-trend" data-toc="use-case-get-a-retail-sites-hourly-occupancy-trend">Use case: Get a retail site's hourly occupancy trend</a></li>
+      <li><a class="toc-h3" href="#use-case-find-person-in-red-near-the-gate-using-semantic-search" data-toc="use-case-find-person-in-red-near-the-gate-using-semantic-search">Use case: Find "person in red near the gate" using semantic search</a></li>
+      <li><a class="" href="#alerts" data-toc="alerts">Alerts</a></li>
+      <li><a class="toc-h3" href="#use-case-route-all-intrusion-alerts-to-a-webhook-with-5-minute-cooldown" data-toc="use-case-route-all-intrusion-alerts-to-a-webhook-with-5-minute-cooldown">Use case: Route all intrusion alerts to a webhook with 5-minute cooldown</a></li>
+      <li><a class="toc-h3" href="#use-case-route-anpr-events-to-mqtt-for-lpr-search-integration" data-toc="use-case-route-anpr-events-to-mqtt-for-lpr-search-integration">Use case: Route ANPR events to MQTT for LPR search integration</a></li>
+      <li><a class="toc-h3" href="#use-case-push-alerts-to-ntfysh-for-mobile-notifications" data-toc="use-case-push-alerts-to-ntfysh-for-mobile-notifications">Use case: Push alerts to ntfy.sh for mobile notifications</a></li>
+      <li><a class="toc-h3" href="#use-case-verify-alert-delivery-without-touching-a-camera" data-toc="use-case-verify-alert-delivery-without-touching-a-camera">Use case: Verify alert delivery without touching a camera</a></li>
+      <li><a class="" href="#users-admin" data-toc="users-admin">Users (admin)</a></li>
+      <li><a class="" href="#audit" data-toc="audit">Audit</a></li>
+      <li><a class="" href="#system" data-toc="system">System</a></li>
+      <li><a class="" href="#media" data-toc="media">Media</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

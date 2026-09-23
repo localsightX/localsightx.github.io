@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation & Setup — LocalSight Docs</title>
+  <meta name="description" content="Prerequisites, three install paths (venv, Docker Compose, local rig), first-run bootstrap, and a post-install verification checklist." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Getting started</span>
+          <span class="sep">/</span>
+          <span>Installation & Setup</span>
+        </p>
+        <h1>Installation & Setup</h1>
+        <p class="lede">Prerequisites, three install paths (venv, Docker Compose, local rig), first-run bootstrap, and a post-install verification checklist.</p>
+        <p class="meta">
+          <span class="tag">8 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/operations/installation.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html" aria-current="page">Installation & Setup</a></li>
+      <li><a href="user-guide.html">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="tplink-vigi.html">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html">Data Model (ERD)</a></li>
+      <li><a href="adr.html">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<p>How to get LocalSight running for the first time — prerequisites, three install
+paths, first-run bootstrap, and a verification checklist. For day-to-day
+operations see <a href="runbook.html">Operations Runbook</a>; for diagnosing problems see
+<a href="troubleshooting.html">Troubleshooting</a>.</p>
+<p>LocalSight is <strong>local-first</strong>: the API, the AI worker, the database, and the
+recordings all run on one host. Nothing phones home, and the app <strong>refuses to
+start</strong> until real secrets are present — there are no insecure defaults.</p>
+<hr>
+<h2 id="1-prerequisites">1. Prerequisites</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Why</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Python 3.12+</strong></td>
+<td>API + worker</td>
+<td>The CI-tested version. 3.11 works; 3.9/3.10 are untested.</td>
+</tr>
+<tr>
+<td><strong>FFmpeg</strong> (incl. <code>ffprobe</code>) on <code>PATH</code></td>
+<td>Recording + live view</td>
+<td>The only hard external binary. Bundled in the Docker image.</td>
+</tr>
+<tr>
+<td><strong>git</strong></td>
+<td>Clone the repo</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>~2 GB free disk</strong></td>
+<td>SQLite DB + recordings</td>
+<td>Recordings dominate; size to your retention (<code>scripts/capacity.py</code>).</td>
+</tr>
+<tr>
+<td><strong>A camera or NVR</strong> with RTSP/ONVIF</td>
+<td>Something to ingest</td>
+<td>Optional for install; required to see detections.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Optional, depending on your deployment:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Optional</th>
+<th>Unlocks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL 16 + pgvector</td>
+<td>Production DB (compose default). SQLite is the local default.</td>
+</tr>
+<tr>
+<td><code>onnxruntime</code></td>
+<td>Real multi-class detection (<code>AI_DETECTOR=onnx</code>) instead of the reference motion detector</td>
+</tr>
+<tr>
+<td><code>psutil</code></td>
+<td>CPU/RAM/storage gauges on <code>/api/system/health</code> and <code>/api/system/metrics</code></td>
+</tr>
+<tr>
+<td><code>boto3</code></td>
+<td><code>STORAGE_BACKEND=s3</code> (S3-compatible object storage)</td>
+</tr>
+<tr>
+<td>NVIDIA GPU / Intel NPU / Coral</td>
+<td>Accelerated inference — engaged automatically when a backend is present</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="install-ffmpeg">Install FFmpeg</h3>
+<p>LocalSight shells out to <code>ffmpeg</code> for segmented recording and the LL-HLS live
+gateway. Without it, cameras still come online and detections still fire, but
+<strong>no recordings and no live view</strong>.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># macOS (Homebrew)</span>
+brew<span class="w"> </span>install<span class="w"> </span>ffmpeg
+
+<span class="c1"># Debian / Ubuntu</span>
+sudo<span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>ffmpeg
+
+<span class="c1"># RHEL / Fedora / Rocky</span>
+sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>ffmpeg
+</code></pre></div>
+
+<p>Verify both binaries resolve:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>ffmpeg<span class="w"> </span>-version<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1
+ffprobe<span class="w"> </span>-version<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1
+</code></pre></div>
+
+<blockquote>
+<p><strong>Docker users</strong>: the image bundles FFmpeg — skip this step.</p>
+</blockquote>
+<hr>
+<h2 id="2-choose-an-install-path">2. Choose an install path</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Best for</th>
+<th>DB</th>
+<th>Effort</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A. Python venv</strong></td>
+<td>Local dev, evaluation, bare-metal single host</td>
+<td>SQLite</td>
+<td>~5 min</td>
+</tr>
+<tr>
+<td><strong>B. Docker Compose</strong></td>
+<td>Production / always-on</td>
+<td>PostgreSQL + pgvector</td>
+<td>~10 min</td>
+</tr>
+<tr>
+<td><strong>C. Local CCTV rig</strong></td>
+<td>Test-driving on a MacBook with a real end-to-end feed</td>
+<td>SQLite (in <code>.rig/</code>)</td>
+<td>~10 min</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="path-a-python-virtualenv-bare-metal-sqlite">Path A — Python virtualenv (bare metal, SQLite)</h2>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># 1. Clone</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/localsightX/localsight.git
+<span class="nb">cd</span><span class="w"> </span>localsight
+
+<span class="c1"># 2. Virtualenv + deps</span>
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+
+<span class="c1"># 3. Generate secrets + bootstrap-admin password</span>
+python<span class="w"> </span>scripts/gen_env.py
+</code></pre></div>
+
+<p><code>gen_env.py</code> writes <code>.env</code> (git-ignored) with cryptographically random
+<code>JWT_SECRET</code>, <code>MASTER_ENCRYPTION_KEY</code>, and a one-time
+<code>BOOTSTRAP_ADMIN_PASSWORD</code>. <strong>It prints the admin password once and it cannot
+be recovered</strong> — record it now. It will also refuse to overwrite an existing
+<code>.env</code> (delete it first if you really want a fresh one).</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># 4. Start the API (shell 1)</span>
+uvicorn<span class="w"> </span>apps.api.main:app<span class="w"> </span>--host<span class="w"> </span><span class="m">0</span>.0.0.0<span class="w"> </span>--port<span class="w"> </span><span class="m">8000</span><span class="w"> </span>--reload
+
+<span class="c1"># 5. Start the worker (shell 2) — cameras, recording, retention, alerts</span>
+python<span class="w"> </span>-m<span class="w"> </span>apps.worker
+</code></pre></div>
+
+<hr>
+<h2 id="path-b-docker-compose-production">Path B — Docker Compose (production)</h2>
+<p>Brings up PostgreSQL+pgvector, the API, the AI worker, and an nginx TLS proxy,
+with data on named volumes (<code>pgdata</code>, <code>storage</code>). Runs fully offline.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/localsightX/localsight.git
+<span class="nb">cd</span><span class="w"> </span>localsight
+
+python<span class="w"> </span>scripts/gen_env.py<span class="w">          </span><span class="c1"># writes .env with fresh random secrets</span>
+
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>infrastructure/compose/docker-compose.yml<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>--env-file<span class="w"> </span>.env<span class="w"> </span>up<span class="w"> </span>--build
+</code></pre></div>
+
+<p>Then:</p>
+<ul>
+<li>The dashboard is served by nginx on <strong>https://localhost</strong> (self-signed cert
+  in <code>infrastructure/nginx/certs/</code> — replace with your own for production).</li>
+<li><code>../../models</code> is mounted read-only into both containers — that's the
+  <strong>BYOM</strong> path: stage model weights into <code>models/staged/</code> and declare them in
+  <code>models/registry.json</code> (see <a href="onnx-detector.html">AI Model Staging (ONNX)</a>).</li>
+<li>Edit <code>.env</code> and re-run <code>up --build</code> to change configuration.</li>
+</ul>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># Follow logs</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>infrastructure/compose/docker-compose.yml<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>api<span class="w"> </span>worker
+
+<span class="c1"># Stop</span>
+docker<span class="w"> </span>compose<span class="w"> </span>-f<span class="w"> </span>infrastructure/compose/docker-compose.yml<span class="w"> </span>down
+</code></pre></div>
+
+<p>Set these in <code>.env</code> before a real deployment:</p>
+<ul>
+<li><code>SSRF_ALLOWLIST</code> — the CIDR(s) of your camera VLAN. <strong>Empty blocks every
+  private/loopback destination</strong>, so LAN cameras are rejected until you set it.</li>
+<li><code>DB_PASSWORD</code> — a real Postgres password (the placeholder is not for prod).</li>
+<li><code>AI_DETECTOR=onnx</code> + a staged detector — for real multi-class detection.</li>
+</ul>
+<hr>
+<h2 id="path-c-local-cctv-rig-test-drive-on-a-macbook">Path C — Local CCTV rig (test-drive on a MacBook)</h2>
+<p><code>scripts/local_cctv_rig.py</code> turns a MacBook into a one-camera NVR site: real
+FaceTime footage through the exact operator path (local <code>mediamtx</code> RTSP broker
+→ LocalSight → recording + AI + live view). It uses its own dev secrets and
+state under <code>.rig/</code> (git-ignored) and leaves your main <code>.env</code>/DB alone.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>python<span class="w"> </span>scripts/local_cctv_rig.py<span class="w"> </span>setup<span class="w">    </span><span class="c1"># brew: ffmpeg + mediamtx; .venv deps</span>
+python<span class="w"> </span>scripts/local_cctv_rig.py<span class="w"> </span>start<span class="w">    </span><span class="c1"># boot the rig (Camera permission prompt)</span>
+python<span class="w"> </span>scripts/local_cctv_rig.py<span class="w"> </span>verify<span class="w">   </span><span class="c1"># ~15-point end-to-end check</span>
+python<span class="w"> </span>scripts/local_cctv_rig.py<span class="w"> </span>status<span class="w">   </span><span class="c1"># processes / streams / camera state</span>
+python<span class="w"> </span>scripts/local_cctv_rig.py<span class="w"> </span>watch<span class="w">    </span><span class="c1"># tail all rig logs</span>
+python<span class="w"> </span>scripts/local_cctv_rig.py<span class="w"> </span>stop<span class="w">     </span><span class="c1"># tear down cleanly (SIGTERM, reap)</span>
+</code></pre></div>
+
+<p>Notes:</p>
+<ul>
+<li>Grant the <strong>Camera</strong> permission to your terminal when macOS prompts, or use
+  <code>start --source synthetic</code> for a moving test pattern.</li>
+<li>The rig exports <code>SSRF_ALLOWLIST=127.0.0.0/8</code> (the loopback broker), 30 s
+  recording segments, and runs the <strong>staged YOLO11n detector</strong> when
+  <code>onnxruntime</code> is installed.</li>
+<li>To soak a <strong>real LAN camera</strong> instead: export <code>RIG_CAM_NAME</code>,
+  <code>RIG_CAM_MAIN_URL</code> (optional <code>RIG_CAM_SUB_URL</code>) and <code>RIG_SSRF_ALLOWLIST</code>
+  covering the camera's VLAN, then <code>start --source external</code> — no local broker
+  or capture, API + worker only. See <code>python scripts/local_cctv_rig.py --help</code>.</li>
+</ul>
+<hr>
+<h2 id="3-first-run-bootstrap">3. First-run bootstrap</h2>
+<p>On first boot the API creates a single bootstrap admin from <code>.env</code>:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>BOOTSTRAP_ADMIN_EMAIL=admin@localsight.local
+BOOTSTRAP_ADMIN_PASSWORD=&lt;from gen_env.py, or set your own&gt;
+</code></pre></div>
+
+<p>Two hard rules:</p>
+<ol>
+<li>The app <strong>refuses to start</strong> if <code>JWT_SECRET</code> or <code>MASTER_ENCRYPTION_KEY</code> is
+   missing, empty, or still a <code>CHANGE_ME_*</code> placeholder.</li>
+<li>The app <strong>refuses to start</strong> if <code>BOOTSTRAP_ADMIN_PASSWORD</code> is missing or
+   under <strong>12 characters</strong>. There is no default password — <code>gen_env.py</code> mints a
+   random one.</li>
+</ol>
+<p>The bootstrap admin is created <strong>only when no users exist</strong>, so changing the
+env later does nothing on an initialized DB. After signing in, create your own
+admin account (or rotate the password under <strong>Account</strong>) and record the
+bootstrap secret in your password manager.</p>
+<blockquote>
+<p><strong>Never reuse the generated dev secrets in production.</strong> Rotate
+<code>JWT_SECRET</code> / <code>MASTER_ENCRYPTION_KEY</code> before any real deployment — and note
+that rotating <code>MASTER_ENCRYPTION_KEY</code> invalidates existing envelope-encrypted
+data (embeddings, plates) and existing signed media URLs.</p>
+</blockquote>
+<hr>
+<h2 id="4-post-install-verification-checklist">4. Post-install verification checklist</h2>
+<p>Run through these in order — each one isolates a layer.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># 1. Process alive?</span>
+curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/health/live<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="w">     </span><span class="c1"># =&gt; {"status":"alive",...}</span>
+
+<span class="c1"># 2. DB + storage reachable? (unauthenticated)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/health/ready
+<span class="c1"># =&gt; {"status":"ready","components":{"database":{"status":"ok"},"storage":{"status":"ok"}}}</span>
+
+<span class="c1"># 3. Auth works + secrets are valid? (bootstrap admin from .env)</span>
+<span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/api/auth/login<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-H<span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-d<span class="w"> </span><span class="s2">"{\"email\":\"</span><span class="nv">$BOOTSTRAP_ADMIN_EMAIL</span><span class="s2">\",\"password\":\"</span><span class="nv">$BOOTSTRAP_ADMIN_PASSWORD</span><span class="s2">\"}"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import sys,json;print(json.load(sys.stdin)['access_token'])"</span><span class="k">)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/api/auth/me<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-c<span class="w"> </span><span class="m">120</span>
+
+<span class="c1"># 4. Component statuses + model names (authed)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/api/system/health<span class="w"> </span>-H<span class="w"> </span><span class="s2">"Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">"</span>
+
+<span class="c1"># 5. FFmpeg is on PATH? (both must resolve)</span>
+ffmpeg<span class="w"> </span>-version<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ffprobe<span class="w"> </span>-version<span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-1
+</code></pre></div>
+
+<p>Then in the dashboard:</p>
+<ul>
+<li>[ ] <strong>Overview</strong> loads with the camera strip and health panel (refreshes every 15 s).</li>
+<li>[ ] <strong>Cameras</strong> → <strong>+ Add camera</strong> — the wizard's <strong>verify</strong> step pulls one
+      real frame before you commit, so a bad URL fails here instead of a day later.</li>
+<li>[ ] After adding a camera: status flips to <strong>online/streaming</strong> within ~30 s
+      (the worker writes camera liveness — if it stays <code>offline</code>, the worker
+      isn't running or the SSRF allowlist is blocking the stream URL).</li>
+<li>[ ] <strong>Live</strong> tile plays (needs FFmpeg + a substream URL).</li>
+<li>[ ] <strong>Events</strong> shows detections within a minute of activity in frame.</li>
+<li>[ ] <strong>Timeline</strong> shows recording coverage as a solid ribbon.</li>
+</ul>
+<p>If any step fails, jump to <a href="troubleshooting.html">Troubleshooting</a> — it's
+organized by the exact symptom you'll see.</p>
+<hr>
+<h2 id="5-enable-real-ai-optional-recommended">5. Enable real AI (optional, recommended)</h2>
+<p>Out of the box <code>AI_DETECTOR=reference</code> — a deterministic CPU motion detector
+that emits <code>person</code> only. It needs no model and no GPU, and it's how everything
+runs before any weights are staged.</p>
+<p>For production-accurate, multi-class detection (person / vehicle / bicycle /
+motorcycle / bus / truck / animal / bag / package), stage an ONNX model:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>python<span class="w"> </span>scripts/stage_model.py<span class="w"> </span>--name<span class="w"> </span>detector<span class="w"> </span>--path<span class="w"> </span>models/staged/yolo11n-detect.onnx<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--source<span class="w"> </span><span class="s2">"Ultralytics YOLO11n (ONNX export)"</span><span class="w"> </span>--license<span class="w"> </span><span class="s2">"AGPL-3.0"</span>
+</code></pre></div>
+
+<p>Then set <code>AI_DETECTOR=onnx</code> (<code>AI_MODEL_NAME=detector</code>) and restart the worker.
+The registry verifies the SHA-256 on load and <strong>refuses a mismatch</strong>; nothing
+is fetched from a URL at runtime. Full procedure, plus the optional ANPR /
+face / attribute chains: <a href="onnx-detector.html">AI Model Staging (ONNX)</a>.</p>
+<hr>
+<h2 id="6-where-the-data-lives-default-sqlite-install">6. Where the data lives (default SQLite install)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>localsight.db</code></td>
+<td>SQLite DB (cameras, events, persons, audit, …). WAL mode.</td>
+</tr>
+<tr>
+<td><code>data/storage/</code></td>
+<td>Recordings + snapshots (<code>STORAGE_LOCAL_ROOT</code>).</td>
+</tr>
+<tr>
+<td><code>data/live/</code></td>
+<td>Transcoded LL-HLS segments (<code>LOCALSIGHT_LIVE_DIR</code>).</td>
+</tr>
+<tr>
+<td><code>models/staged/</code></td>
+<td>Operator-staged model weights (git-ignored, BYOM).</td>
+</tr>
+<tr>
+<td><code>models/registry.json</code></td>
+<td>Name / version / path / SHA-256 / source / license per model.</td>
+</tr>
+<tr>
+<td><code>.env</code></td>
+<td>Secrets (git-ignored).</td>
+</tr>
+</tbody>
+</table></div>
+<p>Back up <code>localsight.db</code>, <code>data/storage/</code>, and <strong><code>MASTER_ENCRYPTION_KEY</code>
+separately</strong> — encrypted embeddings are useless without it. See
+<a href="runbook.html#backup-and-restore">runbook.md → Backup and restore</a>.</p>
+<hr>
+<h2 id="7-reset-reinstall">7. Reset / reinstall</h2>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># Stop both processes first, then wipe local state (dev only!)</span>
+rm<span class="w"> </span>-f<span class="w"> </span>localsight.db<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span>-rf<span class="w"> </span>data/<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span>-f<span class="w"> </span>.env
+python<span class="w"> </span>scripts/gen_env.py<span class="w">     </span><span class="c1"># fresh secrets + new bootstrap admin</span>
+</code></pre></div>
+
+<p>For the rig: <code>python scripts/local_cctv_rig.py stop</code> removes its PID files and
+tears everything down; <code>.rig/</code> (state, logs, soak reports) can be deleted
+manually. Neither touches your main <code>localsight.db</code> or <code>data/</code>.</p>
+<hr>
+<h2 id="next-steps">Next steps</h2>
+<ul>
+<li><strong>Operate it</strong>: <a href="runbook.html">Operations Runbook</a> — health, retention, alert channels,
+  backup, capacity, secure-deployment checklist.</li>
+<li><strong>Use it</strong>: <a href="user-guide.html"><code>docs/USER_GUIDE.md</code></a> — every screen, with
+  real screenshots.</li>
+<li><strong>Something's wrong</strong>: <a href="troubleshooting.html">Troubleshooting</a>.</li>
+<li><strong>Wire up cameras</strong>: <a href="tplink-vigi.html"><code>docs/integrations/tplink-vigi.md</code></a>
+  and ONVIF discovery / multi-vendor presets.</li>
+<li><strong>Understand it</strong>: <a href="https://github.com/localsightX/localsight/blob/main/docs/architecture"><code>docs/architecture/</code></a> and
+  <a href="security.html"><code>docs/security/SECURITY.md</code></a>.</li>
+</ul>
+<p>Open <a href="http://localhost:8000">http://localhost:8000</a> and sign in with the bootstrap admin credentials.</p>
+<blockquote>
+<p>The worker is a <strong>separate process</strong>. Without it the dashboard works but
+nothing ingests: no frames, no detections, no recordings — and <strong>no retention
+sweeping</strong>, so the DB and storage grow unbounded. Keep it running.</p>
+</blockquote>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#1-prerequisites" data-toc="1-prerequisites">1. Prerequisites</a></li>
+      <li><a class="toc-h3" href="#install-ffmpeg" data-toc="install-ffmpeg">Install FFmpeg</a></li>
+      <li><a class="" href="#2-choose-an-install-path" data-toc="2-choose-an-install-path">2. Choose an install path</a></li>
+      <li><a class="" href="#path-a-python-virtualenv-bare-metal-sqlite" data-toc="path-a-python-virtualenv-bare-metal-sqlite">Path A — Python virtualenv (bare metal, SQLite)</a></li>
+      <li><a class="" href="#path-b-docker-compose-production" data-toc="path-b-docker-compose-production">Path B — Docker Compose (production)</a></li>
+      <li><a class="" href="#path-c-local-cctv-rig-test-drive-on-a-macbook" data-toc="path-c-local-cctv-rig-test-drive-on-a-macbook">Path C — Local CCTV rig (test-drive on a MacBook)</a></li>
+      <li><a class="" href="#3-first-run-bootstrap" data-toc="3-first-run-bootstrap">3. First-run bootstrap</a></li>
+      <li><a class="" href="#4-post-install-verification-checklist" data-toc="4-post-install-verification-checklist">4. Post-install verification checklist</a></li>
+      <li><a class="" href="#5-enable-real-ai-optional-recommended" data-toc="5-enable-real-ai-optional-recommended">5. Enable real AI (optional, recommended)</a></li>
+      <li><a class="" href="#6-where-the-data-lives-default-sqlite-install" data-toc="6-where-the-data-lives-default-sqlite-install">6. Where the data lives (default SQLite install)</a></li>
+      <li><a class="" href="#7-reset-reinstall" data-toc="7-reset-reinstall">7. Reset / reinstall</a></li>
+      <li><a class="" href="#next-steps" data-toc="next-steps">Next steps</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

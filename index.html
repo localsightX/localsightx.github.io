@@ -18,6 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/docs.css" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -36,6 +37,7 @@
         <a href="#start">Quick start</a>
         <a href="#opensource">Open source</a>
         <a href="#cameras">Cameras</a>
+        <a href="docs/">Documentation</a>
         <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
       </nav>
       <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
@@ -470,7 +472,45 @@ docker compose -f infrastructure/compose/docker-compose.yml --env-file .env up -
           <span class="chip">Bosch</span>
           <span class="chip">GB/T 28181</span>
         </div>
-        <p class="note">Provision a whole VIGI NVR in one call, discover ONVIF devices on the LAN, or build vendor URL templates — all SSRF-validated and audited. See <a href="https://github.com/localsightX/localsight/tree/main/docs/integrations" target="_blank" rel="noopener">docs/integrations</a>.</p>
+        <p class="note">Provision a whole VIGI NVR in one call, discover ONVIF devices on the LAN, or build vendor URL templates — all SSRF-validated and audited. See the <a href="docs/tplink-vigi.html">camera &amp; NVR integration guide</a>.</p>
+      </div>
+    </section>
+
+    <!-- DOCS -->
+    <section class="section" id="docs">
+      <div class="container">
+        <header class="section__head">
+          <span class="eyebrow">Documentation</span>
+          <h2>Every answer, one click away</h2>
+          <p>The full handbook lives in the docs: install in minutes, learn every screen, operate it 24/7, and read the security architecture line by line.</p>
+        </header>
+        <div class="dcards">
+          <a class="dcard" href="docs/installation.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></span>
+            <h3>Installation &amp; Setup</h3>
+            <p>Prerequisites, venv / Docker Compose / local rig paths, first-run bootstrap, and a verification checklist.</p>
+            <span class="more">5–10 min →</span>
+          </a>
+          <a class="dcard" href="docs/user-guide.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+            <h3>User Guide</h3>
+            <p>Every screen of the console with real screenshots: cameras, rules, live view, events, alerts, people, privacy.</p>
+            <span class="more">Read →</span>
+          </a>
+          <a class="dcard" href="docs/troubleshooting.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+            <h3>Troubleshooting</h3>
+            <p>Symptom → likely cause → fix across startup, cameras, recording, live view, alerts and performance.</p>
+            <span class="more">Fix it →</span>
+          </a>
+          <a class="dcard" href="docs/api-reference.html">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span>
+            <h3>API Reference</h3>
+            <p>Every endpoint with its required permission, plus copy-paste curl use cases for automation.</p>
+            <span class="more">Browse →</span>
+          </a>
+        </div>
+        <p class="note note--tight">14 guides in total — including the operations runbook, ONNX model staging, the CI/CD pipeline, the data model, the threat model and the full engineering review. <a href="docs/">Browse all documentation →</a></p>
       </div>
     </section>
 
@@ -517,7 +557,7 @@ docker compose -f infrastructure/compose/docker-compose.yml --env-file .env up -
           </details>
           <details>
             <summary>It won't start / a camera stays offline. Where do I look?</summary>
-            <p>The two most common ones: the app <strong>refuses to boot</strong> until real secrets and a ≥12-character bootstrap-admin password are set (there are no insecure defaults), and <strong>LAN cameras are rejected</strong> until their VLAN is added to <code>SSRF_ALLOWLIST</code>. Both are deliberate. For symptom → cause → fix across startup, cameras, recording, live view, alerts and storage — plus the diagnostics to gather before filing an issue — see the <a href="https://github.com/localsightX/localsight/blob/main/docs/operations/troubleshooting.md" target="_blank" rel="noopener">troubleshooting guide</a>.</p>
+            <p>The two most common ones: the app <strong>refuses to boot</strong> until real secrets and a ≥12-character bootstrap-admin password are set (there are no insecure defaults), and <strong>LAN cameras are rejected</strong> until their VLAN is added to <code>SSRF_ALLOWLIST</code>. Both are deliberate. For symptom → cause → fix across startup, cameras, recording, live view, alerts and storage — plus the diagnostics to gather before filing an issue — see the <a href="docs/troubleshooting.html">troubleshooting guide</a>.</p>
           </details>
         </div>
       </div>
@@ -530,7 +570,7 @@ docker compose -f infrastructure/compose/docker-compose.yml --env-file .env up -
         <p>Self-host LocalSight and keep every frame, plate and face on your premises — MIT-licensed, no subscription, no lock-in.</p>
         <div class="hero__actions">
           <a class="btn btn--primary" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Star on GitHub</a>
-          <a class="btn btn--ghost" href="https://github.com/localsightX/localsight/tree/main/docs" target="_blank" rel="noopener">Read the docs</a>
+          <a class="btn btn--ghost" href="docs/">Read the docs</a>
         </div>
         <p class="note note--tight">Early-stage and building in the open — no fake testimonials, no inflated numbers. Everything claimed on this page links to its evidence.</p>
       </div>
@@ -557,18 +597,19 @@ docker compose -f infrastructure/compose/docker-compose.yml --env-file .env up -
         </div>
         <div>
           <h2 class="footer__h">Docs</h2>
-          <a href="https://github.com/localsightX/localsight/blob/main/docs/operations/installation.md" target="_blank" rel="noopener">Installation</a>
-          <a href="https://github.com/localsightX/localsight/blob/main/docs/USER_GUIDE.md" target="_blank" rel="noopener">User guide</a>
-          <a href="https://github.com/localsightX/localsight/blob/main/docs/operations/runbook.md" target="_blank" rel="noopener">Operations runbook</a>
-          <a href="https://github.com/localsightX/localsight/blob/main/docs/operations/troubleshooting.md" target="_blank" rel="noopener">Troubleshooting</a>
-          <a href="https://github.com/localsightX/localsight/tree/main/docs/architecture" target="_blank" rel="noopener">Architecture</a>
-          <a href="https://github.com/localsightX/localsight/tree/main/docs/security" target="_blank" rel="noopener">Security</a>
-          <a href="https://github.com/localsightX/localsight/blob/main/docs/operations/onnx-detector.md" target="_blank" rel="noopener">ONNX detector</a>
+          <a href="docs/">All documentation</a>
+          <a href="docs/installation.html">Installation</a>
+          <a href="docs/user-guide.html">User guide</a>
+          <a href="docs/runbook.html">Operations runbook</a>
+          <a href="docs/troubleshooting.html">Troubleshooting</a>
+          <a href="docs/system-architecture.html">Architecture</a>
+          <a href="docs/security.html">Security</a>
+          <a href="docs/onnx-detector.html">ONNX detector</a>
         </div>
         <div>
           <h2 class="footer__h">Integrations</h2>
-          <a href="https://github.com/localsightX/localsight/blob/main/docs/integrations/tplink-vigi.md" target="_blank" rel="noopener">TP-Link VIGI</a>
-          <a href="https://github.com/localsightX/localsight/blob/main/docs/api/openapi-summary.md" target="_blank" rel="noopener">API</a>
+          <a href="docs/tplink-vigi.html">TP-Link VIGI</a>
+          <a href="docs/api-reference.html">API</a>
         </div>
       </nav>
     </div>

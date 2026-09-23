@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decision Records (ADR) — LocalSight Docs</title>
+  <meta name="description" content="Why a modular monolith, SQLite by default, swappable AI interfaces, envelope encryption, and no insecure defaults." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Architecture</span>
+          <span class="sep">/</span>
+          <span>Decision Records (ADR)</span>
+        </p>
+        <h1>Decision Records (ADR)</h1>
+        <p class="lede">Why a modular monolith, SQLite by default, swappable AI interfaces, envelope encryption, and no insecure defaults.</p>
+        <p class="meta">
+          <span class="tag">2 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/architecture/adr.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html">Installation & Setup</a></li>
+      <li><a href="user-guide.html">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="tplink-vigi.html">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html">Data Model (ERD)</a></li>
+      <li><a href="adr.html" aria-current="page">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<h2 id="adr-1-modular-monolith-dedicated-workers-not-microservices">ADR-1: Modular monolith + dedicated workers (not microservices)</h2>
+<p><strong>Decision:</strong> Ship a FastAPI modular monolith for the control/API plane plus a
+separate AI/video worker process. Share Postgres + object storage; communicate via
+the DB (and WebSocket/SSE later for live events).
+<strong>Rationale:</strong> The spec itself recommends this for the first production version.
+It minimizes operational complexity and avoids distributed-systems overhead while
+still isolating GPU/FFmpeg failures from the API.
+<strong>Consequence:</strong> Worker and API must agree on the schema; use Alembic for evolution.</p>
+<h2 id="adr-2-sqlite-by-default-postgresqlpgvector-via-one-switch">ADR-2: SQLite by default, PostgreSQL/pgvector via one switch</h2>
+<p><strong>Decision:</strong> Same SQLAlchemy 2.0 models run on SQLite (zero-dependency local run)
+and PostgreSQL+pgvector (production). Selected by <code>DATABASE_URL</code>.
+<strong>Rationale:</strong> Lets the system boot and be tested with no external services, while
+production gets real concurrency, partitioning, and vector search.
+<strong>Consequence:</strong> Avoid DB-specific types in core code; pgvector is an optional
+upgrade path for the embeddings index.</p>
+<h2 id="adr-3-ai-is-a-set-of-swappable-interfaces">ADR-3: AI is a set of swappable interfaces</h2>
+<p><strong>Decision:</strong> Define <code>Detector</code>, <code>Tracker</code>, <code>FaceDetector</code>, <code>FaceEmbedder</code>,
+<code>IdentityMatcher</code>. Ship a reference implementation that runs with no GPU/model.
+<strong>Rationale:</strong> Avoids hard-coding the app to one model; lets us benchmark and
+replace models without API changes.
+<strong>Consequence:</strong> Production must supply a real model + registry entry; the reference
+detector must never be used where accurate detection is required.</p>
+<h2 id="adr-4-envelope-encryption-with-an-external-kek">ADR-4: Envelope encryption with an external KEK</h2>
+<p><strong>Decision:</strong> Encrypt embeddings, snapshots, stream URLs, and NVR credentials with
+per-record data keys wrapped by a master KEK supplied via env/secrets manager.
+<strong>Rationale:</strong> Key/data separation; a DB dump or stolen disk reveals only ciphertext.
+<strong>Consequence:</strong> KEK must be managed securely (Vault/Docker secrets); rotation
+re-wraps without re-encrypting bulk data.</p>
+<h2 id="adr-5-no-insecure-secret-defaults">ADR-5: No insecure secret defaults</h2>
+<p><strong>Decision:</strong> App refuses to boot if <code>JWT_SECRET</code>/<code>MASTER_ENCRYPTION_KEY</code> are empty
+or placeholders.
+<strong>Rationale:</strong> Prevents accidental insecure deployments.
+<strong>Consequence:</strong> Operators must generate secrets (<code>scripts/gen_env.py</code>).</p>
+<h2 id="adr-6-ssrf-guard-on-all-operator-supplied-urls">ADR-6: SSRF guard on all operator-supplied URLs</h2>
+<p><strong>Decision:</strong> Validate camera/NVR destinations before connecting; reject
+loopback/private/link-local/metadata unless explicitly allow-listed.
+<strong>Rationale:</strong> A camera config UI is a natural SSRF pivot.
+<strong>Consequence:</strong> Must be paired with network-level egress restrictions.</p>
+<h2 id="adr-7-reference-detector-synthetic-frame-source-for-runnability">ADR-7: Reference detector + synthetic frame source for runnability</h2>
+<p><strong>Decision:</strong> When no FFmpeg/model is available, use a synthetic frame source and a
+deterministic reference detector so the full pipeline runs and is testable.
+<strong>Rationale:</strong> Demonstrates and tests the architecture end-to-end without GPUs.
+<strong>Consequence:</strong> Not a substitute for a real model in production.</p>
+<h2 id="adr-8-signed-expiring-media-urls-no-public-links">ADR-8: Signed, expiring media URLs; no public links</h2>
+<p><strong>Decision:</strong> Video/snapshot delivery uses HMAC-signed URLs with short TTL; access
+also requires an authenticated session with <code>video:view</code>.
+<strong>Rationale:</strong> Prevents permanent/guessable video exposure.
+<strong>Consequence:</strong> Clients must re-request URLs; add a CDN/short-link pattern if needed.</p>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#adr-1-modular-monolith-dedicated-workers-not-microservices" data-toc="adr-1-modular-monolith-dedicated-workers-not-microservices">ADR-1: Modular monolith + dedicated workers (not microservices)</a></li>
+      <li><a class="" href="#adr-2-sqlite-by-default-postgresqlpgvector-via-one-switch" data-toc="adr-2-sqlite-by-default-postgresqlpgvector-via-one-switch">ADR-2: SQLite by default, PostgreSQL/pgvector via one switch</a></li>
+      <li><a class="" href="#adr-3-ai-is-a-set-of-swappable-interfaces" data-toc="adr-3-ai-is-a-set-of-swappable-interfaces">ADR-3: AI is a set of swappable interfaces</a></li>
+      <li><a class="" href="#adr-4-envelope-encryption-with-an-external-kek" data-toc="adr-4-envelope-encryption-with-an-external-kek">ADR-4: Envelope encryption with an external KEK</a></li>
+      <li><a class="" href="#adr-5-no-insecure-secret-defaults" data-toc="adr-5-no-insecure-secret-defaults">ADR-5: No insecure secret defaults</a></li>
+      <li><a class="" href="#adr-6-ssrf-guard-on-all-operator-supplied-urls" data-toc="adr-6-ssrf-guard-on-all-operator-supplied-urls">ADR-6: SSRF guard on all operator-supplied URLs</a></li>
+      <li><a class="" href="#adr-7-reference-detector-synthetic-frame-source-for-runnability" data-toc="adr-7-reference-detector-synthetic-frame-source-for-runnability">ADR-7: Reference detector + synthetic frame source for runnability</a></li>
+      <li><a class="" href="#adr-8-signed-expiring-media-urls-no-public-links" data-toc="adr-8-signed-expiring-media-urls-no-public-links">ADR-8: Signed, expiring media URLs; no public links</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

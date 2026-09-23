@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Model (ERD) — LocalSight Docs</title>
+  <meta name="description" content="Tables and relationships, hot-path indexes, and exactly which columns are encrypted at rest." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Architecture</span>
+          <span class="sep">/</span>
+          <span>Data Model (ERD)</span>
+        </p>
+        <h1>Data Model (ERD)</h1>
+        <p class="lede">Tables and relationships, hot-path indexes, and exactly which columns are encrypted at rest.</p>
+        <p class="meta">
+          <span class="tag">3 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/architecture/erd.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html">Installation & Setup</a></li>
+      <li><a href="user-guide.html">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="tplink-vigi.html">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html" aria-current="page">Data Model (ERD)</a></li>
+      <li><a href="adr.html">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<p>All tables use UUID primary keys (string hex), are UTC-timestamped, and store
+<em>references/metadata</em>, never large video blobs. Sensitive columns are encrypted by
+the application before insert.</p>
+<h2 id="tables-and-key-relationships">Tables and key relationships</h2>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>User(1) ──&lt; (N) Role(1) ──&lt; (N) Permission          # RBAC
+User(1) ──&lt; (N) RefreshToken                        # refresh rotation/revocation
+User(1) ──&lt; (N) AuditLog                            # immutable audit
+
+NvrDevice(1) ──&lt; (N) Camera                         # discovered/added cameras
+Camera(1) ──&lt; (N) Stream                             # main + sub per camera
+Camera(1) ──&lt; (N) Detection                          # raw per-frame detections
+Camera(1) ──&lt; (N) Track                              # ephemeral tracked objects
+Camera(1) ──&lt; (N) Event                              # aggregated presence/intervals
+Camera(1) ──&lt; (N) VideoSegment                       # continuous recording segments
+Camera(1) ──&lt; (1) Lane ──&lt; (N) LaneWhitelistEntry    # R4.1 gate-access LPR (1:1)
+
+Person(1) ──&lt; (N) PersonEmbedding                   # encrypted biometric vectors
+Person(1) ──&lt; (N) Event(identity_id)               # known identity linkage
+Track(identity_id) ── Person(optional)
+
+AlertRoute(1) ──&lt; (N) AuditLog                     # alert route changes are audited
+
+Event ──&lt; Snapshot, VideoSegment                    # media references (encrypted keys)
+SystemMetric(ts, name, value, tags)                 # observability
+ModelVersion(name, version, hash, source, license)  # AI supply-chain integrity
+</code></pre></div>
+
+<h3 id="alertroute-table">AlertRoute table</h3>
+<p>Stores per-channel notification routing for analytic events:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>UUID</td>
+<td>Primary key</td>
+</tr>
+<tr>
+<td><code>rule_type</code></td>
+<td>string</td>
+<td>Event type to match: <code>line_cross</code>, <code>intrusion</code>, <code>loitering</code>, <code>presence</code>, <code>anpr</code>, <code>*</code> (all)</td>
+</tr>
+<tr>
+<td><code>camera_id</code></td>
+<td>UUID?</td>
+<td>Optional scope to a specific camera</td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td>string</td>
+<td>Delivery channel: <code>webhook</code>, <code>email</code>, <code>mqtt</code>, <code>push</code></td>
+</tr>
+<tr>
+<td><code>config_enc</code></td>
+<td>text?</td>
+<td>Channel-specific config (URL, credentials), encrypted at rest</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td>bool</td>
+<td>Route active/inactive</td>
+</tr>
+<tr>
+<td><code>cooldown_sec</code></td>
+<td>int</td>
+<td>Suppress re-fire for this channel×rule×camera within window</td>
+</tr>
+</tbody>
+</table></div>
+<p>Config is <strong>encrypted at rest</strong> (envelope encryption) and <strong>never returned to API clients</strong>.
+The <code>webhook</code> channel config stores the URL; <code>mqtt</code> stores host/port/topic/credentials;
+<code>email</code> stores SMTP settings; <code>push</code> stores ntfy.sh server/topic/priority.</p>
+<h3 id="lane-lanewhitelistentry-tables-r41-gate-access-lpr">Lane / LaneWhitelistEntry tables (R4.1 gate-access LPR)</h3>
+<p>A camera configured as a <em>lane</em> becomes an access-control point: plates read by the
+ANPR pipeline are matched against a whitelist and, on a match inside the allow
+window, the worker issues a barrier (relay open) command. Deny-by-default — a
+whitelist miss is logged as an event and never triggers the barrier.</p>
+<p><strong>Lane</strong> (one per camera, enforced by <code>uq_lane_camera</code>):</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>UUID</td>
+<td>Primary key</td>
+</tr>
+<tr>
+<td><code>camera_id</code></td>
+<td>UUID</td>
+<td>FK <code>cameras.id</code> <code>ON DELETE CASCADE</code></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>Lane label, e.g. "main gate"</td>
+</tr>
+<tr>
+<td><code>barrier_channel</code></td>
+<td>string</td>
+<td>Action channel: <code>webhook</code> or <code>mqtt</code></td>
+</tr>
+<tr>
+<td><code>barrier_config_enc</code></td>
+<td>text?</td>
+<td>Relay destination/credentials, envelope-encrypted (like <code>alert_routes.config_enc</code>)</td>
+</tr>
+<tr>
+<td><code>allow_window</code></td>
+<td>JSON?</td>
+<td>Lane-level schedule (see below); null = 24/7</td>
+</tr>
+<tr>
+<td><code>cooldown_sec</code></td>
+<td>int</td>
+<td>Per-plate command idempotency window (default 30)</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td>bool</td>
+<td>Lane armed/disarmed</td>
+</tr>
+<tr>
+<td><code>armed_by</code></td>
+<td>UUID?</td>
+<td>Operator who armed the lane — audit-logged with every open/close</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>LaneWhitelistEntry</strong> (FK <code>lanes.id</code> <code>ON DELETE CASCADE</code>):</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>id</code></td>
+<td>UUID</td>
+<td>Primary key</td>
+</tr>
+<tr>
+<td><code>lane_id</code></td>
+<td>UUID</td>
+<td>FK <code>lanes.id</code> <code>ON DELETE CASCADE</code></td>
+</tr>
+<tr>
+<td><code>plate_hash</code></td>
+<td>string(64)</td>
+<td><code>CryptoBox.hmac_str</code> token — <strong>the only plate column in the DB</strong></td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td>string</td>
+<td>Operator note (e.g. "delivery van"), never the plaintext plate</td>
+</tr>
+<tr>
+<td><code>allow_window</code></td>
+<td>JSON?</td>
+<td>Per-plate override; null = inherit the lane window</td>
+</tr>
+<tr>
+<td><code>enabled</code></td>
+<td>bool</td>
+<td>Entry active/inactive</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>plate_hash</code> is the <em>same master-key-bound HMAC token</em> the ANPR pipeline writes to
+<code>Event.detail.plate_hash</code>, so a whitelist match is an exact join against the R2 plate
+index and <strong>plaintext plates never reach the database</strong>. Rotating <code>MASTER_ENCRYPTION_KEY</code>
+invalidates every entry by design — treat it as a re-enrollment event.</p>
+<p><strong>Allow-window shape</strong> (<code>packages.domain.lane.is_within_window</code>):</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="p">{</span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="s2">"09:00"</span><span class="p">,</span><span class="w"> </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="s2">"17:00"</span><span class="p">,</span><span class="w"> </span><span class="nt">"days"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">],</span><span class="w"> </span><span class="nt">"tz"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Europe/Berlin"</span><span class="p">}</span>
+</code></pre></div>
+
+<p><code>start</code>/<code>end</code> are <code>HH:MM</code> (inclusive start, exclusive end); <code>end &lt;= start</code> wraps past
+midnight; <code>days</code> are ISO weekday ints (1=Mon .. 7=Sun, empty = all); <code>tz</code> is applied to
+the timestamp before testing. A missing window means "always allowed"; a <strong>malformed
+window denies</strong> — the gate fails closed rather than opening on a config typo.</p>
+<p><strong><code>cameras.pipeline_flags</code></strong> (JSON, additive): per-camera analytic switches,
+<code>{flag: bool}</code>, off unless explicitly enabled (<code>packages.domain.lane.
+pipeline_flag_enabled</code>). Known flags: <code>anpr</code>, <code>lane_access</code> (this feature),
+<code>speed</code> (R4.2), <code>mmr</code> (R4.3).</p>
+<h2 id="indexes-hot-paths">Indexes (hot paths)</h2>
+<ul>
+<li><code>events(camera_id, timestamp_start)</code></li>
+<li><code>events(identity_id, timestamp_start)</code></li>
+<li><code>tracks(camera_id, last_seen)</code></li>
+<li><code>detections(camera_id, frame_ts)</code></li>
+<li><code>audit_logs(ts, action)</code></li>
+<li><code>alert_routes(rule_type, camera_id)</code></li>
+<li><code>lane_whitelist(plate_hash)</code> — keyed-HMAC plate equality lookup (unique per lane)</li>
+</ul>
+<h2 id="encryption-scope-application-layer-envelope">Encryption scope (application-layer envelope)</h2>
+<p>Encrypted at rest: <code>cameras.stream_url_enc</code>, <code>cameras.substream_url_enc</code>,
+<code>nvr_devices.username_enc/password_enc</code>, <code>users.mfa_secret_enc</code>,
+<code>person_embeddings.embedding_enc</code>, <code>snapshots.storage_key_enc</code>,
+<code>events.snapshot_key_enc</code>, <code>events.video_segment_key_enc</code>,
+<code>alert_routes.config_enc</code>, <code>lanes.barrier_config_enc</code>.</p>
+<p>The DB stores only ciphertext for these columns; keys never touch the database.</p>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#tables-and-key-relationships" data-toc="tables-and-key-relationships">Tables and key relationships</a></li>
+      <li><a class="toc-h3" href="#alertroute-table" data-toc="alertroute-table">AlertRoute table</a></li>
+      <li><a class="toc-h3" href="#lane-lanewhitelistentry-tables-r41-gate-access-lpr" data-toc="lane-lanewhitelistentry-tables-r41-gate-access-lpr">Lane / LaneWhitelistEntry tables (R4.1 gate-access LPR)</a></li>
+      <li><a class="" href="#indexes-hot-paths" data-toc="indexes-hot-paths">Indexes (hot paths)</a></li>
+      <li><a class="" href="#encryption-scope-application-layer-envelope" data-toc="encryption-scope-application-layer-envelope">Encryption scope (application-layer envelope)</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

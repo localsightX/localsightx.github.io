@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Threat Model — LocalSight Docs</title>
+  <meta name="description" content="STRIDE-aligned threats with the attack, impact, mitigation, detection, and recovery for each." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Architecture</span>
+          <span class="sep">/</span>
+          <span>Threat Model</span>
+        </p>
+        <h1>Threat Model</h1>
+        <p class="lede">STRIDE-aligned threats with the attack, impact, mitigation, detection, and recovery for each.</p>
+        <p class="meta">
+          <span class="tag">2 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/architecture/threat-model.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html">Installation & Setup</a></li>
+      <li><a href="user-guide.html">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="tplink-vigi.html">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html">Data Model (ERD)</a></li>
+      <li><a href="adr.html">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html" aria-current="page">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<p>For each threat: attack → impact → likelihood → mitigation → detection → recovery.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Threat</th>
+<th>Attack</th>
+<th>Impact</th>
+<th>Likelihood</th>
+<th>Mitigation</th>
+<th>Detection</th>
+<th>Recovery</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Compromised camera</td>
+<td>Malicious RTP/RTSP payload</td>
+<td>RCE via decoder</td>
+<td>Med</td>
+<td>Run FFmpeg non-root, seccomp/AppArmor, resource limits, least privilege, decoders isolated</td>
+<td>decoder crash alerts, anomaly logs</td>
+<td>restart worker; quarantine camera</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Compromised NVR</td>
+<td>Forged stream / creds</td>
+<td>False footage</td>
+<td>Low</td>
+<td>Encrypt creds at rest, separate mgmt VLAN, egress allowlist</td>
+<td>auth failures, unexpected source IP</td>
+<td>rotate creds; revoke</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Malicious authenticated user</td>
+<td>Enroll false identity, delete evidence</td>
+<td>False IDs / data loss</td>
+<td>Med</td>
+<td>RBAC server-side; <code>person:delete</code> limited; audit all</td>
+<td>audit log review; alert on delete/export</td>
+<td>restore from backup; revoke user</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Stolen admin creds</td>
+<td>Full control</td>
+<td>Total compromise</td>
+<td>Med</td>
+<td>Argon2id, MFA, lockout, refresh rotation, audit</td>
+<td>impossible-travel/IP anomaly</td>
+<td>revoke tokens; rotate KEK</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Malicious video file</td>
+<td>Crafted frame</td>
+<td>Decoder exploit</td>
+<td>Low</td>
+<td>Same as #1; validate container/codec; size caps</td>
+<td>decode errors</td>
+<td>re-ingest from source</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Malicious RTSP URL (SSRF)</td>
+<td>Point platform at internal svc</td>
+<td>Internal pivot</td>
+<td>Med</td>
+<td>SSRF egress guard (block loopback/link-local/metadata) + network egress policy</td>
+<td>rejected-URL audit entries</td>
+<td>block; review allowlist</td>
+</tr>
+<tr>
+<td>7</td>
+<td>SSRF to cloud metadata</td>
+<td><code>169.254.169.254</code></td>
+<td>Cloud cred theft</td>
+<td>Low</td>
+<td>Block link-local; no IMDS by default</td>
+<td>guard blocks</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>8</td>
+<td>RCE via media processing</td>
+<td>Shell/deserialization</td>
+<td>Host compromise</td>
+<td>Low</td>
+<td>Structured argv (no shell), no <code>eval</code>, sandbox containers</td>
+<td>IDS/SIEM</td>
+<td>rebuild from image</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Malicious model</td>
+<td>Trojan weights</td>
+<td>Wrong/biased ID</td>
+<td>Low</td>
+<td>Model registry + SHA-256 verification before load</td>
+<td>hash mismatch on load</td>
+<td>re-stage approved model</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Database theft</td>
+<td>Dump/backup exfil</td>
+<td>PII + embeddings</td>
+<td>Med</td>
+<td>Encryption at rest, least-priv DB user, network isolation</td>
+<td>anomalous query volume</td>
+<td>rotate KEK; restore</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Embedding theft</td>
+<td>Steal vectors</td>
+<td>Re-identification</td>
+<td>Med</td>
+<td>Encrypted embeddings, access control, audit</td>
+<td>unusual read patterns</td>
+<td>rotate KEK; revoke</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Video theft</td>
+<td>API/export abuse</td>
+<td>Privacy breach</td>
+<td>Med</td>
+<td>RBAC <code>video:view/export</code>, signed expiring URLs, audit</td>
+<td>export audit; rate limits</td>
+<td>revoke; rotate</td>
+</tr>
+<tr>
+<td>13</td>
+<td>API abuse / DoS</td>
+<td>Flood endpoints</td>
+<td>Outage</td>
+<td>High</td>
+<td>Rate limiting, pagination limits, size/timeouts, WAF</td>
+<td>metrics + alerts</td>
+<td>scale; block IPs</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Storage exhaustion</td>
+<td>Unlimited writes</td>
+<td>Data loss</td>
+<td>Med</td>
+<td>Retention policy, watermarks, alert at threshold</td>
+<td>storage metric</td>
+<td>apply retention; add capacity</td>
+</tr>
+<tr>
+<td>15</td>
+<td>GPU exhaustion</td>
+<td>Many streams</td>
+<td>Degraded detect</td>
+<td>Med</td>
+<td>Bounded inference scheduler, CPU fallback, frame drop</td>
+<td>GPU metric</td>
+<td>throttle; degrade gracefully</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Supply-chain compromise</td>
+<td>Bad dependency</td>
+<td>Backdoor</td>
+<td>Low</td>
+<td>Pinned deps, SBOM, vuln scanning, signed images</td>
+<td>CVE alerts</td>
+<td>pin known-good</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Insider threat</td>
+<td>Abuse access</td>
+<td>Leak/alter</td>
+<td>Low</td>
+<td>RBAC + approvals + audit + separation of duties</td>
+<td>audit analytics</td>
+<td>investigate; revoke</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="cross-cutting">Cross-cutting</h2>
+<ul>
+<li><strong>Least privilege</strong>: API/worker run as non-root; DB user scoped; no host mounts beyond storage.</li>
+<li><strong>Defense in depth</strong>: SSRF (app) + network egress (infra); headers + CSP + HSTS.</li>
+<li><strong>Assume hostile camera network</strong>: it is never trusted, never exposed to the internet.</li>
+<li><strong>Privacy</strong>: biometric recognition off by default; no automatic identity creation;
+  establish lawful basis before enabling.</li>
+</ul>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#cross-cutting" data-toc="cross-cutting">Cross-cutting</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

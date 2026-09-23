@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architectural Review — LocalSight Docs</title>
+  <meta name="description" content="The full architectural review with evidence and fix rationale — every defect found, why it mattered, and the regression test that pins it." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Engineering</span>
+          <span class="sep">/</span>
+          <span>Architectural Review</span>
+        </p>
+        <h1>Architectural Review</h1>
+        <p class="lede">The full architectural review with evidence and fix rationale — every defect found, why it mattered, and the regression test that pins it.</p>
+        <p class="meta">
+          <span class="tag">39 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/reviews/CODE_ANALYSIS_REPORT.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html">Installation & Setup</a></li>
+      <li><a href="user-guide.html">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="tplink-vigi.html">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html">Data Model (ERD)</a></li>
+      <li><a href="adr.html">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html" aria-current="page">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<p><strong>Scope:</strong> full repository (<code>apps/</code>, <code>packages/</code>, <code>ui/</code>, <code>tests/</code>, <code>infrastructure/</code>, <code>scripts/</code>) — ~8,200 lines of application code (38 Python modules, 3 UI files), all routers, all security modules, the worker, infra configs, and CI.
+<strong>Method:</strong> 100% of production Python read line-by-line; every finding below was either <strong>reproduced by executing the code</strong> (stack traces, SQL counts, byte measurements, timing runs) or verified by exhaustive grep across the repo. Test baseline: <code>pytest -q</code> → <strong>66 passed in 17.5s</strong> (matches README).
+<strong>Verdict:</strong> Architecture is genuinely strong — clean layering, swappable AI interfaces, real security controls, thoughtful failure isolation. However, the suite passes <strong>only because it never exercises the broken paths</strong>. I found <strong>2 crash-level defects shipped in headline features</strong>, 1 defect that makes the S3 deployment mode non-functional, plus systemic schema drift, unenforced privacy claims, dead code, and measurable hot-path inefficiencies. Details, evidence, impact, and concrete fixes follow.</p>
+<hr>
+<h2 id="executive-summary">Executive summary</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Severity</th>
+<th>Finding</th>
+<th>Feature affected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F-01</td>
+<td>🔴 Critical</td>
+<td><code>Event</code> ORM model is missing the <code>detail</code> column that 3 modules and the worker write to/read from. ANPR events <strong>crash the worker</strong> (<code>TypeError</code>), and <code>/api/analytics/search</code> + <code>/api/alerts/events</code> <strong>500</strong> (<code>AttributeError</code>).</td>
+<td>ANPR, alerts feed, semantic search</td>
+</tr>
+<tr>
+<td>F-02</td>
+<td>🔴 Critical</td>
+<td><code>S3CompatibleStorage</code> lacks <code>verify_signed_url</code>, so <code>STORAGE_BACKEND=s3</code> (a documented, Docker-deployable mode) <strong>breaks all media serving</strong>. Also returns absolute external S3 URLs to a client that's network-restricted from reaching them.</td>
+<td>S3 storage mode, all media endpoints</td>
+</tr>
+<tr>
+<td>F-03</td>
+<td>🟠 High</td>
+<td><code>delete_person</code> / <code>delete_user</code> / camera deletion <strong>violate FK constraints</strong> on any FK-enforcing database (the compose default is PostgreSQL). Reproduced: <code>IntegrityError: FOREIGN KEY constraint failed</code>.</td>
+<td>Person/user/camera management</td>
+</tr>
+<tr>
+<td>F-04</td>
+<td>🟠 High</td>
+<td><strong>DB writes on the frame hot path</strong>: measured <strong>11 SQL statements/frame</strong> with 5 active tracks + recognition on. At 5 fps/camera and N cameras this is 55N statements/sec, plus a full-table enrolled-embedding scan every 30s per camera. Long-path analysis below.</td>
+<td>Worker throughput, PostgreSQL latency</td>
+</tr>
+<tr>
+<td>F-05</td>
+<td>🟠 High</td>
+<td><code>privacy_masks</code> are stored and accepted via the API <strong>but never applied</strong> anywhere in the detection/tracking pipeline — the README's privacy promise ("geometry the detector skips") is unimplemented.</td>
+<td>Privacy/compliance (GDPR positioning)</td>
+</tr>
+<tr>
+<td>F-06</td>
+<td>🟠 High</td>
+<td><code>Recorder.finalize_last()</code> <strong>buffers entire 300s MP4 segments in RAM</strong> (<code>data = fh.read()</code>; measured 5.6–900 MB per segment depending on bitrate) before writing to storage, on a loop that holds them ~300s each. With 4+ cameras, this is multi-GB peak RSS and OOM territory.</td>
+<td>Recording, memory, stability</td>
+</tr>
+<tr>
+<td>F-07</td>
+<td>🟠 High</td>
+<td>Live-view ffmpeg processes are <strong>never reclaimed</strong> — no max-duration, no eviction, no <code>_stop_stream</code> caller. Streams run until the API restarts, accumulating CPU. Repeated <code>/play</code> calls across cameras spawn unbounded transcodes.</td>
+<td>Live view, resource efficiency</td>
+</tr>
+<tr>
+<td>F-08</td>
+<td>🟡 Medium</td>
+<td><strong>Login timing-enumeration + double Argon2 cost</strong>: nonexistent users skip Argon2 verification entirely (measured ~45 ms dummy-hash, no verify vs ~90 ms full path); real logins pay hash+verify ≈ 2× CPU. Existing-user vs nonexistent-user responses differ by ~50 ms — an oracle for account probing.</td>
+<td>Auth hardening, DoS surface</td>
+</tr>
+<tr>
+<td>F-09</td>
+<td>🟡 Medium</td>
+<td><strong>Schema/ORM dead-code drift</strong>: <code>Stream</code>, <code>SystemMetric</code>, <code>ModelVersion</code> tables are never used; <code>schemas.py</code> (199 lines) is 99% dead (only <code>TPLinkNvrSeed</code> imported anywhere); <code>timeutil.py</code> never imported; <code>aggregate_track</code>/<code>merge_intervals</code> only self-referenced; <code>events:export</code> permission in RBAC but endpoints use <code>video:export</code>... several more below.</td>
+<td>Maintainability, clean code</td>
+</tr>
+<tr>
+<td>F-10</td>
+<td>🟡 Medium</td>
+<td><strong>Per-record envelope encryption without key reuse or caching</strong>: a 58-byte camera URL becomes a 432-byte token (7.4×). Every <code>encrypt_*</code> call generates a fresh Fernet data key + wraps it with the KEK. Measured numbers and migration-safe fix below.</td>
+<td>Storage efficiency, crypto CPU</td>
+</tr>
+<tr>
+<td>F-11</td>
+<td>🟡 Medium</td>
+<td>Retention sweeper ignores documented policies: <code>retention_embeddings_days</code> and <code>retention_audit_days</code> are declared config that the sweeper never enforces; expired refresh tokens are never purged; camera-level <code>retention</code> overrides are ignored; expired-<code>end_ts</code> recordings only.</td>
+<td>Data lifecycle, compliance</td>
+</tr>
+<tr>
+<td>F-12</td>
+<td>🟡 Medium</td>
+<td><strong>Docker image bakes build context</strong> — no <code>.dockerignore</code>, so <code>COPY . /app</code> ships <code>.env</code> (real secrets), 320 KB + 365 KB SQLite DBs, <code>.venv/</code>, <code>data/</code> test media into every image. Supply-chain/secrecy exposure on any registry push.</td>
+<td>Deployment security</td>
+</tr>
+<tr>
+<td>F-13</td>
+<td>🟡 Medium</td>
+<td>UI renders server-controlled strings into <code>innerHTML</code> unsanitized (7 sites); person labels, camera names, audit usernames are operator-supplied and persist — stored-XSS chain via CSP script-src only (CSP mitigates but <code>img-src data:</code> + event handlers offer probing vectors).</td>
+<td>UI security hygiene</td>
+</tr>
+<tr>
+<td>F-14</td>
+<td>🟡 Low</td>
+<td>Recorder segments claim <code>duration_sec=300, size_bytes=len(data)</code> but ffmpeg re-encodes main streams with no <code>-t</code> ceiling enforcement on actual capture time vs segment wall time drift; timeline/clip assembly trusts these values. Correctness of the media archive is approximate.</td>
+<td>Recording metadata accuracy</td>
+</tr>
+</tbody>
+</table></div>
+<p>Plus ~20 minor findings consolidated in the appendix (dead config flags, <code>raise ... from exc</code> misses, <code>noqa: BLE001</code> prevalence — 27 sites, <code>import</code> in functions, README/test-count drift, <code>_ensure_columns</code> SQLite-only ALTERs, metrics <code>detections_per_minute</code> never emitted, etc.).</p>
+<hr>
+<h2 id="part-1-critical-defects-with-reproduction-evidence">Part 1 — Critical defects (with reproduction evidence)</h2>
+<h3 id="f-01-eventdetail-does-not-exist-anpr-crashes-the-worker-two-api-endpoints-500">F-01. <code>Event.detail</code> does not exist — ANPR crashes the worker, two API endpoints 500</h3>
+<p><strong>Evidence (three independent reproductions):</strong></p>
+<ol>
+<li>Model introspection:</li>
+</ol>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">Event</span><span class="o">.</span><span class="n">__table__</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+<span class="p">[</span><span class="s1">'id'</span><span class="p">,</span><span class="s1">'camera_id'</span><span class="p">,</span><span class="s1">'track_id'</span><span class="p">,</span><span class="s1">'identity_id'</span><span class="p">,</span><span class="s1">'identity_status'</span><span class="p">,</span><span class="s1">'event_type'</span><span class="p">,</span>
+ <span class="s1">'timestamp_start'</span><span class="p">,</span><span class="s1">'timestamp_end'</span><span class="p">,</span><span class="s1">'confidence'</span><span class="p">,</span><span class="s1">'bbox'</span><span class="p">,</span><span class="s1">'snapshot_key_enc'</span><span class="p">,</span>
+ <span class="s1">'video_segment_key_enc'</span><span class="p">,</span><span class="s1">'created_at'</span><span class="p">]</span>          <span class="c1"># ← no 'detail'</span>
+</code></pre></div>
+
+<p><code>packages/domain/models.py:192-207</code> defines <code>Event</code> with <strong>no</strong> <code>detail</code> column (only <code>AuditLog</code> at line 243 has one).</p>
+<ol start="2">
+<li>
+<p>Write path (worker, <code>packages/ai/pipeline.py:183-195</code>) constructs <code>EventRow(..., detail={...})</code> → <strong><code>TypeError: 'detail' is an invalid keyword argument for Event</code></strong> (reproduced live).</p>
+</li>
+<li>
+<p>Read paths:
+   - <code>apps/api/routers/analytics.py:90</code> — <code>idx.index(ev.id, f"{ev.event_type} {ev.detail or ''}")</code> → <strong><code>AttributeError: 'Event' object has no attribute 'detail'</code></strong> → HTTP 500. Reproduced with full stack trace against a live app instance.
+   - <code>apps/api/routers/alerts.py:140</code> — <code>"detail": e.detail</code> → same <code>AttributeError</code> → HTTP 500 on <code>/api/alerts/events</code>.</p>
+</li>
+</ol>
+<p><strong>Why the tests miss it:</strong> <code>tests/test_surveillance.py</code> exercises ANPR only through <code>ANPRPipeline.read()</code> directly (line 336) and rules through <code>RuleEngine.evaluate()</code> — never through <code>CameraPipeline.process_frame</code> with ANPR enabled, and no test ever hits <code>/api/alerts/events</code> or <code>/api/analytics/search</code> with rows present.</p>
+<p><strong>Impact:</strong>
+- ANPR (<code>AI_ANPR_ENABLED=true</code>) is <strong>non-functional in production</strong> — worse, it's a <em>worker crash</em>: <code>apps/worker/main.py:295-297</code> catches the exception, rolls back, logs, and continues, so each vehicle-frame failure is swallowed and <strong>every ANPR event is silently lost</strong> while the pipeline keeps running and looking healthy.
+- Both the semantic-search and the analytic-events feeds — two headline BI features — return 500 whenever any event row exists. In the shipped SQLite DB, <code>events</code> table count = 0, which is why the app "works" in dev.</p>
+<p><strong>Recommended fix (choose A, then B):</strong>
+- <strong>A. Add the column</strong> (it's the intended design — rules detail <code>dwell_sec</code>, <code>direction</code>, <code>count</code>; ANPR detail <code>plate_enc</code>/<code>plate_hash</code>):</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># packages/domain/models.py, class Event</span>
+<span class="n">detail</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">JSON</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+<p>and in <code>apps/api/bootstrap.py::_ensure_columns</code> append <code>"ALTER TABLE events ADD COLUMN detail JSON"</code> (the existing pattern at lines 97-106 already handles the SQLite/PG "already exists" swallow — note that catch is dialect-fragile; see minor findings).
+- <strong>B. Add regression tests that actually traverse the broken paths:</strong></p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">test_anpr_event_persists_detail</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>  <span class="c1"># worker-level</span>
+    <span class="c1"># build pipeline with anpr=ANPRPipeline(...), drive frames, assert row.detail["plate_hash"]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_search_endpoint_with_events</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>   <span class="c1"># API-level</span>
+    <span class="c1"># seed an Event row, GET /api/analytics/search, assert 200 (currently 500s)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_alerts_events_endpoint</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>        <span class="c1"># currently 500s</span>
+</code></pre></div>
+
+<ul>
+<li>Also fix <code>apps/worker/main.py:289-290</code> to read from <code>ev.detail</code> <strong>after</strong> the fix (it currently reads <code>ae.detail</code> off the in-memory object, which works, but serializes <code>plate_enc</code> — ciphertext — into alert messages sent to third-party webhooks; see F-15 note in appendix).</li>
+</ul>
+<p><strong>Outcome after fix:</strong> ANPR end-to-end green, both endpoints stable, <code>detail</code> queryable (enables filtering alerts by zone/dwell), and the test suite gains coverage of the exact integration seams that failed.</p>
+<hr>
+<h3 id="f-02-s3-backend-is-missing-verify_signed_url-media-delivery-broken-also-leaks-external-urls">F-02. S3 backend is missing <code>verify_signed_url</code> — media delivery broken; also leaks external URLs</h3>
+<p><strong>Evidence:</strong></p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">S3CompatibleStorage</span><span class="p">,</span> <span class="s1">'verify_signed_url'</span><span class="p">)</span>
+<span class="kc">False</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">StorageProvider</span><span class="o">.</span><span class="n">__abstractmethods__</span>
+<span class="nb">frozenset</span><span class="p">({</span><span class="s1">'delete'</span><span class="p">,</span><span class="s1">'put'</span><span class="p">,</span><span class="s1">'exists'</span><span class="p">,</span><span class="s1">'sign_get_url'</span><span class="p">,</span><span class="s1">'get'</span><span class="p">})</span>   <span class="c1"># verify_signed_url not abstract!</span>
+</code></pre></div>
+
+<ul>
+<li><code>apps/api/routers/video.py:28</code> — <code>rt.storage.verify_signed_url(key, exp, sig)</code> → <code>AttributeError</code> on every call when <code>STORAGE_BACKEND=s3</code>. The abstract base (<code>packages/storage/base.py</code>) forgot to declare it, so the bug compiles silently. <code>mypy --follow-imports=skip</code> (the CI setting) also can't catch it.</li>
+<li><code>packages/storage/s3.py:32</code> — <code>self._signer = LocalFilesystemStorage("/tmp", signing_secret)</code> is constructed and <strong>never used</strong> (grep-verified: only occurrence). It's a vestige of a removed local-signing design.</li>
+<li><code>sign_get_url</code> (s3.py:61-67) returns <code>generate_presigned_url(...)</code> — an <strong>absolute external URL</strong> — while <code>LocalFilesystemStorage.sign_get_url</code> returns a <strong>relative path</strong> <code>/api/video/...</code>. Every consumer (<code>events.py:74,77,97,138</code>, UI, tests) treats the returned value as a path. With S3, clients get <code>https://&lt;bucket&gt;.s3.amazonaws.com/...</code> (a) unreachable from the browser in a hardened on-prem deployment (the whole product premise is "video never leaves the site"), and (b) even if reachable, <code>serve_video</code> can never validate it since the signature scheme is S3's, not the local HMAC.</li>
+</ul>
+<p><strong>Impact:</strong> The documented <code>STORAGE_BACKEND=s3</code> mode is <strong>non-functional for the product's core purpose (secure media delivery)</strong>. Any deployment that follows the README/compose and switches storage to S3 gets 500s on <code>/api/video/*</code> and unusable export/clip URLs. Silent because the local-backend path is the only one tested.</p>
+<p><strong>Recommended fix:</strong></p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># packages/storage/base.py — make the contract explicit</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StorageProvider</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">verify_signed_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sig</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span> <span class="o">...</span>
+
+<span class="c1"># packages/storage/s3.py — proxy through S3 presigned GETs, keeping the local HMAC</span>
+<span class="c1"># scheme for authorization and issuing *relative* app URLs:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sign_get_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">expires_sec</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
+    <span class="c1"># Option 1 (recommended): keep /api/video/{key} and have serve_video stream</span>
+    <span class="c1">#   from S3 via a short-lived boto3 presigned URL fetched server-side.</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">+</span> <span class="n">expires_sec</span>
+    <span class="n">sig</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_secret</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">exp</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"/api/video/</span><span class="si">{</span><span class="n">urllib</span><span class="o">.</span><span class="n">parse</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="w"> </span><span class="n">safe</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span><span class="si">}</span><span class="s2">?exp=</span><span class="si">{</span><span class="n">exp</span><span class="si">}</span><span class="s2">&amp;sig=</span><span class="si">{</span><span class="n">sig</span><span class="si">}</span><span class="s2">"</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">verify_signed_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">sig</span><span class="p">):</span>
+    <span class="o">...</span>  <span class="c1"># same HMAC verification as local; then stream:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>  <span class="c1"># unchanged — boto3 get_object already works</span>
+</code></pre></div>
+
+<p>i.e., drop <code>_signer</code>, keep one signing scheme (HMAC over <code>key:exp</code> with the master key as secret), and let <code>serve_video</code> stream S3 bytes through the app. The client-facing contract stays identical across backends; S3 credentials stay server-side; no external URL is ever exposed to the browser.
+- Delete the dead <code>_signer</code> line, and <strong>add <code>psycopg</code> + a <code>boto3</code>-installed CI job that runs the API tests with <code>STORAGE_BACKEND=s3</code> + moto</strong> so this mode is never again shipped untested.</p>
+<p><strong>Outcome after fix:</strong> S3 mode works end-to-end with the same security model (short-lived, app-scoped, HMAC-authorized links), one signing scheme instead of two divergent ones, and backend parity enforced by CI rather than hope.</p>
+<hr>
+<h2 id="part-2-correctness-data-integrity-issues">Part 2 — Correctness &amp; data-integrity issues</h2>
+<h3 id="f-03-deletions-violate-fk-constraints-on-production-databases">F-03. Deletions violate FK constraints on production databases</h3>
+<p><strong>Evidence:</strong> <code>packages/domain/models.py</code> — zero occurrences of <code>cascade</code>/<code>ondelete</code>/<code>passive_deletes</code> (grep-verified across the repo). Reproduced with <code>PRAGMA foreign_keys=ON</code> (SQLite parity for PostgreSQL behavior):</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>sqlite3.IntegrityError: FOREIGN KEY constraint failed
+   (DELETE FROM persons WHERE id='p1' with a person_embeddings row referencing it)
+</code></pre></div>
+
+<ul>
+<li><code>apps/api/routers/persons.py:52-60</code> — <code>db.delete(person)</code> with a comment claiming "cascade removes embeddings" — <strong>there is no cascade</strong>. On PostgreSQL (the compose default), this 500s whenever the person has any enrollment. On SQLite dev, FKs are off by default so it "works."</li>
+<li>Same pattern: <code>users.py:66-69</code> (<code>refresh_tokens.user_id</code> FK), <code>cameras.py:305-313</code> (<code>detections</code>/<code>tracks</code>/<code>events</code>/<code>video_segments</code>/<code>snapshots</code> FKs), <code>rules</code>/<code>nvr</code> deletion paths.</li>
+</ul>
+<p><strong>Impact:</strong> Core admin operations (deleting an enrolled person — a GDPR erasure request scenario! — or a retired camera) fail with 500 on the production database engine while succeeding in dev. A GDPR "right to erasure" request that 500s is a compliance incident, not just a bug.</p>
+<p><strong>Recommended fix:</strong></p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># explicit, DB-enforced lifecycle</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Person</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">embeddings</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="s2">"PersonEmbedding"</span><span class="p">]]</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span>
+        <span class="n">cascade</span><span class="o">=</span><span class="s2">"all, delete-orphan"</span><span class="p">,</span> <span class="n">passive_deletes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># and at the FK:</span>
+<span class="n">person_id</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span>
+    <span class="n">ForeignKey</span><span class="p">(</span><span class="s2">"persons.id"</span><span class="p">,</span> <span class="n">ondelete</span><span class="o">=</span><span class="s2">"CASCADE"</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+<p>Apply consistently to <code>User→RefreshToken</code>, <code>Camera→Detection/Track/Event/VideoSegment/Snapshot</code>, <code>Person→PersonEmbedding</code>. Since production is PostgreSQL and <code>_ensure_columns</code> already runs raw ALTERs, pair this with <strong>Alembic migrations</strong> (the code comments at <code>bootstrap.py:80-82</code> already acknowledge this debt) so the <code>ondelete</code> clauses actually reach existing databases.</p>
+<p><strong>Outcome:</strong> deletion workflows function on all backends; orphan rows become impossible; the GDPR-erasure path works; DB integrity is enforced by the database, not by hope.</p>
+<h3 id="f-05-privacy_masks-are-accepted-and-stored-but-never-applied">F-05. <code>privacy_masks</code> are accepted and stored but never applied</h3>
+<p><strong>Evidence (grep across every Python module):</strong> <code>privacy_masks</code> appears only in <code>models.py</code> (column), <code>schemas.py</code> (Pydantic), and <code>cameras.py</code> (API passthrough). The worker (<code>apps/worker/main.py</code>) builds the pipeline from <code>camera.rules</code> but <strong>never reads <code>camera.privacy_masks</code></strong>; <code>packages/ai/pipeline.py</code> never receives masks; <code>CameraPipeline.process_frame</code> applies nothing; <code>packages/ai/detectors.py</code> has no mask parameter. The model comment even says "privacy masks live alongside this as geometry the detector skips" — that geometry is never skipped.</p>
+<p><strong>Impact:</strong> Operators can configure exclusion zones (e.g., a neighbor's window, a public sidewalk outside the property line) in the API and believe they're excluded — while detection, tracking, snapshots, embeddings, and events continue covering them. For a product whose README headline is "<strong>Privacy by design</strong>," this is a <strong>false control</strong>: worst possible failure mode for a compliance feature. Snapshots of masked regions are still written to storage; identity recognition (if enabled) still runs on them.</p>
+<p><strong>Recommended fix (smallest correct seam — the pipeline):</strong></p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># apps/worker/main.py — pass masks into the pipeline</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="n">CameraPipeline</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">privacy_masks</span><span class="o">=</span><span class="n">camera</span><span class="o">.</span><span class="n">privacy_masks</span> <span class="ow">or</span> <span class="p">[])</span>
+
+<span class="c1"># packages/ai/pipeline.py — filter detections before tracking</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_masked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_masks</span><span class="p">:</span>  <span class="c1"># each {x,y,w,h}</span>
+        <span class="k">if</span> <span class="n">_bbox_overlap</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">"x"</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="s2">"y"</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="s2">"w"</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="s2">"h"</span><span class="p">])):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+<span class="c1"># in process_frame, after detector.detect():</span>
+<span class="n">detections</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">raw</span>
+              <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">confidence</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">confidence</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_masked</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">bbox</span><span class="p">)]</span>
+</code></pre></div>
+
+<p>Document the semantic precisely (detection fully suppressed when ≥X% overlap — recommend suppression at any center-in-mask or ≥50% overlap), add tests (<code>test_masked_area_produces_no_events</code>), and surface mask coverage in the UI canvas so operators can verify what they drew.</p>
+<p><strong>Outcome:</strong> the privacy promise becomes a real, testable control with audit-visible behavior; masked geometry produces no detections, no snapshots, no embeddings, no events.</p>
+<h3 id="f-08-login-timing-oracle-double-argon2-cost">F-08. Login timing oracle + double Argon2 cost</h3>
+<p><strong>Evidence (measured in this environment):</strong></p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>hash_password("dummy-password-not-used"): 47 ms   # auth.py:60 — runs on EVERY login
+verify_password(...):                  45 ms
+</code></pre></div>
+
+<p><code>apps/api/routers/auth.py:60-61</code>:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="n">dummy</span> <span class="o">=</span> <span class="n">hash_password</span><span class="p">(</span><span class="s2">"dummy-password-not-used"</span><span class="p">)</span>          <span class="c1"># 47 ms, always paid</span>
+<span class="n">ok</span> <span class="o">=</span> <span class="n">verify_password</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="k">if</span> <span class="n">user</span> <span class="k">else</span> <span class="kc">False</span>              <span class="c1"># nonexistent user: NO verify at all</span>
+</code></pre></div>
+
+<p>For a <strong>nonexistent</strong> user: 47 ms total. For an <strong>existing</strong> user with a wrong password: 47 + 45 ≈ 92 ms. The comment says this reduces enumeration timing — the implementation does the <strong>opposite</strong>: the branch differences are (a) measurable and (b) the dummy hash is recomputed on every request (a fresh Argon2 salt each time — pure waste; it should be computed once at module import), while genuine logins pay double.</p>
+<p><strong>Impact:</strong> ~2× CPU on every real login (DoS surface at <code>rate=1.0/capacity=10</code> — 10 concurrent logins ≈ 10 × 47 ms ≈ 0.5 CPU-sec); a ~50 ms response-time oracle distinguishing existing accounts; 47 ms × every request even for garbage emails.</p>
+<p><strong>Recommended fix:</strong></p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># module scope, computed once — a FIXED hash, so timing is byte-identical</span>
+<span class="n">_DUMMY_HASH</span> <span class="o">=</span> <span class="n">hash_password</span><span class="p">(</span><span class="s2">"dummy-password-not-used"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">login</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="n">record</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">email</span> <span class="o">==</span> <span class="n">body</span><span class="o">.</span><span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="n">hashed</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">password_hash</span> <span class="k">if</span> <span class="n">record</span> <span class="k">else</span> <span class="n">_DUMMY_HASH</span>
+    <span class="n">ok</span> <span class="o">=</span> <span class="n">verify_password</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">password</span><span class="p">,</span> <span class="n">hashed</span><span class="p">)</span>   <span class="c1"># ALWAYS runs, ALWAYS same cost</span>
+</code></pre></div>
+
+<p>Now every path pays exactly one Argon2 verify (~45 ms) with identical salt/params, and the dummy is computed once per process instead of per request.</p>
+<p><strong>Outcome:</strong> enumeration timing differential eliminated (both branches ≈45 ms); login CPU halved; lockout audit entries unchanged.</p>
+<h3 id="f-11-retention-sweeper-doesnt-implement-the-documented-policy-surface">F-11. Retention sweeper doesn't implement the documented policy surface</h3>
+<p><strong>Evidence (<code>apps/worker/main.py:165-186</code> vs <code>apps/api/config.py:62-66</code>):</strong> the sweeper enforces <code>retention_recordings_days</code>, <code>retention_events_days</code>, <code>retention_snapshots_days</code> — but:
+- <code>retention_embeddings_days: int = 90</code> (config.py:65) — <strong>never referenced</strong> by the sweeper (grep: only definition site). Enrollment embeddings (biometric data!) are retained forever, contradicting README's "RETENTION_EMBEDDINGS_DAYS ... Enrollment-embedding retention."
+- <code>retention_audit_days: int = 365</code> (config.py:66) — <strong>never referenced</strong>. The "immutable audit log" grows unboundedly (a 24/7 platform writes audit rows on every login, token refresh, export...).
+- Expired <code>RefreshToken</code> rows are <strong>never purged</strong> (7-day TTL; the shipped dev DB already has 6). Unbounded slow growth of a unique-indexed table.
+- <code>Camera.retention</code> per-camera overrides (<code>models.py:122-123</code>, settable via <code>PUT /api/cameras</code>, honored by <code>provision_tplink_nvr</code>) are <strong>ignored</strong> by the sweeper — every camera gets global policy regardless of its override.
+- The recordings sweep keys on <code>VideoSegment.end_ts &lt; rec_cut</code> — correct — but deletes segments one-by-one inside a Python loop with per-row storage deletion and per-row <code>s.delete(seg)</code>; a camera churning 288 segments/day × N cameras makes this an O(rows) interactive transaction every hour (retention loop sleeps 3600s) with <code>s.commit()</code> only at the end — a long lock window on PostgreSQL.</p>
+<p><strong>Impact:</strong> compliance-relevant data classes (biometric embeddings, audit trail) outlive their stated retention; tables grow without bound (PostgreSQL vacuum/indбусы pressure); per-camera overrides silently do nothing (an operator who sets 30-day retention on a lobby camera and 7-day on a loading dock gets 7 days for both or 30 for both — global only).</p>
+<p><strong>Recommended fix:</strong></p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">_sweep_retention</span><span class="p">(</span><span class="n">rt</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">rt</span><span class="o">.</span><span class="n">settings</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">utc_now</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">rt</span><span class="o">.</span><span class="n">SessionLocal</span><span class="p">()</span> <span class="k">as</span> <span class="n">s</span><span class="p">:</span>
+        <span class="c1"># 1. batch deletes, chunked, committing per chunk — no long transactions</span>
+        <span class="n">_delete_range</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">VideoSegment</span><span class="p">,</span> <span class="n">VideoSegment</span><span class="o">.</span><span class="n">end_ts</span><span class="p">,</span> <span class="n">now</span> <span class="o">-</span> <span class="n">td</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">retention_recordings_days</span><span class="p">),</span>
+                      <span class="n">pre</span><span class="o">=</span><span class="n">row_safe_delete</span><span class="p">(</span><span class="n">rt</span><span class="o">.</span><span class="n">storage</span><span class="p">,</span> <span class="s2">"storage_key"</span><span class="p">),</span> <span class="n">chunk</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+        <span class="o">...</span>
+        <span class="c1"># 2. the missing policies</span>
+        <span class="n">emb_cut</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="n">td</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">retention_embeddings_days</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">PersonEmbedding</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">PersonEmbedding</span><span class="o">.</span><span class="n">created_at</span> <span class="o">&lt;</span> <span class="n">emb_cut</span><span class="p">):</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">audit_cut</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="n">td</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">retention_audit_days</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">AuditLog</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">AuditLog</span><span class="o">.</span><span class="n">ts</span> <span class="o">&lt;</span> <span class="n">audit_cut</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">synchronize_session</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RefreshToken</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">RefreshToken</span><span class="o">.</span><span class="n">expires_at</span> <span class="o">&lt;</span> <span class="n">now</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">synchronize_session</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># 3. per-camera overrides: effective_days(cam) = cam.retention["days"] or global</span>
+</code></pre></div>
+
+<p>Also honor <code>Camera.retention</code> per class (recordings/events/snapshots can each have <code>{"recordings_days": ..., "events_days": ...}</code> — or keep the current <code>days</code> key but document it).</p>
+<p><strong>Outcome:</strong> every declared retention knob actually enforced; biometric data lifecycle matches documentation (a real GDPR Art. 5(1)(e) storage-limitation control); bounded table growth; sweep runs in short chunks instead of hour-long implicit transactions.</p>
+<h3 id="f-14-recording-metadata-drift-segment-durationsize-never-reconciled">F-14. Recording metadata drift (segment duration/size never reconciled)</h3>
+<p><code>Recorder.record_url</code> (<code>recorder.py:101-109</code>) pre-fills <code>duration_sec=float(self.seg_seconds)</code> (300) and <code>end_ts=start+300s</code> <strong>before ffmpeg has captured anything</strong>; <code>finalize_last</code> then sets <code>size_bytes = len(data)</code> but never corrects <code>duration_sec</code>/<code>end_ts</code> from the actual file (no <code>ffprobe</code>, no <code>proc</code> timing). If the stream drops at t=80s, ffmpeg exits, <code>returncode==0</code>, and the row claims a 300s/300s-aligned segment — timeline rendering (<code>timeline.py</code> uses <code>start_ts/end_ts</code>) and <code>/events/{id}/clip</code> window math then mis-align clips. Fix: derive real duration via <code>ffprobe -v error -show_entries format=duration</code> in <code>finalize_last</code> (or at minimum <code>os.path.getsize</code>-based sanity + returncode-based skip), and set <code>end_ts = start_ts + actual_duration</code>.</p>
+<hr>
+<h2 id="part-3-performance-resource-efficiency">Part 3 — Performance &amp; resource efficiency</h2>
+<h3 id="f-04-frame-hot-path-does-per-frame-orm-writes-measured">F-04. Frame hot path does per-frame ORM writes — measured</h3>
+<p><strong>Evidence (SQLAlchemy <code>before_cursor_execute</code> counter around <code>CameraPipeline.process_frame</code>, live process):</strong></p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>1 active track,  5 frames:  4 statements  → 0.8/frame
+5 active tracks + recognition, 5 frames: 55 statements → 11.0/frame
+</code></pre></div>
+
+<p>Breakdown of the 11/frame (from <code>pipeline.py:198-238</code>): per frame, for each track: 1× <code>session.get(TrackRow, tid)</code> (<code>_upsert_tracks</code>, line 283 — even when unchanged, and even though the row was fetched the previous frame in the same session), 1× <code>INSERT detection</code> (line 215 — "sampled" per the comment, but it's per-frame per-track), plus the per-frame commit (<code>worker/main.py:283</code>). Recognition adds the embedding refresh every 30s (<code>_refresh_enrolled</code> — <code>session.query(PersonEmbedding).all()</code> full-table scan + per-row <code>decrypt_json</code>) — amortized, but on a 1,000-employee site that's 1,000 Fernet unwraps every 30s per camera.</p>
+<p>At the README's default <code>AI_INFERENCE_FPS=5</code> and the capacity planner's 8-camera target (<code>scripts/capacity.py --cameras 8</code>): 5 fps × 8 cams × 11 = <strong>440 SQL round-trips/sec sustained</strong>, every one a network hop + WAL write on PostgreSQL, each frame's work bracketed by BEGIN/COMMIT. SQLite absorbs this; PostgreSQL's per-statement latency (0.2–1 ms LAN) makes the pipeline thread the bottleneck and adds jitter to detection timestamps.</p>
+<p><strong>Recommended fixes, in order of value:</strong>
+1. <strong>Decouple capture from persistence with a bounded queue + batch writer.</strong> The pipeline should return domain events; a writer coalesces and flushes every K frames or T seconds (<code>session.add_all(batched_detections)</code>; one <code>UPDATE tracks</code> per changed track — SQLAlchemy can diff in-memory state; one commit per flush). This turns 440 stmts/sec into ~5–20. This is also the natural place for the queue-depth metric already declared in <code>metrics.py</code> (<code>queue_depth</code>, <code>frames_dropped</code>, <code>camera_fps</code>, <code>detections_per_minute</code> — all currently <strong>never emitted</strong>; see appendix).
+2. <strong>Stop per-frame Detection inserts when nothing changed.</strong> The comment says "sampled, not every frame's raw boxes" — the code does the opposite. Gate on: trajectory delta &gt; ε, bbox delta &gt; ε, or interval ≥ N s.
+3. <strong>Cache enrolled embeddings with invalidation, not a 30s TTL rescan.</strong> Keep the decrypted vectors in memory; subscribe to a lightweight signal (the persons router already commits enrollment writes — an in-process event or <code>updated_at</code> watermark check beats a full decrypt-every-30s-per-camera).
+4. <strong>Connection hygiene:</strong> worker threads each open a session per frame (<code>SessionLocal()</code> per iteration, <code>worker/main.py:280-299</code>) — fine — but with batching, prefer one session per batch and <code>pool_pre_ping=True</code> on the engine for long-lived worker connections.</p>
+<p><strong>Outcome (projected, 8 cams, 5 fps, PG):</strong> ≥90% reduction in DB round-trips on the hot path (440→~40/sec), lower WAL churn, stable per-frame latency, and the observability story (queue depth, drops, fps) that the capacity planner promises becomes real.</p>
+<h3 id="f-06-recorder-buffers-whole-segments-in-ram">F-06. Recorder buffers whole segments in RAM</h3>
+<p><strong>Evidence:</strong> <code>packages/video/recorder.py:136-151</code> — <code>finalize_last</code> does <code>data = fh.read()</code> (entire MP4 in memory) → <code>self.storage.put(...)</code> → only then <code>os.remove(tmp)</code>. With <code>RECORD_SEGMENT_SECONDS=300</code> and the README/capacity defaults (main stream 4 Mbps), a segment ≈ 4 Mbps × 300 s / 8 = <strong>150 MB</strong>; at 40 Mbps (high-end NVR) ≈ <strong>1.5 GB per segment</strong>. The record loop (<code>worker/main.py:247-269</code>) runs one of these per camera, and segments overlap only at boundaries — so steady-state peak RSS ≈ N_cameras × segment_size at finalize time. An 8-camera 4 Mbps deployment spikes ~1.2 GB beyond baseline on every 5-minute boundary (staggered), which is precisely when the AI pipeline also wants memory.</p>
+<p>Note the local storage layer already writes atomically via tmp+rename (<code>local.py:42-45</code>) — the copy through Python memory is pure overhead: ffmpeg already wrote the bytes to <code>/tmp</code>; we then read them into RAM to write them again.</p>
+<p><strong>Recommended fix:</strong> give <code>StorageProvider</code> a streaming/<code>put_file</code> seam so bytes never pass through the heap:</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="c1"># packages/storage/base.py</span>
+<span class="nd">@abstractmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">put_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span> <span class="o">...</span>
+<span class="c1"># local: os.replace(source_path, resolved) after same-root validation, or shutil.move</span>
+<span class="c1"># s3:   client.upload_file(bucket, key, source_path) — multipart, streaming</span>
+<span class="c1"># recorder.finalize_last: storage.put_stream(seg.storage_key, tmp, "video/mp4");</span>
+<span class="c1">#                         seg.size_bytes = os.path.getsize(tmp) before move</span>
+</code></pre></div>
+
+<p>Keep <code>put()</code> for the small JSON snapshots. Memory delta: <strong>~150 MB → ~0 per camera per segment</strong> (ffmpeg's own buffers aside). Also compute <code>size_bytes</code> from the filesystem rather than <code>len(data)</code>.</p>
+<p><strong>Outcome:</strong> O(1) recording memory regardless of bitrate/segment length; no finalize-time RSS cliffs; S3 mode gains multipart streaming for free (currently a 1.5 GB segment would also max out at boto3's single-<code>put_object</code> memory ceiling).</p>
+<h3 id="f-07-live-view-transcodes-are-never-reclaimed">F-07. Live-view transcodes are never reclaimed</h3>
+<p><strong>Evidence:</strong> <code>apps/api/routers/live.py</code> — <code>_start_stream</code> (line 34) launches ffmpeg per <code>/play</code> call keyed by <code>camera.id</code>, guarded by a lock and a <code>poll()</code> reuse check. <code>_stop_stream</code> (line 79) exists but <strong>has zero callers</strong> (grep-verified). There is no TTL, no idle detection, no max-duration, no eviction: a viewer who closes the tab leaves an ffmpeg LL-HLS transcode of the camera substream running <strong>until the API process restarts</strong>. Every additional camera viewed adds another ffmpeg (CPU: one x264 <code>veryfast</code> encode each; at 640×360 that's a meaningful slice of a small-box CPU). The README bills this as "authorized LL-HLS gateway" — authorization exists; lifecycle doesn't.</p>
+<p><strong>Recommended fix (two parts):</strong>
+1. <strong>Auto-reap:</strong> track <code>last_probe_ts</code> per stream; a lightweight background task (the app already runs thread-based services in the worker; here a <code>asyncio</code> task or middleware hook) terminates any stream not probed (manifest/segment fetches update the timestamp — requires serving <code>/live-media</code> through a tiny auth-aware handler rather than blind <code>StaticFiles</code>, or a heartbeat endpoint the player's page calls) for &gt; <code>LIVE_IDLE_TIMEOUT</code> (default 300s), plus a hard <code>LIVE_MAX_DURATION</code> (default 4h) forcing restart.
+2. <strong>Kill the dead code or wire it:</strong> expose <code>POST /api/live/{camera_id}/stop</code> calling <code>_stop_stream</code> (useful for the dashboard's "stop stream" button), and delete the function if not.
+3. Also note <code>_start_stream</code> returns <code>out_dir</code> even when ffmpeg failed to spawn (line 68-73 logs and returns the path!) — <code>play()</code> then hands the client a manifest that will never exist, with a 200. Fail with 503 instead so the UI can surface it.</p>
+<p><strong>Outcome:</strong> live-view CPU cost becomes proportional to actual viewers; streams end when sessions end; <code>ps</code> no longer shows week-old ffmpeg processes; the dashboard gains an explicit stop control.</p>
+<h3 id="f-10-envelope-encryption-per-record-data-keys-without-reuse-74-storage-amplification">F-10. Envelope encryption: per-record data keys without reuse — 7.4× storage amplification</h3>
+<p><strong>Evidence (measured):</strong></p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code>58-byte RTSP URL  → 432-byte stored token (7.4×)
+envelope = {'k': 140 bytes wrapped key, 'c': 164 bytes ciphertext}
+128-dim embedding → 2392 bytes stored (1.9× vs JSON)
+</code></pre></div>
+
+<p><code>CryptoBox._seal</code> (<code>crypto.py:38-42</code>) mints a fresh Fernet data key per <code>encrypt_*</code> call and wraps it with the KEK — so every row carries ~140 bytes of wrapped key + base64/JSON framing, and every <code>decrypt_*</code> pays a KEK-unwrap + data-key Fernet decrypt. For rows written per frame-adjacent event and embeddings refreshed on the 30s TTL, that's constant CPU and 2–7× storage on exactly the high-volume tables. The design doc's stated motivation (rotation without re-encrypting bulk data) is legitimate — but per-<em>record</em> key generation buys no rotation benefit over per-<em>epoch</em> (or per-table) data keys, because rotation re-wraps <code>k</code> either way.</p>
+<p><strong>Recommended fix (keep envelope semantics, cut the amplification):</strong>
+1. <strong>Epoch-based DEKs with caching:</strong> maintain a small LRU of active data keys (e.g., one per table/purpose, rotated daily or on demand). <code>encrypt</code> reuses the cached (already-unwrapped) DEK and stores only the raw Fernet ciphertext plus a 1-byte key-epoch tag: <code>v2:&lt;epoch&gt;:&lt;ct&gt;</code>. Decrypt resolves epoch→DEK via one cached KEK-unwrap per epoch, not per record. Envelope rotation story is preserved (re-wrap the epoch keys only).
+2. <strong>Format/version the envelope</strong> (<code>v1:</code> prefix for existing rows) so current data stays readable — decrypt dispatches on prefix. No migration downtime.
+3. <strong>Trim serialization:</strong> skip the base64-of-JSON double-layer for bytes (<code>encrypt_bytes</code> base64s a JSON blob of two base64 strings — 3 encodings stacked). Store <code>v2:&lt;epoch&gt;:&lt;raw-fernet-token&gt;</code> (Fernet tokens are already ASCII-armored).
+4. Alternatively, for the two highest-volume cases (<code>Event.detail.plate_enc</code>, embeddings), consider AES-GCM via <code>cryptography.hazmat</code> with a cached nonce/DEK — same properties, ~none of the framing overhead. Fernet (AES-CBC+HMAC) is fine semantically; the cost here is purely the per-record wrap + triple encoding.</p>
+<p><strong>Outcome:</strong> ~5–7× less storage for encrypted fields (432 → ~110 bytes for that URL), per-record crypto CPU down from two Fernet operations to one (after epoch warm-up), rotation capability unchanged, and backward-readable existing rows.</p>
+<hr>
+<h2 id="part-4-design-architecture-findings">Part 4 — Design &amp; architecture findings</h2>
+<h3 id="d-1-schemas-layer-is-effectively-dead-validation-happens-ad-hoc-in-routers">D-1. Schemas layer is effectively dead — validation happens ad-hoc in routers</h3>
+<p><code>packages/domain/schemas.py</code> (199 lines) defines 16 Pydantic models; <strong>only <code>TPLinkNvrSeed</code> is imported anywhere</strong> (<code>cameras.py:24</code> — grep-verified). Meanwhile the routers hand-roll validation:
+- <code>cameras.py:211</code> — <code>create_camera(body: dict)</code> with <code>body.get(...)</code> and manual <code>int(...)</code> coercion. No length limits on <code>name</code> (DB column is <code>String(255)</code> — SQLite won't care, PostgreSQL will truncate or error), no validation that <code>privacy_masks</code>/<code>retention</code> are sane shapes (bad JSON shapes get stored and later crash... nothing, because nothing reads them — see F-05).
+- <code>persons.py:34</code> — <code>create_person(body: dict)</code> while <code>PersonCreate</code> sits unused in schemas.py.
+- <code>alerts.py</code> and <code>users.py</code> define <strong>local, duplicated</strong> models (<code>RouteCreate</code>, <code>UserCreate</code>) instead of the domain ones (<code>schemas.UserCreate</code> vs <code>users.UserCreate</code> — two divergent copies of the same contract, both maintained).
+- <code>auth.py:206</code> — <code>mfa_verify(body: dict)</code> with <code>(body or {}).get("code")</code> — while <code>MfaVerify(code: str)</code> exists unused.</p>
+<p><strong>Impact:</strong> The OpenAPI schema generated by FastAPI — a selling point (<code>docs/api/openapi-summary.md</code>) — shows <code>dict</code> bodies for these endpoints, so client generation, validation, and documentation all degrade. Duplicated request models will drift (already have: <code>UserCreate</code> exists twice). Pydantic's validation (max lengths, email format, bounds) is bypassed on precisely the endpoints that write to the DB.</p>
+<p><strong>Fix:</strong> routers take the schema models that already exist (<code>CameraCreate</code>, <code>PersonCreate</code>, <code>MfaVerify</code>, ...), delete the router-local duplicates, add <code>Field(max_length=...)</code> constraints matching column sizes, and delete the unused schema models (or wire them). One afternoon, large readability + API-contract win, and mypy stops being asked to type <code>dict</code>-shaped bodies.</p>
+<h3 id="d-2-the-audit-boundary-is-inconsistent-writes-coupled-to-request-transactions">D-2. The audit boundary is inconsistent (writes coupled to request transactions)</h3>
+<p><code>write_audit</code> adds an <code>AuditLog</code> to the caller's session; every router then <code>db.commit()</code>s — coupling audit persistence to the success of the business write. In <code>cameras.py:provision_tplink_nvr</code> (lines 180-206), a mid-loop SSRF failure does <code>db.rollback()</code> <strong>after</strong> audit rows were added, then raises — the rollback discards those audit rows. Security-relevant actions (bulk camera creation attempts) can go unaudited exactly when they fail. Separately, <code>live.py:117</code> imports <code>write_audit</code> inside the function body. </p>
+<p><strong>Fix:</strong> write audit entries on a <strong>separate short-lived session</strong> (or a dedicated audit-only session/queue flushed independently), so a failed business transaction still leaves the attempt audited — which is the point of an audit log. Wrap the login handler's pattern (it already commits audit-then-raise correctly at <code>auth.py:68-71</code>) into a small helper used everywhere.</p>
+<h3 id="d-3-observability-is-declared-but-not-wired">D-3. Observability is declared but not wired</h3>
+<p><code>metrics.py</code> declares 15 metric names (including <code>camera_fps</code>, <code>frames_dropped</code>, <code>queue_depth</code>, <code>detections_per_minute</code>, <code>recognition_latency_ms</code>, <code>database_latency_ms</code>, <code>camera_disconnects_total</code>). <strong>Grep across apps+packages: only 3 are ever set</strong> (<code>cpu_utilization</code>, <code>ram_used_mb</code>, <code>storage_usage_percent</code> — and only when <code>psutil</code> is installed, which isn't in requirements.txt). The gateway never reports its status transitions or drops; the pipeline never counts; <code>api_latency_ms</code>/<code>database_latency_ms</code> have no middleware taps. Prometheus config scrapes both <code>api</code> and <code>worker</code> jobs at the same API endpoint with the same credentials — and <code>/api/system/metrics</code> requires a bearer token (no credentials configured in <code>prometheus.yml</code> → every scrape 401s; the file as shipped cannot work).</p>
+<p><strong>Fix:</strong> wire the declared names at their natural seams (gateway status→<code>camera_disconnects_total</code>, pipeline→<code>frames_processed</code>/<code>detections_per_minute</code>, F-04's queue→<code>queue_depth</code>, a tiny <code>http</code> middleware→<code>api_latency_ms</code>, engine event listener→<code>database_latency_ms</code>), add <code>psutil</code> to requirements (or make its absence explicit in docs), and either drop the worker scrape job or have the worker expose its own <code>/metrics</code> (it already shares the runtime bootstrap). For Prometheus auth: mount an internal-only scrape endpoint or document the bearer-token approach with the token injected via file.</p>
+<h3 id="d-4-settings-carry-dead-switches-config-lies-to-operators">D-4. Settings carry dead switches — config lies to operators</h3>
+<ul>
+<li><code>ai_motion_gate_enabled: bool = True</code> (config.py:47) — never read anywhere (grep). The README describes a motion gate in the pipeline flow ("RTSP -&gt; decode -&gt; [motion gate] -&gt; ..."); there is no gate. <code>ReferenceMotionDetector</code> does its own frame-differencing internally, but there's no configurable gate stage, so the flag does nothing.</li>
+<li><code>retention_embeddings_days</code>, <code>retention_audit_days</code> — see F-11.</li>
+<li><code>LOCALSIGHT_LIVE_DIR</code> env var read at <code>live.py:29</code> as a default, but <code>main.py:93</code> computes the mount from a <strong>hard-coded</strong> relative path (<code>os.path.join(dirname(__file__), "..", "..", "data", "live")</code>) — setting the env var makes the gateway write segments to a directory the app doesn't serve. Two sources of truth, one of them ignored.</li>
+</ul>
+<p><strong>Fix:</strong> delete the dead flag or implement the gate; make both live-dir reads use one shared constant (put it in <code>Settings</code> as <code>live_dir</code> with the env override, and derive both the mount and <code>_LIVE_ROOT</code> from it).</p>
+<h3 id="d-5-bootstrapmigrations-story-is-one-way-and-dialect-fragile">D-5. Bootstrap/migrations story is one-way and dialect-fragile</h3>
+<p><code>bootstrap._ensure_columns</code> runs two hard-coded <code>ALTER TABLE ... ADD COLUMN</code> statements inside <code>engine.begin()</code>, swallowing <strong>all</strong> exceptions per statement. On PostgreSQL, a failed ALTER aborts the implicit transaction, but each <code>execute</code> is attempted inside the same <code>begin()</code> block — the second ALTER runs in a doomed transaction if the first failed for a real reason (not "already exists"), masking genuine errors as "already present." <code>create_all</code> + ad-hoc ALTERs is acceptable for v1; the code itself says "use Alembic" but Alembic isn't in requirements, isn't in CI, and there's no <code>alembic/</code> directory. Combined with F-03's <code>ondelete</code> requirements, the schema will inevitably drift from the models.</p>
+<p><strong>Fix:</strong> adopt Alembic now (it's cheap: <code>alembic init</code>, autogenerate the current schema as baseline, add <code>pip install alembic</code> + a CI step that runs <code>alembic upgrade head</code> against a scratch PG before tests). Keep <code>_ensure_columns</code> only for the pre-Alembic databases, and make it dialect-aware (check <code>information_schema</code>/<code>PRAGMA table_info</code> rather than try/except-swallow).</p>
+<h3 id="d-6-worker-cameras-never-re-scanned-stop-event-nearly-useless">D-6. Worker: cameras never re-scanned; stop event nearly useless</h3>
+<p><code>apps/worker/main.py:main()</code> snapshots the camera list <strong>once</strong> at startup (line 316-317). Cameras added/removed/enabled via the API (the product's normal administration flow!) don't start pipelines until the worker restarts; removed cameras keep their threads. There's no health-based restart of crashed loops either: after <code>MAX_CONSECUTIVE_FAILURES</code> the <code>StreamGateway.iter_frames</code> generator <strong>returns</strong> (gateway.py:60, 75), <code>run_camera</code> exits its loop, the thread dies — permanently, silently, until process restart. The <code>stop</code> event is only set on KeyboardInterrupt (the graceful path handles it; anything else — SIGTERM from Docker <code>stop</code> — kills daemon threads abruptly, leaving ffmpeg children to be reparented; the recorder's <code>stop_all</code> only runs on the clean path since <code>run_camera</code> returns after <code>iter_frames</code> exhausts — but for a camera that exhausted retries it does run; for SIGTERM it never does).</p>
+<p><strong>Fix:</strong> a supervisor loop (every N seconds: diff <code>Camera</code> table against running threads; start new, stop removed, restart dead); install a <code>SIGTERM</code> handler that sets <code>stop</code> so <code>recorder.stop_all()</code> and ffmpeg cleanup actually execute under <code>docker stop</code>; log camera-thread deaths at ERROR with a metric (ties into D-3's <code>camera_disconnects_total</code>). Also change <code>iter_frames</code>' terminal <code>return</code> to a long-backoff <code>continue</code> (or surface failure so the supervisor can decide) — "fail safe" per the README means keep trying safely, not give up after 10 tries at 60s backoff (~10 minutes).</p>
+<h3 id="d-7-duplicate-argon2jwtcrypto-parameter-provenance-env-file-precedence-trap">D-7. Duplicate Argon2/JWT/crypto parameter provenance; <code>.env</code> file precedence trap</h3>
+<p><code>Settings</code> reads <code>.env</code> <strong>and</strong> environment (<code>SettingsConfigDict(env_file=".env")</code>). In the Docker/compose path, environment variables are injected explicitly — but <code>pydantic-settings</code> prefers real env vars over <code>.env</code>, and the image <code>COPY . /app</code> (F-12) ships a <code>.env</code> from the build context. A stale build-time <code>.env</code> can silently become the runtime config for anything <strong>not</strong> explicitly passed in <code>docker-compose.yml</code>'s <code>environment:</code> (e.g., <code>RECORD_*</code>, <code>RETENTION_*</code>, <code>AI_INFERENCE_FPS</code>, <code>AI_CONFIDENCE_THRESHOLD</code> are NOT in the compose environment list — so the <strong>image's</strong> <code>.env</code> wins over the host's <code>.env</code> that the compose file's <code>${VAR}</code> substitutions read... actually compose <code>${VAR}</code> reads the host <code>.env</code>, but pydantic reads the image-baked one; the two files can and will diverge). This is a genuine production incident waiting to happen: operators edit <code>.env</code>, restart compose, and the worker (whose settings come from pydantic, not compose substitutions) ignores them.</p>
+<p><strong>Fix:</strong> never bake <code>.env</code> into the image (see F-12's <code>.dockerignore</code>); in <code>Settings</code>, prefer <code>env_file=None</code> inside containers and pass a <code>LOCALSIGHT_ENV_FILE</code> opt-in, or add a startup log line printing the resolved source of each sensitive setting (never values). Document explicitly which knobs flow via compose env vs <code>.env</code>.</p>
+<hr>
+<h2 id="part-5-security-review-defense-in-depth-notes-beyond-the-criticals">Part 5 — Security review (defense-in-depth notes beyond the criticals)</h2>
+<p>The security posture is unusually good for this category: Argon2id, JWT rotation with replay detection, TOTP implemented correctly (RFC 6238, ±1 window, <code>compare_digest</code>), envelope encryption, SSRF guard with deploy-time allowlists, path-traversal-safe storage, HMAC-signed expiring URLs, audit trail, hardened headers/CSP, non-root container. Specific gaps found:</p>
+<ol>
+<li><strong>JWT permissions stale-window (Medium):</strong> access tokens embed the permission set (<code>dependencies.py:55</code> reads <code>claims["permissions"]</code>), valid 15 min. A demoted/locked-out admin keeps full permissions until token expiry; there's no revocation check per request (only refresh tokens are tracked server-side). Acceptable trade-off at 15-min TTL, but the <code>is_active</code> check happens per-request while role changes don't — document it or add a lightweight jti denylist on role change. <strong>Fix option:</strong> on <code>PUT /users</code> role change or <code>DELETE /users</code>, also revoke that user's refresh tokens (cheap, closes the 15-min window to "next refresh").</li>
+<li><strong>SSRF DNS-rebinding residual (Low-Medium):</strong> <code>validate_egress_url</code> resolves the host, validates the resolved IPs, returns the parsed URL — but the <strong>consumer</strong> (ffmpeg/httpx) resolves again at connect time. A rebinding DNS server can return a public IP for validation and a private IP at connect. Standard mitigation is to pin the resolved IP for the actual connection, or validate at-connection via a custom transport. Given <code>SSRF_ALLOWLIST</code> covers intended private ranges, the residual risk is the <em>unlisted</em> private space; recommend documenting the gap + network egress controls (already referenced in ssrf.py's docstring) or implementing IP-pinned connections for webhooks (httpx <code>transport</code> with a resolver override).</li>
+<li><strong><code>verify_code</code> MFA brute force (Low):</strong> login rate limit is <code>rate=1.0, capacity=10</code> per IP — with a 6-digit code and a ±1 window (3 valid codes), 10 attempts/min/IP through a botnet gives non-trivial odds over days. Add a small per-user MFA failure counter/lockout (the <code>failed_login_attempts</code> machinery already exists for passwords — reuse it for MFA failures).</li>
+<li><strong>Stored XSS via innerHTML (Medium, mitigated):</strong> 7 <code>innerHTML</code> sites render <code>person.label</code>, <code>camera.name</code>, <code>audit.username</code> etc. — all operator-supplied, all persisted. CSP <code>script-src 'self'</code> blocks script execution, but <code>img-src 'self' data:</code> permits <code>data:</code> images (exfil/probing channel) and event-handler injection into non-script contexts remains. <strong>Fix:</strong> <code>textContent</code>/DOM building or a tiny <code>escapeHtml</code> helper; tighten <code>img-src</code> to <code>'self'</code> only (no legit <code>data:</code> usage in the shipped UI).</li>
+<li><strong>Webhook payloads carry ciphertext + PII (Medium):</strong> <code>worker/main.py:289-290</code> puts <code>str(ae.detail)</code> into the alert <code>message</code> — after F-01's fix, <code>detail</code> includes <code>plate_enc</code> (Fernet ciphertext, harmless) but also the ANPR event's <code>bbox</code>/timing; email bodies (<code>notify/__init__.py:74</code>) embed <code>alert.detail</code> raw. Third-party webhook/email systems receive more than the minimum. <strong>Fix:</strong> an allowlist of detail keys per channel (e.g., webhooks get <code>dwell_sec</code>, <code>direction</code>, <code>count</code>, never <code>plate_enc</code>/<code>plate_hash</code>).</li>
+<li><strong><code>/_ensure_columns</code> + <code>create_all</code> with elevated trust (Low):</strong> the bootstrap DDL runs at every process start (API and worker race it — two processes ALTERing concurrently can both hit "duplicate column" and both swallow). Move DDL out of runtime bootstrap into migrations (D-5).</li>
+</ol>
+<hr>
+<h2 id="part-6-clean-code-standards">Part 6 — Clean code &amp; standards</h2>
+<ol>
+<li><strong>Bare/broad exception handling is the house style</strong> — 27 <code># noqa: BLE001</code> sites. Most are justified by the "never crash the loop" philosophy (worker frame loop, alert sender), and several re-raise correctly. But some sites suppress too much: e.g., <code>bootstrap._ensure_columns</code> swallows <em>all</em> exceptions per ALTER (masks real DDL errors — see D-5); <code>live.py:54-56</code> and <code>live.py:82-86</code> silently <code>pass</code> on <code>terminate()</code> failures (zombie processes go unnoticed); <code>worker/main.py:174-175</code> <code>except Exception: pass</code> around storage delete hides permission errors forever (retention looks successful while files accumulate). <strong>Standard to adopt:</strong> narrow the exception types (<code>OSError</code>, <code>subprocess.SubprocessError</code>) at infra seams; keep the broad catches only at true top-level loop boundaries, and pair each with a <code>log.warning</code> (several already do — good).</li>
+<li><strong>Function-local imports scattered</strong> — <code>live.py:41</code>, <code>main.py:104</code>, <code>timeline.py:32</code>, <code>sources.py:60/66</code>, <code>onvif.py</code> (three sites), <code>worker/main.py:306</code> (<code>dt_now</code> re-imports datetime inside a function <em>while the module already imports it</em> — a pure smell), plus <code>pipeline._crop_vehicle</code>'s numpy guard. Lazy imports for heavyweight optional deps (onnxruntime, boto3, paho) are deliberate and fine; stdlib/local-module laziness is just noise. <strong>Fix:</strong> hoist local-module imports to module scope; keep the optional-dependency ones, but standardize them behind a tiny <code>import_optional(name)</code> helper with a clear error message.</li>
+<li><strong><code>worker/main.py:305-307</code> — <code>dt_now()</code> wrapper</strong> exists only to re-import <code>datetime</code> and call <code>utcnow</code>-equivalent — while <code>packages/domain/timeutil.utcnow</code> already exists and is <strong>never used anywhere</strong> (dead module, grep-verified). Delete <code>dt_now</code>, import <code>timeutil.utcnow</code>, and use it consistently.</li>
+<li><strong>Inconsistent datetime handling</strong> — <code>models.py</code> columns are <code>DateTime(timezone=True)</code>, but <code>analytics.py:40-41</code> has to strip tzinfo manually (<code>_naive</code>) because SQLite returns naive datetimes; <code>events.py:42-44</code> does <code>.replace("Z","+00:00")</code> parsing while <code>analytics.py:31-38</code> has a richer <code>_parse</code> that also validates — two parsing idioms for the same job, one without error handling (<code>events.py:42</code> will 500 on a malformed <code>start</code> string — <code>fromisoformat</code> raises <code>ValueError</code>, uncaught → 500 instead of 400). <strong>Fix:</strong> one <code>parse_iso_or_400</code> helper (timeutil is the natural home — currently dead, give it a job), used by events/audit/analytics/timeline.</li>
+<li><strong><code>alerts.py:130</code> — <code>limit: int = 50</code> with <code>min(limit, 500)</code> inline</strong> vs the <code>Query(50, le=500, ge=1)</code> pattern used in events/audit. Inconsistent pagination contracts; also no <code>total</code> returned here unlike every other list endpoint.</li>
+<li><strong>Naming/marker drift:</strong> README says "49 tests" in one place (line 248) and "66 tests" elsewhere; docs claim <code>events:export</code> permission governs export endpoints — but <code>events.py:89,105</code> uses <code>events:export</code> while <code>events.py:105</code>'s clip uses... also <code>events:export</code> — yet RBAC defines <code>video:export</code> as a separate permission and <code>events.py:89</code>'s own docstring mentions watermarking. <code>SECURITY_OPERATOR</code> has <code>events:export</code> but <code>ANALYST</code> has it too — fine — just verify the permission taxonomy matches docs (<code>docs/security/SECURITY.md</code>).</li>
+<li><strong>Dead UI artifacts:</strong> <code>ui/app.js:94</code> — <code>$("tbody", ).innerHTML = ""</code> (stray comma — harmless but broken-looking) followed by <code>document.querySelector("#events-table tbody")</code> — two idioms for one node; the whole events table render assumes <code>data.items</code> exists while <code>persons</code> returns a bare array — the <code>api()</code> helper can't normalize this. Minor, but symptomatic of no linting on the UI.</li>
+<li><strong>Type hints are strong</strong> (SQLAlchemy 2.0 <code>Mapped[]</code>, modern <code>|</code> unions, <code>from __future__ import annotations</code> everywhere) — genuinely good. <code>run_in_threadpool</code> def routing is consistent. The few <code>dict</code>-typed request bodies (D-1) are the outliers. mypy with <code>--follow-imports=skip</code> is too weak to catch cross-module contract breaks like F-02; add <code>mypy packages apps</code> without skip once the schemas are wired (D-1), and make the CI lint step blocking (<code>continue-on-error: true</code> currently — see next).</li>
+<li><strong>CI quality gates don't gate.</strong> Both ruff and mypy steps carry <code>continue-on-error: true</code> (<code>.github/workflows/ci.yml</code>) — the "quality gate" job blocks merge on lint/test failures per the README, but lint/type findings never fail anything. <strong>Fix:</strong> remove <code>continue-on-error</code> once the current backlog is clean, add <code>--strict</code> gradually (<code>mypy --strict packages/security</code> first — it's the best-typed package).</li>
+<li><strong><code>if __name__</code> guard + module-level <code>app = create_app()</code> in <code>main.py</code></strong> means importing <code>apps.api.main</code> (e.g., for the tests, or any tooling) boots the whole runtime including DB DDL — the test suite works around this via conftest env vars, but any accidental import (e.g., a future script) creates/alters a database. Standard FastAPI practice, but given <code>create_all</code>+ALTERs run at import (D-5), consider <code>create_app()</code> on first request via lifespan or an explicit factory invocation in the ASGI entrypoint only.</li>
+</ol>
+<hr>
+<h2 id="appendix-minor-findings-batch">Appendix — minor findings (batch)</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Finding</th>
+<th>Evidence</th>
+<th>Suggested action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M-1</td>
+<td><code>ai_motion_gate_enabled</code> dead config</td>
+<td>config.py:47, zero readers</td>
+<td>Delete or implement (D-4)</td>
+</tr>
+<tr>
+<td>M-2</td>
+<td><code>Stream</code>, <code>SystemMetric</code>, <code>ModelVersion</code> tables created, never used</td>
+<td>models.py:131,248,257; grep-verified zero usage</td>
+<td>Delete (with Alembic drop) or wire ModelVersion to registry</td>
+</tr>
+<tr>
+<td>M-3</td>
+<td><code>timeutil.py</code> dead module</td>
+<td>zero imports</td>
+<td>Give it the shared <code>parse_iso_or_400</code> job (Part 6 §4)</td>
+</tr>
+<tr>
+<td>M-4</td>
+<td><code>schemas.py</code> 15/16 models unused</td>
+<td>only TPLinkNvrSeed imported</td>
+<td>Wire into routers (D-1)</td>
+</tr>
+<tr>
+<td>M-5</td>
+<td><code>models.Stream</code> never used but <code>provision_tplink_nvr</code> could populate it</td>
+<td>—</td>
+<td>Delete or use for stream metadata</td>
+</tr>
+<tr>
+<td>M-6</td>
+<td><code>.dockerignore</code> missing</td>
+<td><code>ls</code> shows none; <code>COPY . /app</code></td>
+<td>Add: <code>.venv</code>, <code>.env</code>, <code>data/</code>, <code>*.db</code>, <code>.coverage</code>, <code>coverage.xml</code>, <code>.git</code>, <code>.pytest_cache</code>, <code>__pycache__</code>, <code>docs/</code>, <code>tests/</code>, <code>ui/</code> (as needed), <code>models/</code> is needed — keep it</td>
+</tr>
+<tr>
+<td>M-7</td>
+<td>Image ships 365KB+320KB SQLite DBs + <code>.env</code></td>
+<td><code>ls</code> output; F-12</td>
+<td>Fixed by M-6</td>
+</tr>
+<tr>
+<td>M-8</td>
+<td><code>psutil</code> imported in system.py but not in requirements</td>
+<td>system.py:24-27</td>
+<td>Add to requirements or drop feature</td>
+</tr>
+<tr>
+<td>M-9</td>
+<td>Prometheus scrape will 401 (metrics endpoint requires bearer auth; no credentials configured)</td>
+<td>prometheus.yml vs system.py:74</td>
+<td>Add scrape token or unauthenticated internal listener (D-3)</td>
+</tr>
+<tr>
+<td>M-10</td>
+<td><code>noqa: BLE001</code> ×27</td>
+<td>grep count</td>
+<td>Narrow types at infra seams (Part 6 §1)</td>
+</tr>
+<tr>
+<td>M-11</td>
+<td><code>MqttNotifier</code> default <code>retain=True</code> for alerts</td>
+<td>notify/<strong>init</strong>.py:190</td>
+<td>Default <code>retain=False</code> — alerts are transient; retained MQTT alerts on the broker = stale forever</td>
+</tr>
+<tr>
+<td>M-12</td>
+<td><code>EmailNotifier</code> uses <code>starttls</code> on port 465 — wrong (465 is implicit TLS; starttls is 587)</td>
+<td>notify/<strong>init</strong>.py:82-83</td>
+<td>Use <code>smtplib.SMTP_SSL</code> for 465</td>
+</tr>
+<tr>
+<td>M-13</td>
+<td><code>push</code> cooldown recorded even when notifier construction later fails</td>
+<td>worker/main.py:131-136 — <code>_cooldown.record(cd_key)</code> inside <code>try</code> before send</td>
+<td>Record after successful <code>build_notifier</code></td>
+</tr>
+<tr>
+<td>M-14</td>
+<td><code>cooldown</code> applied to PushNotifier unconditional append (<code>_build_notifiers</code> always adds PushNotifier first — it double-sends with any configured push route)</td>
+<td>worker/main.py:98</td>
+<td>Skip default push when a push route matched</td>
+</tr>
+<tr>
+<td>M-15</td>
+<td><code>events.py:42</code> uncaught <code>fromisoformat</code> ValueError → 500</td>
+<td>—</td>
+<td>Shared parser (Part 6 §4)</td>
+</tr>
+<tr>
+<td>M-16</td>
+<td><code>timeline.py:32</code> imports HTTPException inside function</td>
+<td>—</td>
+<td>Hoist</td>
+</tr>
+<tr>
+<td>M-17</td>
+<td><code>raise HTTPException(...) from exc</code> inconsistent (some sites have it, <code>cameras.py:294</code> SSRF validate in update_camera has no try at all — UnsafeUrlError propagates as 500)</td>
+<td>cameras.py:293-298</td>
+<td>Wrap like create_camera does</td>
+</tr>
+<tr>
+<td>M-18</td>
+<td><code>cameras.py:update_camera</code> accepts <code>fps</code> without int coercion; <code>int()</code> was done in create</td>
+<td>cameras.py:290-292</td>
+<td>Pydantic model (D-1) fixes</td>
+</tr>
+<tr>
+<td>M-19</td>
+<td>Test count drift: README "66 tests" in one section, "49 tests" in layout section</td>
+<td>README lines 77 vs 248</td>
+<td>Fix docs</td>
+</tr>
+<tr>
+<td>M-20</td>
+<td><code>retention</code> on <code>Camera</code> from NVR seed is <code>{"days": N}</code> but sweeper never reads it (F-11) and <code>rules</code> API never validates overlap between zones</td>
+<td>—</td>
+<td>F-11 + optional overlap lint in rules API</td>
+</tr>
+<tr>
+<td>M-21</td>
+<td><code>objects</code> rule in <code>rule_from_dict</code> defaults <code>("bag","package")</code> but comment in rules.py says <code>person</code> included; <code>ObjectLeftRule.labels</code> default includes <code>person</code> (rules.py:137) while factory overrides to bag/package only (rules.py:338-339) — intentional? confusing</td>
+<td>rules.py:137 vs 338</td>
+<td>Align defaults</td>
+</tr>
+<tr>
+<td>M-22</td>
+<td><code>SemanticSearch</code> rebuilds index per request (analytics.py:88-93) — 2000 events embedded per search call, then discarded</td>
+<td>analytics.py</td>
+<td>Cache per (camera,range) with TTL, or precompute at event-write time (worker)</td>
+</tr>
+<tr>
+<td>M-23</td>
+<td><code>heatmap_grid</code> <code>.limit(20000)</code> without <code>.order_by</code> — nondeterministic 20k sample</td>
+<td>analytics.py:103-108</td>
+<td>Order by recency (comment says "robust to sampling" — make it deterministic anyway)</td>
+</tr>
+<tr>
+<td>M-24</td>
+<td><code>_load_routes</code> cache is global mutable dict without lock (worker threads may race the 30s refresh)</td>
+<td>worker/main.py:46-93</td>
+<td>Small lock or per-camera snapshot</td>
+</tr>
+<tr>
+<td>M-25</td>
+<td><code>IouTracker</code> greedy association is O(D×T) per frame with Python loops; <code>nms</code> list-comprehension per keep is O(n²) worst</td>
+<td>tracker.py:60-69; detectors.py:45-53</td>
+<td>Fine at 5fps/small counts; document budget; numpy vectorization if ONNX staged at 25fps</td>
+</tr>
+<tr>
+<td>M-26</td>
+<td><code>SyntheticDetector</code> referenced in tests only; README calls reference detector "motion proxy" — two reference detectors exist (<code>detector_ref.SyntheticDetector</code>, <code>detectors.ReferenceMotionDetector</code>) — naming confusion</td>
+<td>detector_ref.py vs detectors.py:226</td>
+<td>Consolidate to one reference implementation</td>
+</tr>
+<tr>
+<td>M-27</td>
+<td><code>detectors.py:292</code> — <code>"reference" | "synthetic"</code> both map to <code>ReferenceMotionDetector</code>, but <code>SyntheticDetector</code> (the actual synthetic) is unreachable via config</td>
+<td>detectors.py:292-294</td>
+<td>M-26</td>
+</tr>
+<tr>
+<td>M-28</td>
+<td><code>registry.json</code> = <code>{}</code> — ModelRegistry with empty models dict; <code>verify</code> on any get raises KeyError inside verify → RuntimeError message misleading</td>
+<td>registry.py:53-56</td>
+<td>Guard: <code>get</code> returns None or raise friendly error; <code>verify</code> catches missing record</td>
+</tr>
+<tr>
+<td>M-29</td>
+<td><code>ffmpeg.open_decoder</code> sets <code>stderr=subprocess.PIPE</code> but never reads it — a chatty ffmpeg can deadlock on a full stderr pipe</td>
+<td>ffmpeg.py:49-55</td>
+<td><code>stderr=DEVNULL</code> or drain thread</td>
+</tr>
+<tr>
+<td>M-30</td>
+<td><code>FFmpegFrameSource.frames()</code> <code>finally: proc.terminate()</code> but no <code>wait()</code> — zombie on abrupt generator close</td>
+<td>sources.py:65-77</td>
+<td><code>terminate(); wait(timeout=5)</code></td>
+</tr>
+<tr>
+<td>M-31</td>
+<td><code>_tmp_path</code> writes to <code>/tmp</code> (world-readable, fixed location) — in containers fine, on hosts the segments are world-readable briefly</td>
+<td>recorder.py:46-47</td>
+<td><code>tempfile.mkdtemp</code> under storage root with 0700</td>
+</tr>
+<tr>
+<td>M-32</td>
+<td>UI stores JWT in <code>localStorage</code> (XSS-exfiltratable; CSP mitigates — pair with httpOnly cookie + CSRF or document the tradeoff)</td>
+<td>app.js:13</td>
+<td>Document or move to cookie</td>
+</tr>
+<tr>
+<td>M-33</td>
+<td><code>.gitignore</code> lacks <code>.coverage</code>, <code>coverage.xml</code> (currently untracked clutter; also both are in repo dir)</td>
+<td><code>git status</code></td>
+<td>Add to <code>.gitignore</code></td>
+</tr>
+<tr>
+<td>M-34</td>
+<td><code>localsight.db</code> / <code>test_localsight.db</code> / <code>data/</code> correctly ignored; but <code>.env</code> is ignored while <code>test_localsight.db</code> files live in repo root — fine</td>
+<td>git check-ignore</td>
+<td>—</td>
+</tr>
+<tr>
+<td>M-35</td>
+<td><code>docs/api/openapi-summary.md</code> will drift from reality (no openapi export in CI)</td>
+<td>—</td>
+<td>CI job: dump <code>/openapi.json</code>, diff-check</td>
+</tr>
+<tr>
+<td>M-36</td>
+<td><code>worker/main.py:215</code> builds <code>face_chain</code>/<code>matcher</code> per camera even when <code>identity_recognition_enabled=false</code> (cheap objects — but <code>ReferenceEmbedder</code> alloc per camera is needless)</td>
+<td>worker/main.py:215-216</td>
+<td>Build once, share</td>
+</tr>
+<tr>
+<td>M-37</td>
+<td><code>events.py:list_events</code> <code>total</code> via <code>count(subquery)</code> runs the full filtered query twice on every page</td>
+<td>events.py:47-48</td>
+<td>Acceptable; consider keyset pagination for deep pages</td>
+</tr>
+<tr>
+<td>M-38</td>
+<td><code>alerts.py:analytic_events</code> no <code>total</code>, inconsistent with other lists</td>
+<td>alerts.py:128-141</td>
+<td>Normalize pagination envelope</td>
+</tr>
+</tbody>
+</table></div>
+<hr>
+<h2 id="prioritized-remediation-plan">Prioritized remediation plan</h2>
+<p><strong>P0 — this week (breaks documented features / production risk):</strong>
+1. F-01 <code>Event.detail</code> column + regression tests (crash: ANPR, search, alerts feed)
+2. F-02 S3 <code>verify_signed_url</code> + unified signing + <code>.dockerignore</code> (F-12/M-6 — one PR, 30 minutes of work, closes a secrets-in-image hole)
+3. F-03 FK cascades (<code>Person</code>, <code>User</code>, <code>Camera</code> — GDPR erasure path must work)
+4. F-08 login dummy-hash hoist + always-verify (5-line fix, halves login CPU, kills the oracle)</p>
+<p><strong>P1 — next two weeks (resource efficiency + false controls):</strong>
+5. F-05 privacy masks enforcement + tests (privacy claim is currently false)
+6. F-06 <code>put_stream</code> storage seam (recorder RAM cliff)
+7. F-07 live-stream reaping (ffmpeg lifecycle)
+8. F-04 batched writer + embedding cache (hot-path SQL: 440→~40 stmts/sec @ 8 cams)
+9. F-11 retention completion (embeddings, audit, refresh tokens, per-camera overrides, chunked deletes)</p>
+<p><strong>P2 — next month (design hygiene, then velocity):</strong>
+10. D-1 schema wiring (delete duplicated request models, use schemas.py)
+11. D-5 Alembic baseline + CI migration step; make lint/mypy gates blocking (Part 6 §9)
+12. D-3 wire metrics; D-6 worker supervisor + SIGTERM; F-10 epoch-DEK crypto; Part 5 security items (webhook detail allowlist, img-src tightening, MFA lockout, refresh revocation on role change)
+13. Appendix sweep (the 38 minor items are mostly one-liners; batch them into 3–4 PRs by module)</p>
+<p><strong>Effort/impact heuristic:</strong> P0 ≈ 1–2 days total and eliminates every crash-level defect. P1 ≈ 4–6 days and converts the two headline efficiency risks (RAM, SQL churn) plus the compliance gap into resolved items. P2 is where the codebase goes from "good architecture with debt" to a team-velocity asset.</p>
+<hr>
+<p><em>Report generated from a full read of all 38 production modules + 3 UI files + infra + CI + tests, with every critical/high finding reproduced or measured in-environment. Baseline: 66/66 tests passing — the gaps above exist because the suite doesn't traverse these paths; each P0 fix should land with the test that would have caught it.</em></p>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#executive-summary" data-toc="executive-summary">Executive summary</a></li>
+      <li><a class="" href="#part-1-critical-defects-with-reproduction-evidence" data-toc="part-1-critical-defects-with-reproduction-evidence">Part 1 — Critical defects (with reproduction evidence)</a></li>
+      <li><a class="toc-h3" href="#f-01-eventdetail-does-not-exist-anpr-crashes-the-worker-two-api-endpoints-500" data-toc="f-01-eventdetail-does-not-exist-anpr-crashes-the-worker-two-api-endpoints-500">F-01. Event.detail does not exist — ANPR crashes the worker, two API endpoints 500</a></li>
+      <li><a class="toc-h3" href="#f-02-s3-backend-is-missing-verify_signed_url-media-delivery-broken-also-leaks-external-urls" data-toc="f-02-s3-backend-is-missing-verify_signed_url-media-delivery-broken-also-leaks-external-urls">F-02. S3 backend is missing verify_signed_url — media delivery broken; also leaks external URLs</a></li>
+      <li><a class="" href="#part-2-correctness-data-integrity-issues" data-toc="part-2-correctness-data-integrity-issues">Part 2 — Correctness & data-integrity issues</a></li>
+      <li><a class="toc-h3" href="#f-03-deletions-violate-fk-constraints-on-production-databases" data-toc="f-03-deletions-violate-fk-constraints-on-production-databases">F-03. Deletions violate FK constraints on production databases</a></li>
+      <li><a class="toc-h3" href="#f-05-privacy_masks-are-accepted-and-stored-but-never-applied" data-toc="f-05-privacy_masks-are-accepted-and-stored-but-never-applied">F-05. privacy_masks are accepted and stored but never applied</a></li>
+      <li><a class="toc-h3" href="#f-08-login-timing-oracle-double-argon2-cost" data-toc="f-08-login-timing-oracle-double-argon2-cost">F-08. Login timing oracle + double Argon2 cost</a></li>
+      <li><a class="toc-h3" href="#f-11-retention-sweeper-doesnt-implement-the-documented-policy-surface" data-toc="f-11-retention-sweeper-doesnt-implement-the-documented-policy-surface">F-11. Retention sweeper doesn't implement the documented policy surface</a></li>
+      <li><a class="toc-h3" href="#f-14-recording-metadata-drift-segment-durationsize-never-reconciled" data-toc="f-14-recording-metadata-drift-segment-durationsize-never-reconciled">F-14. Recording metadata drift (segment duration/size never reconciled)</a></li>
+      <li><a class="" href="#part-3-performance-resource-efficiency" data-toc="part-3-performance-resource-efficiency">Part 3 — Performance & resource efficiency</a></li>
+      <li><a class="toc-h3" href="#f-04-frame-hot-path-does-per-frame-orm-writes-measured" data-toc="f-04-frame-hot-path-does-per-frame-orm-writes-measured">F-04. Frame hot path does per-frame ORM writes — measured</a></li>
+      <li><a class="toc-h3" href="#f-06-recorder-buffers-whole-segments-in-ram" data-toc="f-06-recorder-buffers-whole-segments-in-ram">F-06. Recorder buffers whole segments in RAM</a></li>
+      <li><a class="toc-h3" href="#f-07-live-view-transcodes-are-never-reclaimed" data-toc="f-07-live-view-transcodes-are-never-reclaimed">F-07. Live-view transcodes are never reclaimed</a></li>
+      <li><a class="toc-h3" href="#f-10-envelope-encryption-per-record-data-keys-without-reuse-74-storage-amplification" data-toc="f-10-envelope-encryption-per-record-data-keys-without-reuse-74-storage-amplification">F-10. Envelope encryption: per-record data keys without reuse — 7.4× storage amplification</a></li>
+      <li><a class="" href="#part-4-design-architecture-findings" data-toc="part-4-design-architecture-findings">Part 4 — Design & architecture findings</a></li>
+      <li><a class="toc-h3" href="#d-1-schemas-layer-is-effectively-dead-validation-happens-ad-hoc-in-routers" data-toc="d-1-schemas-layer-is-effectively-dead-validation-happens-ad-hoc-in-routers">D-1. Schemas layer is effectively dead — validation happens ad-hoc in routers</a></li>
+      <li><a class="toc-h3" href="#d-2-the-audit-boundary-is-inconsistent-writes-coupled-to-request-transactions" data-toc="d-2-the-audit-boundary-is-inconsistent-writes-coupled-to-request-transactions">D-2. The audit boundary is inconsistent (writes coupled to request transactions)</a></li>
+      <li><a class="toc-h3" href="#d-3-observability-is-declared-but-not-wired" data-toc="d-3-observability-is-declared-but-not-wired">D-3. Observability is declared but not wired</a></li>
+      <li><a class="toc-h3" href="#d-4-settings-carry-dead-switches-config-lies-to-operators" data-toc="d-4-settings-carry-dead-switches-config-lies-to-operators">D-4. Settings carry dead switches — config lies to operators</a></li>
+      <li><a class="toc-h3" href="#d-5-bootstrapmigrations-story-is-one-way-and-dialect-fragile" data-toc="d-5-bootstrapmigrations-story-is-one-way-and-dialect-fragile">D-5. Bootstrap/migrations story is one-way and dialect-fragile</a></li>
+      <li><a class="toc-h3" href="#d-6-worker-cameras-never-re-scanned-stop-event-nearly-useless" data-toc="d-6-worker-cameras-never-re-scanned-stop-event-nearly-useless">D-6. Worker: cameras never re-scanned; stop event nearly useless</a></li>
+      <li><a class="toc-h3" href="#d-7-duplicate-argon2jwtcrypto-parameter-provenance-env-file-precedence-trap" data-toc="d-7-duplicate-argon2jwtcrypto-parameter-provenance-env-file-precedence-trap">D-7. Duplicate Argon2/JWT/crypto parameter provenance; .env file precedence trap</a></li>
+      <li><a class="" href="#part-5-security-review-defense-in-depth-notes-beyond-the-criticals" data-toc="part-5-security-review-defense-in-depth-notes-beyond-the-criticals">Part 5 — Security review (defense-in-depth notes beyond the criticals)</a></li>
+      <li><a class="" href="#part-6-clean-code-standards" data-toc="part-6-clean-code-standards">Part 6 — Clean code & standards</a></li>
+      <li><a class="" href="#appendix-minor-findings-batch" data-toc="appendix-minor-findings-batch">Appendix — minor findings (batch)</a></li>
+      <li><a class="" href="#prioritized-remediation-plan" data-toc="prioritized-remediation-plan">Prioritized remediation plan</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>

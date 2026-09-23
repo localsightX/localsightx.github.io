@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Guide — LocalSight Docs</title>
+  <meta name="description" content="Every screen of the console, end to end: cameras, privacy masks, behavior rules, live view, events, alerts, people, and privacy controls." />
+  <meta name="theme-color" content="#0b1020" />
+  <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <link rel="stylesheet" href="../assets/css/syntax.css" />
+  <link rel="stylesheet" href="../assets/css/docs.css" />
+</head>
+<body>
+  <a class="skip-link" href="#doccontent">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="../index.html" aria-label="LocalSight home">
+        <img src="../assets/img/favicon.svg" alt="" width="30" height="30" />
+        <span>Local<strong>Sight</strong></span>
+      </a>
+      <nav class="nav__links" id="navLinks" aria-label="Primary">
+        <a href="../index.html#tour">Product tour</a><a href="../index.html#features">AI engines</a><a href="../index.html#compare">Compare</a><a href="../index.html#privacy">Privacy</a><a href="../index.html#start">Quick start</a><a href="../index.html#opensource">Open source</a><a href="../index.html#cameras">Cameras</a>
+        <a href="../docs/" aria-current="page">Documentation</a>
+        <a class="nav__cta" href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <main id="main">
+    <div class="docshead">
+      <div class="container">
+        <p class="crumb">
+          <a href="../docs/">Documentation</a>
+          <span class="sep">/</span>
+          <span>Getting started</span>
+          <span class="sep">/</span>
+          <span>User Guide</span>
+        </p>
+        <h1>User Guide</h1>
+        <p class="lede">Every screen of the console, end to end: cameras, privacy masks, behavior rules, live view, events, alerts, people, and privacy controls.</p>
+        <p class="meta">
+          <span class="tag">20 min read</span>
+          <a class="editlink" href="https://github.com/localsightX/localsight/blob/main/docs/USER_GUIDE.md" target="_blank" rel="noopener"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg> Edit on GitHub</a>
+        </p>
+      </div>
+    </div>
+    <div class="docshell">
+      <div class="docgrid">
+
+    <nav class="docsnav" id="docsnav" aria-label="Documentation">
+      <button class="docsnav__toggle" id="docsnavToggle" aria-expanded="false" aria-controls="docsnavBody">
+        <span>Documentation</span><span class="chev" aria-hidden="true">▾</span>
+      </button>
+      <div class="docsnav__body" id="docsnavBody">
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Getting started</h2>
+      <ul>
+      <li><a href="installation.html">Installation & Setup</a></li>
+      <li><a href="user-guide.html" aria-current="page">User Guide</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Operations</h2>
+      <ul>
+      <li><a href="runbook.html">Operations Runbook</a></li>
+      <li><a href="troubleshooting.html">Troubleshooting</a></li>
+      <li><a href="onnx-detector.html">AI Model Staging (ONNX)</a></li>
+      <li><a href="ci-cd-pipeline.html">CI/CD Pipeline</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Reference</h2>
+      <ul>
+      <li><a href="api-reference.html">API Reference</a></li>
+      <li><a href="tplink-vigi.html">Camera & NVR Integrations</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Architecture</h2>
+      <ul>
+      <li><a href="system-architecture.html">System Architecture</a></li>
+      <li><a href="erd.html">Data Model (ERD)</a></li>
+      <li><a href="adr.html">Decision Records (ADR)</a></li>
+      <li><a href="threat-model.html">Threat Model</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Security</h2>
+      <ul>
+      <li><a href="security.html">Security Architecture</a></li>
+      </ul>
+    </div>
+    <div class="docsnav__group">
+      <h2 class="docsnav__h">Engineering</h2>
+      <ul>
+      <li><a href="engineering-review.html">Architectural Review</a></li>
+      </ul>
+    </div>
+      </div>
+    </nav>        <article class="prose" id="doccontent">
+<p>End-user documentation for operators of a LocalSight deployment: logging in,
+managing cameras, watching live and recorded video, working with events and
+alerts, and configuring privacy controls.</p>
+<ul>
+<li><strong>Installing or upgrading for the first time</strong> →
+  <a href="installation.html"><code>docs/operations/installation.md</code></a></li>
+<li><strong>Something is broken</strong> → <a href="troubleshooting.html"><code>docs/operations/troubleshooting.md</code></a></li>
+<li><strong>Day-to-day operations (health, retention, alerts, backup)</strong> →
+  <a href="runbook.html"><code>docs/operations/runbook.md</code></a></li>
+<li><strong>Developer / engineering-agent documentation</strong> → <code>AGENTS.md</code></li>
+</ul>
+<blockquote>
+<p>The screenshots in this guide are real captures of the running product
+(demo dataset, admin role). Files live in <code>docs/img/</code>; regenerate them any
+time with the console running and a screenshot tool — the states match the
+e2e suite's visual baselines.</p>
+</blockquote>
+<h2 id="contents">Contents</h2>
+<ol>
+<li><a href="#getting-set-up-first-time">Getting set up (first time)</a></li>
+<li><a href="#logging-in">Logging in</a></li>
+<li><a href="#dashboards-at-a-glance">Dashboards at a glance</a></li>
+<li><a href="#managing-cameras">Managing cameras</a>
+   - <a href="#privacy-masks">Privacy masks</a>
+   - <a href="#the-cameras-screens-wave-3">The Cameras screens (Wave 3)</a>
+   - <a href="#the-mask-editor">The mask editor</a>
+   - <a href="#the-rules-editor">The rules editor</a>
+   - <a href="#behavior-rules">Behavior rules</a>
+   - <a href="#per-camera-retention">Per-camera retention</a>
+   - <a href="#removing-a-camera">Removing a camera</a></li>
+<li><a href="#live-view">Live view</a></li>
+<li><a href="#overview-the-noc-screen">Overview (the NOC screen)</a></li>
+<li><a href="#analytics">Analytics</a> — incl. <a href="#natural-language-search">natural-language search</a></li>
+<li><a href="#sorting-exporting-and-unambiguous-time-m1">Sorting, exporting and unambiguous time (M1)</a></li>
+<li><a href="#your-account-m2">Your account (M2)</a></li>
+<li><a href="#working-faster-m3">Working faster (M3)</a></li>
+<li><a href="#keyboard-shortcuts">Keyboard shortcuts</a></li>
+<li><a href="#density">Density</a></li>
+<li><a href="#events-search-clips">Events, search &amp; clips</a><ul>
+<li><a href="#forensic-search-attributes-plates-saved-searches">Forensic search — attributes, plates, saved searches</a></li>
+</ul>
+</li>
+<li><a href="#alerts">Alerts</a> — incl. the <a href="#the-alerts-screen-wave-3">Alerts screen</a></li>
+<li><a href="#people-enrollment">People &amp; enrollment</a> — incl. the
+    <a href="#the-identities-screen-wave-3">Identities screen</a></li>
+<li><a href="#users-the-privacy-dashboard-wave-3">Users &amp; the Privacy dashboard (Wave 3)</a></li>
+<li><a href="#what-is-encrypted-and-where">What is encrypted, and where</a></li>
+</ol>
+<p><em>(Wave 5 note: the Privacy view also carries the opt-in UI-marks card
+described above.)</em></p>
+<hr>
+<h2 id="getting-set-up-first-time">Getting set up (first time)</h2>
+<p>This guide assumes LocalSight is already running. If it isn't, the full
+install path — prerequisites, FFmpeg, a Python or Docker Compose install, and
+a first-run verification checklist — is in
+<a href="installation.html"><code>docs/operations/installation.md</code></a>. In short:</p>
+<ol>
+<li><strong>Install</strong> (5–10 min): generate secrets with <code>python scripts/gen_env.py</code>,
+   then start the API (<code>uvicorn apps.api.main:app</code>) <strong>and</strong> the worker
+   (<code>python -m apps.worker</code>) as two processes. The dashboard is served at <code>/</code>.</li>
+<li><strong>Sign in</strong> with the bootstrap admin recorded during install (see
+   <a href="#logging-in">Logging in</a> below).</li>
+<li><strong>Add a camera</strong> via <strong>Cameras → + Add camera</strong> and watch the wizard's
+   <strong>verify</strong> step pull a real frame before you commit.</li>
+<li><strong>Confirm ingestion</strong>: the camera's status dot flips to streaming within
+   ~30 s, events appear, and the Timeline fills with recording coverage.</li>
+<li><strong>Turn on what you need</strong>: behavior rules, alert routes, and (with a
+   documented lawful basis) identity enrollment.</li>
+</ol>
+<p>If a step fails, <a href="troubleshooting.html"><code>docs/operations/troubleshooting.md</code></a>
+is organized by the exact symptom.</p>
+<hr>
+<h2 id="logging-in">Logging in</h2>
+<p><img alt="The sign-in screen — credentials + optional TOTP code." src="../assets/img/shots/login.webp"></p>
+<ol>
+<li>Browse to the deployment URL (the dashboard is served at <code>/</code>).</li>
+<li>Sign in with the account your administrator created (first boot creates
+   the bootstrap admin from <code>BOOTSTRAP_ADMIN_EMAIL</code>/<code>BOOTSTRAP_ADMIN_PASSWORD</code>).</li>
+<li>Sessions stay signed in while the tab is open: the dashboard silently
+   renews its 15-minute access token via a rotating refresh token. If your
+   session does end (tab closed past renewal, token revoked), you'll see a
+   "Session expired" notice on the sign-in screen — that's normal.</li>
+<li>If your account has MFA enabled, the code field appears automatically
+   after you enter your email and password.</li>
+<li>Multi-factor authentication (TOTP-compatible authenticator apps) can be
+   enabled per-account under Account → MFA. Admin accounts should enable it.</li>
+</ol>
+<p>Login errors are specific: "Incorrect email or password" vs. "Account
+temporarily locked — try again in a few minutes" (the lock triggers after
+<code>MAX_LOGIN_ATTEMPTS</code> failures for <code>LOCKOUT_MINUTES</code>).</p>
+<h2 id="dashboards-at-a-glance">Dashboards at a glance</h2>
+<p><img alt="The unified timeline merges events with recording segments." src="../assets/img/shots/timeline.webp"></p>
+<p>The web UI is a single-page dashboard served from the deployment URL:</p>
+<ul>
+<li><strong>Overview</strong> — stat cards, camera strip, 24h event trend, recent events,
+  alert feed; auto-refreshes every 15 s while visible.</li>
+<li><strong>Live</strong> — camera grid with wall mode (see <a href="#live-view">Live view</a>).</li>
+<li><strong>Events</strong> — detections and analytic events with filters by camera, time,
+  identity status.</li>
+<li><strong>Timeline</strong> — a day of recording/presence coverage per camera (SVG ribbon).</li>
+<li><strong>Cameras</strong> — camera status, health, resolution, and last-seen.</li>
+<li><strong>People</strong> — identity enrollment and list.</li>
+<li><strong>Audit</strong> — every sensitive action (logins, exports, camera changes) with
+  who/when/source IP (requires the <code>audit:view</code> permission).</li>
+</ul>
+<p>Views show loading skeletons, empty states with next-step hints, and inline
+error states with Retry — no blank screens. What you see depends on your
+role's permissions; endpoints you lack permission for return 403.</p>
+<h2 id="managing-cameras">Managing cameras</h2>
+<p><img alt="The camera grid: health at a glance, detail tabs behind each card." src="../assets/img/shots/cameras.webp"></p>
+<p>Cameras are added by an administrator (<code>camera:configure</code> permission) via
+<code>POST /api/cameras</code> or the dashboard. Stream URLs (RTSP, with or without
+embedded credentials) are validated against the deployment's egress allowlist,
+then <strong>encrypted at rest</strong> — they are never returned by the API.</p>
+<p>Quick discovery helpers:
+- <code>POST /api/cameras/onvif/discover</code> — WS-Discovery on the camera VLAN.
+- <code>POST /api/cameras/presets/build</code> — build a vendor RTSP URL from a preset
+  (Axis, Hanwha, Hikvision, Dahua, Reolink, Bosch, TP-Link VIGI, ...).
+- <code>POST /api/cameras/from-nvr</code> — provision every channel of a TP-Link VIGI NVR.</p>
+<h3 id="privacy-masks">Privacy masks</h3>
+<p>Privacy masks exclude regions of the frame from <strong>all</strong> processing: a
+detection whose center falls inside a mask — or whose box overlaps a mask by
+≥50% — is dropped before tracking. Masked areas produce no detections, no
+snapshots, no events, no recordings metadata — nothing downstream.</p>
+<p>Configure on a camera (<code>PUT /api/cameras/{id}</code>):</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"privacy_masks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="nt">"w"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.3</span><span class="p">,</span><span class="w"> </span><span class="nt">"h"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.25</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span><span class="w"> </span><span class="nt">"w"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="nt">"h"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.3</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Coordinates are normalized (0.0–1.0) against the full frame, origin
+top-left. Typical uses: a neighbor's property line, a public sidewalk beyond
+the fence, a monitor screen in view.</p>
+<p><strong>Verify masks took effect</strong>: the change applies to new frames immediately
+(worker picks it up on camera reload); run a test detection and confirm no
+events appear from the masked region.</p>
+<h3 id="the-cameras-screens-wave-3">The Cameras screens (Wave 3)</h3>
+<p><code>Cameras</code> in the left navigation is now a full management surface for
+operators with <code>camera:view</code> (management actions additionally require
+<code>camera:configure</code>; read-only roles see the same screens without edit
+controls — the UI hides what you may not do, it never shows you a button
+that will 403):</p>
+<ul>
+<li><strong>Grid</strong> — every camera as a card: live status, resolution, FPS, health,
+  and the count of active privacy masks. Click a card for its detail view.</li>
+<li><strong>Detail tabs</strong> — Streams, Masks, Rules, Retention, Health:</li>
+<li><em>Streams</em>: primary + substream URLs. These are <strong>write-only</strong>: the
+    field shows <code>🔒 encrypted — write-only</code>, existing URLs are never
+    echoed back. Enter a new URL only to replace it.</li>
+<li><em>Masks</em>: the visual mask editor (below).</li>
+<li><em>Rules</em>: the visual rules editor (below).</li>
+<li><em>Retention</em>: per-camera day counts (blank = system default, which the
+    card states explicitly — the UI never invents a number the backend
+    didn't declare).</li>
+<li><em>Health</em>: FPS, drop rate, last-seen worker heartbeat.</li>
+<li><strong>+ Add camera</strong> — a three-step wizard: ONVIF discovery (or manual RTSP
+  entry) → credentials → <strong>verify</strong>, which attempts to pull one real frame
+  before you commit. If the camera is unreachable you see the honest
+  failure (e.g. <code>503 — stream unreachable</code>) and can fix the URL instead of
+  discovering a dead camera a day later.</li>
+</ul>
+<h3 id="the-mask-editor">The mask editor</h3>
+<p>On a camera's Masks tab, drag on the snapshot to draw a rectangle, pick a
+<strong>reason</strong> (compliance record — required), then Add. Reasons are the audit
+trail for <em>why</em> a region is excluded: neighbor's property, public sidewalk,
+no consent for this area, and so on. The editor draws on the camera's live
+snapshot when available; if the camera is offline it says so and stays
+editable (coordinates are normalized, so masks re-anchor on any
+resolution).</p>
+<p>Snapshots for the canvas are fetched through <strong>short-lived signed URLs</strong>
+(300 s) — the same scheme as event media, because browser image loads
+cannot carry your session token.</p>
+<h3 id="the-rules-editor">The rules editor</h3>
+<p><img alt="The rules editor: a drawn loitering zone on the snapshot stage, added to the rule list ahead of saving." src="https://raw.githubusercontent.com/localsightX/localsight/main/docs/img/rules.png"></p>
+<p>On the Rules tab: pick a rule type, click on the snapshot to place points
+(two points for a tripwire, three or more for a zone polygon — it closes
+itself), set the per-type threshold (dwell seconds, direction, count),
+then Add rule → Save. Saving <strong>replaces</strong> the camera's rule list; the
+editor warns when the camera carries legacy/unknown rules so the replace is
+never a silent surprise. Every rule is validated against the same schema
+the worker enforces before the save leaves your browser.</p>
+<p><strong>Replay &amp; verdict</strong> — the card below the editor runs a saved frame fixture
+(<code>tests/replays/</code> JSON format) through the <em>real</em> detection engine as a
+dry-run and renders the verdict: a PASS/FAIL banner against the fixture's
+<code>expect</code> block, one lane per rule with fired/blocked marks, and the
+per-rule fire counts. By default it replays the editor's <em>current</em> rules —
+including unsaved edits — so you verify a rule's behavior before saving it.
+Nothing is persisted and no alert is sent (<code>rules:configure</code> required).</p>
+<h3 id="behavior-rules">Behavior rules</h3>
+<p>Each camera can carry JSON rules evaluated per frame by the worker over
+<em>tracked objects</em> (<code>rules:configure</code> permission). Six rule types exist, and
+every type accepts the shared grammar knobs <code>cooldown_sec</code> (minimum gap between
+fires of the same rule), <code>min_size</code> (ignore tracks smaller than this normalized
+area) and <code>labels</code> (restrict to these platform labels):</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Rule type</th>
+<th>Fires when</th>
+<th><code>detail</code> carried on the event</th>
+<th>Default labels</th>
+<th>Type-specific knobs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>line_cross</code></td>
+<td>A track crosses the segment, optionally in one direction only</td>
+<td><code>direction</code></td>
+<td><code>person</code>, <code>vehicle</code></td>
+<td><code>a</code>, <code>b</code></td>
+</tr>
+<tr>
+<td><code>intrusion</code></td>
+<td>A track enters the polygon</td>
+<td><code>zone</code></td>
+<td><code>person</code>, <code>vehicle</code></td>
+<td><code>min_dwell_sec</code></td>
+</tr>
+<tr>
+<td><code>loitering</code></td>
+<td>Presence inside a zone exceeds the dwell threshold</td>
+<td><code>dwell_sec</code>, <code>zone</code></td>
+<td><code>person</code></td>
+<td><code>dwell_sec</code></td>
+</tr>
+<tr>
+<td><code>object_left</code></td>
+<td>A stationary object appears and persists — <strong>and</strong> its later removal</td>
+<td><code>stationary_sec</code></td>
+<td><code>bag</code>, <code>package</code></td>
+<td><code>stationary_sec</code>, <code>require_unattended</code></td>
+</tr>
+<tr>
+<td><code>crowd</code></td>
+<td>Track count in a zone exceeds the threshold</td>
+<td><code>count</code>, <code>zone</code></td>
+<td><code>person</code></td>
+<td><code>threshold</code></td>
+</tr>
+<tr>
+<td><code>stopped_vehicle</code></td>
+<td>A vehicle stops inside a zone past the threshold</td>
+<td><code>stopped_sec</code></td>
+<td><code>vehicle</code>, <code>truck</code>, <code>bus</code>, <code>motorcycle</code>, <code>bicycle</code></td>
+<td><code>stopped_sec</code>, <code>max_speed</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The <code>object_left</code> rule emits <strong>two</strong> event kinds: <code>object_left</code> when an
+unattended item appears, and <code>object_removed</code> when it is taken again.</p>
+<div class="highlight" tabindex="0"><button class="copybtn" type="button" aria-label="Copy code">Copy</button><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"rules"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"intrusion"</span><span class="p">,</span><span class="w"> </span><span class="nt">"rule_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"backyard"</span><span class="p">,</span><span class="w"> </span><span class="nt">"zone"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.3</span><span class="p">],[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.3</span><span class="p">],[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">],[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]],</span><span class="w"> </span><span class="nt">"cooldown_sec"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line_cross"</span><span class="p">,</span><span class="w"> </span><span class="nt">"rule_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"entry-tripwire"</span><span class="p">,</span><span class="w"> </span><span class="nt">"a"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.0</span><span class="p">],</span><span class="w"> </span><span class="nt">"b"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">1.0</span><span class="p">],</span><span class="w"> </span><span class="nt">"direction"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stopped_vehicle"</span><span class="p">,</span><span class="w"> </span><span class="nt">"rule_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"no-stopping"</span><span class="p">,</span><span class="w"> </span><span class="nt">"zone"</span><span class="p">:</span><span class="w"> </span><span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.6</span><span class="p">],[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.6</span><span class="p">],[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">],[</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]],</span><span class="w"> </span><span class="nt">"stopped_sec"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><code>direction</code>: <code>1</code> left-to-right, <code>-1</code> right-to-left, omitted = both. All
+coordinates are normalized <code>[0,1]</code>, so geometry drawn in the editor maps
+directly onto model output.</p>
+<h3 id="testing-rules-before-you-trust-them-r35-replay-tester">Testing rules before you trust them (R3.5 replay tester)</h3>
+<p><img alt="Replay &amp; verdict: a golden fixture replayed through the real rule engine renders its PASS banner." src="https://raw.githubusercontent.com/localsightX/localsight/main/docs/img/rules-verdict.png"></p>
+<p>Rules are the loudest thing the system does, so they are testable three ways,
+all through the <strong>same</strong> rule engine — no test-only code paths:</p>
+<ul>
+<li><strong>In the UI</strong> — the Replay &amp; verdict card below the rules editor runs a saved
+  fixture through the real engine as a dry-run and renders a PASS/FAIL banner
+  against the fixture's <code>expect</code> block, one lane per rule with fired/blocked
+  marks. It replays the editor's <em>current</em> rules, including unsaved edits.</li>
+<li><strong>In the API</strong> — <code>POST /api/rules/test</code> takes a fixture body and returns the
+  verdict; nothing is persisted and no alert is sent.</li>
+<li><strong>In the terminal / CI</strong> — <code>python scripts/rule_replay.py</code> replays the
+  bundled golden fixtures in <code>tests/replays/</code> (16 manifests covering the
+  cooldown, direction, dwell, abandoned-object and stopped-vehicle edge cases).
+  <code>--list</code> shows them; the pytest suite collects them automatically.</li>
+</ul>
+<p>A fixture is a <code>description</code>, the <code>rules</code>, an ordered list of <code>frames</code> (each a
+timestamp plus the tracks present), and an exhaustive <code>expect</code> block — where a
+rule <em>must</em> fire, where it <em>must not</em>, and that absent behaviour stays absent.
+See <code>tests/replays/README.md</code> for the format.</p>
+<h3 id="the-daily-alert-budget-r36">The daily alert budget (R3.6)</h3>
+<p>Each camera has an optional cap on how many analytic alerts it fans out per UTC
+day (<code>alert_budget_per_day</code> on the camera, or the platform default). The cap
+gates <strong>notifications only</strong> — the underlying event, clip and snapshot are
+always stored, so a suppressed alert is still a searchable event and evidence is
+never lost. <code>GET /api/alerts/budget</code> shows, per camera, the limit, how many
+alerts have been used today, and what remains; the counter is the analytic-event
+count since UTC midnight, which is the same durable number the worker seeds its
+own gate from, so the UI and enforcement can never disagree. Suppressions are
+counted and surfaced (<code>alerts_budget_suppressed_total</code>), so "quiet because
+healthy" stays distinguishable from "quiet because budgeted". A limit of <code>0</code>
+means unlimited — the default, so an upgrade changes nothing until you set one.</p>
+<h3 id="per-camera-retention">Per-camera retention</h3>
+<p><code>PUT /api/cameras/{id}</code> accepts a <code>retention</code> object (e.g.
+<code>{"days": 30}</code>) to override global policy for that camera's data. Global
+defaults: recordings 7 days, events 30 days, snapshots 14 days, embeddings
+90 days, audit 365 days.</p>
+<h3 id="removing-a-camera">Removing a camera</h3>
+<p>On a camera's detail page, the <strong>Remove this camera</strong> card (requires the
+<code>camera:configure</code> permission) takes a camera out of the configuration:</p>
+<ul>
+<li><strong>ingestion stops</strong> — any live view of that camera stops immediately, and the
+  AI worker winds that camera's pipeline (frames + recording) down within ~30 s;</li>
+<li>the camera's <strong>recordings, events, snapshots, detections and tracks are
+  deleted</strong>, and the recording/snapshot objects are removed from storage;</li>
+<li>the action is <strong>typed-confirm</strong>: you must type the camera's exact name before
+  <strong>Remove permanently</strong> unlocks, and <strong>Cancel</strong> backs out without any API call;</li>
+<li>the removal is <strong>audited</strong>, and the audit entry survives the removal.</li>
+</ul>
+<p>There is no undo — re-adding the same camera starts a fresh configuration.</p>
+<h2 id="live-view">Live view</h2>
+<p><img alt="The live wall with per-camera tiles and honest states." src="../assets/img/shots/live.webp"></p>
+<p>Live view streams each camera's substream, transcoded locally to LL-HLS.
+The RTSP URL and camera credentials never reach your browser.</p>
+<ol>
+<li>Open <strong>Live</strong> in the dashboard: every camera is a tile. Pick a layout
+   (1×1, 2×2, 3×3) from the toolbar — your choice is remembered for the tab.</li>
+<li>Each tile runs the secure ticket flow automatically
+   (<code>POST /api/live/ticket</code> → <code>GET /api/live/{camera_id}/play?ticket=...</code>);
+   the player points at <code>/live-media/{camera_id}/index.m3u8</code>.</li>
+<li><strong>Wall mode</strong> (toolbar button or <code>F</code>) cycles the tiles fullscreen for NOC
+   displays; arrow keys step tiles, <code>Esc</code> exits.</li>
+<li>If a camera can't stream (offline, no transcoder available), the tile
+   says so — "Stream unavailable" — instead of showing a dead player.</li>
+<li>The ■ button (or <code>POST /api/live/{camera_id}/stop</code>) ends that transcode
+   immediately.</li>
+</ol>
+<p>You don't need to stop streams manually — the server reaps transcodes that
+nobody has watched for 5 minutes (configurable) or that have run for 4 hours
+(hard ceiling), and it stops everything on restart. This keeps CPU
+proportional to actual viewing.</p>
+<h2 id="overview-the-noc-screen">Overview (the NOC screen)</h2>
+<p><img alt="Overview: camera strip, live counts, health, recent events, alert feed." src="../assets/img/shots/overview.webp"></p>
+<p>The Overview refreshes itself every 15 seconds while visible and pauses
+when the tab is hidden:</p>
+<ul>
+<li><strong>Camera strip</strong> — one chip per camera with its status dot; click to jump
+  straight to that camera's live tile.</li>
+<li><strong>Events — last 24 hours</strong> — a bar sparkline of event volume.</li>
+<li><strong>Recent events</strong> — the latest five detections; click one to open its
+  detail drawer.</li>
+<li><strong>Alert feed</strong> — the most recent analytic (non-presence) events: rule
+  triggers and ANPR.</li>
+<li><strong>Health</strong> — per-component status with model names.</li>
+</ul>
+<h2 id="analytics">Analytics</h2>
+<p><img alt="Analytics: preset chips, compare toggle, widget cards." src="../assets/img/shots/analytics.webp"></p>
+<p>The Analytics view answers "what happened here" over archived data — one
+time-range (24h / 7d / 30d) and one camera filter shared by every widget:</p>
+<ul>
+<li><strong>People-count trend</strong> — an SVG line of occupancy buckets over the range.</li>
+<li><strong>Peak occupancy</strong> — the highest simultaneous count and when it happened.</li>
+<li><strong>Dwell</strong> — average time per tracked person; the card states plainly that
+  it's an average, not a distribution (the API reports one number, the UI
+  doesn't invent a histogram).</li>
+<li><strong>Events by type</strong> — SVG bars, one row per event type.</li>
+<li><strong>Detection density</strong> — a heatmap painted from tracked positions; the
+  brighter the cell, the more visits. Honest when empty: "no detections in
+  this range".</li>
+</ul>
+<h3 id="natural-language-search">Natural-language search</h3>
+<p>The search box on Analytics accepts plain-language queries — <em>"people at the
+dock"</em>, <em>"unknown person after 6pm"</em> — and ranks matching events by
+similarity with a score per result. Example chips fill the box in one click;
+your last five queries are kept for the tab (session only — the history is
+an investigation aid, not a tracking artifact).</p>
+<p>Results click through to the event drawer like any event row. The current
+ranker is the deterministic reference embedder — honest about being
+functional rather than production-accurate; a real VLM swaps in behind the
+same API without a UI change.</p>
+<p><code>GET /api/analytics/search?q=…</code> is the API; it accepts camera and time
+filters too.</p>
+<h2 id="sorting-exporting-and-unambiguous-time-m1">Sorting, exporting and unambiguous time (M1)</h2>
+<p><img alt="Events with sortable headers, bulk selection bar and CSV export." src="../assets/img/shots/events-bulk.webp"></p>
+<p>Every data table (Events, Audit) is <strong>sortable</strong>: click a column header to
+sort by it, click again to reverse; the arrow shows the direction and the
+sort runs server-side over the whole result set — not just the visible
+page.</p>
+<p><strong>Export CSV</strong> (Events and Audit toolbars) downloads exactly what the
+current filters and sort produce — every export lands in the audit log,
+and formula-style cells (leading <code>=</code>, <code>+</code>, <code>-</code>, <code>@</code>) are neutralized so
+opening the file in a spreadsheet is safe.</p>
+<p><strong>Times are unambiguous everywhere.</strong> The server sends UTC with an
+explicit offset, and the console renders <code>2 Sept 2026, 15:30:12 UTC</code>
+(dense tables show the short form with a full ISO tooltip). No more bare
+clocks that could mean two wall-times to two people.</p>
+<p>The <strong>Audit</strong> view additionally filters by user, action, result and a
+date window, and paginates — compliance review no longer means scrolling.</p>
+<h2 id="forensic-search-attributes-plates-saved-searches">Forensic search — attributes, plates, saved searches</h2>
+<p>The <strong>Events</strong> view carries a <strong>Forensic search</strong> card (visible to every
+role; saving needs a role with <code>search:save</code>):</p>
+<ul>
+<li><strong>Attributes</strong> — search the AI's clothing tags on tracks: type a key
+  (<code>jacket</code>, <code>color</code>, <code>hat</code>…) and optionally a value (<code>red</code>). Every hit
+  shows the camera, time and the tags, and "Show in events" jumps to that
+  camera's feed so you land in the surrounding footage.</li>
+<li><strong>Plate</strong> — type a plate exactly as it reads (<code>ab-12 cd</code> is fine); the
+  lookup normalizes it (<code>AB12CD</code>) and finds every ANPR sighting. Plates are
+  stored encrypted and matched through a keyed hash, so the console never
+  shows plate material — only <em>where</em> and <em>when</em> it was seen. Partial
+  plates are not searchable by design; use the event feed for those.</li>
+<li><strong>Saved searches</strong> — name the current search and <strong>Save</strong>; it appears as
+  a chip above the results (click to re-run, ✕ to delete). Saving and
+  deleting are audit-logged; every user sees only their own searches.</li>
+</ul>
+<h2 id="your-account-m2">Your account (M2)</h2>
+<p><img alt="Account: profile, password, MFA, sessions, timezone." src="../assets/img/shots/account.webp"></p>
+<p>The <strong>Account</strong> view (last nav item) is self-service security:</p>
+<ul>
+<li><strong>Password</strong> — rotate your own password (12+ characters). Other devices
+  are signed out automatically; every rotation is audited.</li>
+<li><strong>Two-factor authentication</strong> — enroll with any TOTP authenticator
+  (Google Authenticator, 1Password, Aegis). After enrollment your login
+  asks for a 6-digit code. To switch devices, ask an administrator for an
+  MFA reset, then re-enroll.</li>
+<li><strong>Active sessions</strong> — every device where you're signed in; revoke any
+  of them individually. Admins can revoke all of a user's sessions from
+  the Users view ("Sign out all").</li>
+<li><strong>Timezone</strong> — choose how times are displayed to you (stored in UTC,
+  rendered in your choice; per-browser, never uploaded).</li>
+</ul>
+<h2 id="working-faster-m3">Working faster (M3)</h2>
+<p><img alt="The Ctrl-K palette — fuzzy jump to anything." src="../assets/img/shots/palette.webp"></p>
+<ul>
+<li><strong>Ctrl-K command palette</strong> — jump to any view, camera, person, or recent
+  event by typing part of the name. Full keyboard path: ↑↓ select, Enter
+  go, Esc close.</li>
+<li><strong>Bulk selection (Events)</strong> — checkbox rows or select-all; the bulk
+  bar exports exactly the selected events (audited like every export).</li>
+<li><strong>Copy link (Events, Audit, Analytics)</strong> — copies a URL that
+  reproduces the current filters AND sort. "Send me what you see" is a
+  link, not a screenshot.</li>
+<li><strong>Compare (Analytics)</strong> — deltas of headline numbers against the
+  previous equal-length window ("this shift vs the shift before"),
+  plus one-click range presets (This shift, 24h, 7d, 30d).</li>
+<li><strong>Compact density</strong> — the header toggle now tightens tables for real
+  (~36px rows, 24px inline controls per the WCAG 2.2 target-size
+  exception; the tooltip explains the reasoning).</li>
+</ul>
+<h2 id="keyboard-shortcuts">Keyboard shortcuts</h2>
+<p>The console is fully operable without a mouse:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Keys</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>g</code> then <code>o</code> / <code>l</code> / <code>e</code></td>
+<td>Overview · Live · Events</td>
+</tr>
+<tr>
+<td><code>g</code> then <code>t</code> / <code>c</code> / <code>a</code></td>
+<td>Timeline · Cameras · Analytics</td>
+</tr>
+<tr>
+<td><code>g</code> then <code>u</code> / <code>p</code> / <code>d</code></td>
+<td>Users · Privacy · Audit</td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td>Focus the events search</td>
+</tr>
+<tr>
+<td><code>↑</code> <code>↓</code> then <code>Enter</code></td>
+<td>Select an event, open it</td>
+</tr>
+<tr>
+<td><code>e</code></td>
+<td>Export the open event (audited)</td>
+</tr>
+<tr>
+<td><code>f</code></td>
+<td>Fullscreen wall mode (Live view)</td>
+</tr>
+<tr>
+<td><code>Esc</code></td>
+<td>Close drawer / overlay / wall</td>
+</tr>
+<tr>
+<td><code>?</code></td>
+<td>The shortcut overlay</td>
+</tr>
+<tr>
+<td><code>Ctrl-K</code> / <code>Cmd-K</code></td>
+<td>Command palette — jump anywhere</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="density">Density</h2>
+<p>The <strong>Comfortable/Compact</strong> button in the header switches row density
+(40 px vs 32 px). The choice is per-browser (localStorage) and applies to
+every table and card — NOC operators on 24h shifts can fit more rows;
+evaluators can see everything larger.</p>
+<h2 id="events-search-clips">Events, search &amp; clips</h2>
+<p><img alt="The evidence drawer: playback, context, signed export." src="../assets/img/shots/event-drawer.webp"></p>
+<ul>
+<li><strong>Browse</strong>: the dashboard's Events view (or <code>GET /api/events</code>) with
+  filters (camera, identity status, time range, confidence floor). Filters
+  live in the URL — copy it to hand a colleague the exact same view.</li>
+<li><strong>Investigate</strong>: click any event row (or press ↑/↓ and Enter) to open the
+  detail drawer — snapshot with detection box, clip playback, camera and
+  identity context, and <strong>Export evidence</strong>: an audited, signed, 5-minute
+  download link copied to your clipboard. Export requires an operator role
+  (<code>events:export</code>); every export lands in the audit log.</li>
+<li><strong>Event detail API</strong>: <code>GET /api/events/{id}</code> — includes short-lived signed
+  URLs to the snapshot and any recorded segment (default 300 s expiry;
+  links are HMAC-signed and expire — don't archive them).</li>
+<li><strong>Clips</strong>: <code>GET /api/events/{id}/clip</code> assembles every recording segment
+  overlapping the event window (requires <code>events:export</code>; the action is audited).</li>
+<li><strong>Natural-language search</strong>: <code>GET /api/analytics/search?q=person+by+the+gate</code>
+  — a reference (deterministic) semantic search until a real VLM is staged.</li>
+<li><strong>Timeline</strong>: the Timeline view renders a day of activity per camera as an
+  SVG ribbon; hover for the wall-clock time, click to jump into Events for
+  that camera. The same data is available via
+  <code>GET /api/timeline?date=YYYY-MM-DD&amp;camera_id=...</code>.</li>
+</ul>
+<p>Rule and ANPR events carry a <code>detail</code> object (direction, dwell, counts;
+for ANPR: the encrypted plate and its anonymized hash — see
+<a href="#what-is-encrypted-and-where">What is encrypted</a>).</p>
+<h2 id="alerts">Alerts</h2>
+<p><img alt="Alert routes with per-channel cooldowns and test delivery." src="../assets/img/shots/alerts.webp"></p>
+<p>Administrators (<code>alerts:manage</code>) configure routes: channel (<code>webhook</code>,
+<code>email</code>, <code>mqtt</code>, <code>push</code>), matching <code>rule_type</code> (or <code>*</code>), optional camera
+scope, and <code>cooldown_sec</code> to suppress re-firing storms.</p>
+<ul>
+<li>Webhook URLs are SSRF-validated; the server refuses to POST to private
+  ranges unless the operator allowlists them.</li>
+<li>Alert payloads sent to third-party channels are filtered: they carry the
+  rule context (direction, dwell, count, zone) but <strong>never</strong> ciphertext like
+  the encrypted plate — that data stays on the host.</li>
+<li><code>POST /api/alerts/test</code> sends a synthetic alert through every configured
+  route so you can verify delivery end-to-end.</li>
+<li>The <strong>daily alert budget</strong> (R3.6) caps alert <em>notifications</em> per camera per
+  UTC day. It defaults to unlimited; set <code>ALERT_BUDGET_PER_CAMERA_PER_DAY</code> for
+  the platform default or override one camera in the Alerts screen. A camera
+  that hits its cap stops notifying but keeps every detection, clip and
+  searchable event — evidence is never a budget item.</li>
+</ul>
+<h3 id="the-alerts-screen-wave-3">The Alerts screen (Wave 3)</h3>
+<p>The Alerts view (operators and up) has four parts:</p>
+<ul>
+<li><strong>Routes table</strong> — one row per route: channel pill, rule type, camera
+  scope (or <em>all cameras</em>), cooldown, enabled/paused state. <strong>Test-fire</strong>
+  pushes a synthetic alert through that route; <strong>Delete</strong> is two-step.</li>
+<li><strong>Deliveries feed</strong> — the last deliveries with timestamps, so you can see
+  the route actually firing, not just configured.</li>
+<li><strong>Daily alert budget</strong> — one row per camera showing today's usage against
+  its cap (<code>unlimited</code> when no cap is set), with an inline editor for
+  <code>alert_budget_per_day</code> (<code>0</code> = unlimited, <code>1-10000</code>). Saving re-renders the
+  Alerts view; the worker picks the new cap when it next (re)starts that
+  camera's pipeline.</li>
+<li><strong>+ Add route</strong> — the create form. The <code>config</code> JSON field shows a
+  per-channel hint (a webhook wants <code>{"url": ...}</code>, email wants an address)
+  and a note that channel secrets are write-only, like every credential in
+  the product.</li>
+</ul>
+<p><em>(Honesty note: pausing a route currently requires editing its config file
+and reloading — the pause control tells you this rather than pretending.)</em></p>
+<h2 id="people-enrollment">People &amp; enrollment</h2>
+<p><img alt="Identities: enrolled persons, faces, erasure (GDPR)." src="../assets/img/shots/people.webp"></p>
+<p>Enrollment (biometric identity recognition) is <strong>off by default</strong> and should
+be enabled only with a lawful basis. When enabled:</p>
+<ol>
+<li>Create a person (<code>POST /api/persons</code>, <code>person:enroll</code> permission).</li>
+<li>Enroll reference embeddings — stored envelope-encrypted, carrying their
+   model version.</li>
+<li>Recognition runs at <code>AI_RECOGNIZE_INTERVAL_SEC</code> intervals per track and
+   labels presence events <code>known</code> / <code>uncertain</code> / <code>unknown</code> against the
+   similarity threshold.</li>
+</ol>
+<p>Deleting a person is a <strong>complete erasure</strong> (GDPR-style): their embeddings
+cascade-delete with the person row. Events keep their <code>identity_status</code> label
+but the link to the person is removed.</p>
+<h3 id="the-identities-screen-wave-3">The Identities screen (Wave 3)</h3>
+<p>The People view (renamed <em>Identities</em> in the nav) lists every enrolled
+person with their <strong>faces-enrolled count</strong>, status, and enrollment date —
+camera-count chips make the enrollment effort visible at a glance.</p>
+<p>The person detail shows each reference embedding's <strong>metadata only</strong>:
+model version, dimension, quality score, created date. The photo itself is
+never stored (only the embedding), and the API says so in plain text rather
+than hiding it.</p>
+<ul>
+<li><strong>Upload a reference photo</strong> — multipart upload; the server extracts the
+  embedding and discards the image bytes. Re-uploading appends a new
+  reference (more references = better matching).</li>
+<li><strong>Delete person</strong> — the typed-confirm pattern: type the person's exact
+  label to unlock the button, because this is a full GDPR erasure
+  (embeddings cascade) and deserves a speed bump.</li>
+</ul>
+<h2 id="users-the-privacy-dashboard-wave-3">Users &amp; the Privacy dashboard (Wave 3)</h2>
+<p><img alt="Users &amp; roles — RBAC with MFA reset and session revoke." src="../assets/img/shots/users.webp"></p>
+<h3 id="users">Users</h3>
+<p>The Users view (<code>user:manage</code>, admins) lists accounts with role, MFA state,
+and active status. Creating a user enforces the 12-character minimum password
+(hashed with Argon2id on the host). <strong>Delete</strong> is typed-confirm on the
+account's exact email — and it revokes all their sessions immediately, which
+the confirm zone says out loud. Your own row is marked <code>· you</code> and cannot
+be deleted from the UI. The roles legend maps each role to its permissions
+(from the server's RBAC tables, not a hand-maintained copy).</p>
+<h3 id="privacy">Privacy</h3>
+<p>The Privacy view is the resident-audit surface, four cards:</p>
+<ul>
+<li><strong>Where your data lives</strong> — engine, storage root, crypto vault state: the
+  data map in one glance.</li>
+<li><strong>Retention by camera</strong> — per-camera overrides and the system defaults,
+  stating plainly when a camera just inherits the default.</li>
+<li><strong>Mask inventory</strong> — every privacy mask across every camera with its
+  reason, plus a count of cameras with <strong>no masks yet</strong> (a nudge, not a
+  scolding).</li>
+<li><strong>Data-subject erasure</strong> — search a person by label, then typed-confirm
+  erasure (same cascade as the Identities screen).</li>
+<li><strong>UI marks (opt-in)</strong> — off by default. When you turn it on, the
+  dashboard keeps a short local list of marks in that browser tab (view
+  loads and their timing, slow views, page errors) to help you spot a
+  problem on YOUR console. It is stored in memory only, never written to
+  disk, never sent anywhere, and <strong>Download JSON</strong> hands the file to you
+  — LocalSight's own servers never see it, because there are none.</li>
+</ul>
+<h2 id="what-is-encrypted-and-where">What is encrypted, and where</h2>
+<p><img alt="The audit trail: filter, sort, export — the record of everything." src="../assets/img/shots/audit.webp"></p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Data</th>
+<th>At rest</th>
+<th>In transit to you</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Camera RTSP URLs</td>
+<td>Envelope-encrypted (per-record data key under the deployment KEK)</td>
+<td>Never returned by the API</td>
+</tr>
+<tr>
+<td>Plate numbers (ANPR)</td>
+<td><code>Event.detail.plate_enc</code> (envelope-encrypted) + <code>plate_hash</code> (anonymized digest)</td>
+<td>Only via authenticated host API</td>
+</tr>
+<tr>
+<td>Enrollment embeddings</td>
+<td>Envelope-encrypted</td>
+<td>Never returned</td>
+</tr>
+<tr>
+<td>Snapshots / recordings</td>
+<td>Storage keys encrypted; objects served via short-lived signed URLs</td>
+<td>Signed URL (≤ <code>expires_sec</code>)</td>
+</tr>
+<tr>
+<td>Alert route secrets</td>
+<td>Encrypted at rest</td>
+<td>Never returned</td>
+</tr>
+<tr>
+<td>Passwords</td>
+<td>Argon2id hashes</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>Audit log</td>
+<td>Append-only rows (retention-bounded)</td>
+<td><code>audit:view</code> permission</td>
+</tr>
+</tbody>
+</table></div>
+<p>Signed URLs are HMAC-SHA256 over <code>key:exp</code> with the deployment master key —
+they cannot be forged, only issued by the server, and they expire.</p>
+        </article>
+
+    <nav class="toc" id="toc" aria-label="On this page">
+      <h2 class="toc__h">On this page</h2>
+      <ul>
+      <li><a class="" href="#contents" data-toc="contents">Contents</a></li>
+      <li><a class="" href="#getting-set-up-first-time" data-toc="getting-set-up-first-time">Getting set up (first time)</a></li>
+      <li><a class="" href="#logging-in" data-toc="logging-in">Logging in</a></li>
+      <li><a class="" href="#dashboards-at-a-glance" data-toc="dashboards-at-a-glance">Dashboards at a glance</a></li>
+      <li><a class="" href="#managing-cameras" data-toc="managing-cameras">Managing cameras</a></li>
+      <li><a class="toc-h3" href="#privacy-masks" data-toc="privacy-masks">Privacy masks</a></li>
+      <li><a class="toc-h3" href="#the-cameras-screens-wave-3" data-toc="the-cameras-screens-wave-3">The Cameras screens (Wave 3)</a></li>
+      <li><a class="toc-h3" href="#the-mask-editor" data-toc="the-mask-editor">The mask editor</a></li>
+      <li><a class="toc-h3" href="#the-rules-editor" data-toc="the-rules-editor">The rules editor</a></li>
+      <li><a class="toc-h3" href="#behavior-rules" data-toc="behavior-rules">Behavior rules</a></li>
+      <li><a class="toc-h3" href="#testing-rules-before-you-trust-them-r35-replay-tester" data-toc="testing-rules-before-you-trust-them-r35-replay-tester">Testing rules before you trust them (R3.5 replay tester)</a></li>
+      <li><a class="toc-h3" href="#the-daily-alert-budget-r36" data-toc="the-daily-alert-budget-r36">The daily alert budget (R3.6)</a></li>
+      <li><a class="toc-h3" href="#per-camera-retention" data-toc="per-camera-retention">Per-camera retention</a></li>
+      <li><a class="toc-h3" href="#removing-a-camera" data-toc="removing-a-camera">Removing a camera</a></li>
+      <li><a class="" href="#live-view" data-toc="live-view">Live view</a></li>
+      <li><a class="" href="#overview-the-noc-screen" data-toc="overview-the-noc-screen">Overview (the NOC screen)</a></li>
+      <li><a class="" href="#analytics" data-toc="analytics">Analytics</a></li>
+      <li><a class="toc-h3" href="#natural-language-search" data-toc="natural-language-search">Natural-language search</a></li>
+      <li><a class="" href="#sorting-exporting-and-unambiguous-time-m1" data-toc="sorting-exporting-and-unambiguous-time-m1">Sorting, exporting and unambiguous time (M1)</a></li>
+      <li><a class="" href="#forensic-search-attributes-plates-saved-searches" data-toc="forensic-search-attributes-plates-saved-searches">Forensic search — attributes, plates, saved searches</a></li>
+      <li><a class="" href="#your-account-m2" data-toc="your-account-m2">Your account (M2)</a></li>
+      <li><a class="" href="#working-faster-m3" data-toc="working-faster-m3">Working faster (M3)</a></li>
+      <li><a class="" href="#keyboard-shortcuts" data-toc="keyboard-shortcuts">Keyboard shortcuts</a></li>
+      <li><a class="" href="#density" data-toc="density">Density</a></li>
+      <li><a class="" href="#events-search-clips" data-toc="events-search-clips">Events, search & clips</a></li>
+      <li><a class="" href="#alerts" data-toc="alerts">Alerts</a></li>
+      <li><a class="toc-h3" href="#the-alerts-screen-wave-3" data-toc="the-alerts-screen-wave-3">The Alerts screen (Wave 3)</a></li>
+      <li><a class="" href="#people-enrollment" data-toc="people-enrollment">People & enrollment</a></li>
+      <li><a class="toc-h3" href="#the-identities-screen-wave-3" data-toc="the-identities-screen-wave-3">The Identities screen (Wave 3)</a></li>
+      <li><a class="" href="#users-the-privacy-dashboard-wave-3" data-toc="users-the-privacy-dashboard-wave-3">Users & the Privacy dashboard (Wave 3)</a></li>
+      <li><a class="toc-h3" href="#users" data-toc="users">Users</a></li>
+      <li><a class="toc-h3" href="#privacy" data-toc="privacy">Privacy</a></li>
+      <li><a class="" href="#what-is-encrypted-and-where" data-toc="what-is-encrypted-and-where">What is encrypted, and where</a></li>
+      </ul>
+    </nav>      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <img src="../assets/img/favicon.svg" alt="" width="26" height="26" />
+        <span>Local<strong>Sight</strong></span>
+        <p>Local-first, privacy-by-design video intelligence.</p>
+      </div>
+      <nav class="footer__cols" aria-label="Footer">
+        <div>
+          <h2 class="footer__h">Project</h2>
+          <a href="https://github.com/localsightX/localsight" target="_blank" rel="noopener">Source</a>
+          <a href="https://github.com/localsightX/localsight/issues" target="_blank" rel="noopener">Issues</a>
+          <a href="https://github.com/localsightX/localsight/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        </div>
+        <div>
+          <h2 class="footer__h">Docs</h2>
+          <a href="installation.html">Installation</a>
+          <a href="user-guide.html">User guide</a>
+          <a href="runbook.html">Operations runbook</a>
+          <a href="troubleshooting.html">Troubleshooting</a>
+          <a href="onnx-detector.html">ONNX detector</a>
+          <a href="api-reference.html">API reference</a>
+          <a href="security.html">Security</a>        </div>
+        <div>
+          <h2 class="footer__h">More</h2>
+          <a href="system-architecture.html">Architecture</a>
+          <a href="threat-model.html">Threat model</a>
+          <a href="tplink-vigi.html">Camera integrations</a>
+          <a href="engineering-review.html">Engineering review</a>        </div>
+      </nav>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> LocalSight contributors.</span>
+      <span>Built for privacy. Runs offline.</span>
+    </div>
+  </footer>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/docs.js"></script>
+</body>
+</html>
