@@ -120,7 +120,9 @@
 .toc-empty { display: none; }
 
 /* ── DOC HUB CARDS ─────────────────────────────────────────────────────── */
-.docgrid-home { max-width: 1120px; margin: 0 auto; padding: 0 22px 90px; }
+/* Same column as .docshead .container above and .docshell on article pages,
+   so the search box and the guide cards share one left edge at every width. */
+.docgrid-home { max-width: 1320px; margin: 0 auto; padding: 0 22px 90px; }
 .dgroup { margin: 0 0 44px; }
 .dgroup__h { display: flex; align-items: baseline; gap: 12px; margin: 0 0 16px; }
 .dgroup__h h2 { font-size: 1.25rem; margin: 0; }
@@ -148,7 +150,7 @@
 }
 
 /* ── SEARCH ────────────────────────────────────────────────────────────── */
-.searchbox { position: relative; max-width: 520px; }
+.searchbox { position: relative; max-width: 520px; margin-top: 22px; }
 .searchbox input {
   width: 100%; padding: 13px 16px 13px 44px; font: inherit; font-size: .95rem;
   color: var(--text); background: var(--bg-2); border: 1px solid var(--border);
@@ -204,5 +206,6 @@ kbd {
 @media (max-width: 560px) {
   .docshell { padding-left: 14px; padding-right: 14px; }
   .docgrid-home { padding-left: 14px; padding-right: 14px; }
+  .docshead .container { padding-left: 14px; padding-right: 14px; }
   .prose table { min-width: 460px; }
 }
